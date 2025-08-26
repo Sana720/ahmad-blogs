@@ -24,7 +24,17 @@ export default function Header() {
     >
       <div className="max-w-5xl mx-auto flex flex-row items-center justify-between py-3 px-4">
         <div className="flex items-center">
-          <svg width="40" height="40" viewBox="0 0 48 48" fill="none" className="mr-2"><ellipse cx="24" cy="24" rx="24" ry="24" fill="#3CB371"/><ellipse cx="18" cy="24" rx="8" ry="8" fill="#fff"/><ellipse cx="30" cy="24" rx="8" ry="8" fill="#fff"/><ellipse cx="18" cy="24" rx="5" ry="5" fill="#3CB371"/><ellipse cx="30" cy="24" rx="5" ry="5" fill="#3CB371"/><circle cx="17" cy="23" r="1.2" fill="#222"/><circle cx="29" cy="23" r="1.2" fill="#222"/><path d="M20 28c1.5 1.5 6.5 1.5 8 0" stroke="#222" strokeWidth="1.5" strokeLinecap="round"/></svg>
+          {/* Original Eye/Face SVG Logo */}
+          <svg width="40" height="40" viewBox="0 0 48 48" fill="none" className="mr-2">
+            <ellipse cx="24" cy="24" rx="24" ry="24" fill="#3CB371"/>
+            <ellipse cx="18" cy="24" rx="8" ry="8" fill="#fff"/>
+            <ellipse cx="30" cy="24" rx="8" ry="8" fill="#fff"/>
+            <ellipse cx="18" cy="24" rx="5" ry="5" fill="#3CB371"/>
+            <ellipse cx="30" cy="24" rx="5" ry="5" fill="#3CB371"/>
+            <circle cx="17" cy="23" r="1.2" fill="#222"/>
+            <circle cx="29" cy="23" r="1.2" fill="#222"/>
+            <path d="M20 28c1.5 1.5 6.5 1.5 8 0" stroke="#222" strokeWidth="1.5" strokeLinecap="round"/>
+          </svg>
           <span className="text-2xl font-extrabold text-[#222] tracking-tight" style={{letterSpacing: '-1px'}}>Ahmad Blogs</span>
         </div>
         {/* Desktop Nav */}
@@ -44,7 +54,6 @@ export default function Header() {
           <Link href="/" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>Home</Link>
           <Link href="/about" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>About</Link>
           <Link href="/contact" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>Contact</Link>
-          <Link href="/admin" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>Admin</Link>
         </nav>
       )}
     </header>
