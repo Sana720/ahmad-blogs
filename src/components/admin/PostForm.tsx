@@ -1,0 +1,107 @@
+"use client";
+
+import { useEffect, useState } from "react";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../../utils/firebase";
+
+function slugify(str: string) {
+  return str
+    .toLowerCase()
+    .replace(/[^a-z0-9]+/g, '-')
+    .replace(/(^-|-$)+/g, '');
+}
+
+export default function PostForm({ onSubmit, initialData }: { onSubmit: (data: any) => void, initialData?: any }) {
+  const [title, setTitle] = useState(initialData?.title || "");
+  const [content, setContent] = useState(initialData?.content || "");
+  const [imageUrl, setImageUrl] = useState(initialData?.image || "");
+  const [uploading, setUploading] = useState(false);
+  const [tags, setTags] = useState(initialData?.tags?.join(', ') || "");
+  const [category, setCategory] = useState(initialData?.category || "");
+  const [author, setAuthor] = useState(initialData?.author || "");
+  const [categories, setCategories] = useState<any[]>([]);
+  const [authors, setAuthors] = useState<any[]>([]);
+
+  useEffect(() => {
+    async function fetchData() {
+      const catSnap = await getDocs(collection(db, "categories"));
+      setCategories(catSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+      const authSnap = await getDocs(collection(db, "authors"));
+      setAuthors(authSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+    }
+    fetchData();
+  }, []);
+
+  async function handleImageUpload(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const formData = new FormData();
+    formData.append("file", file);
+  formData.append("upload_preset", "ahmad-blogs");
+  const res = await fetch("https://api.cloudinary.com/v1_1/dmklge3gp/image/upload", {
+      method: "POST",
+      body: formData,
+    });
+    const data = await res.json();
+    setImageUrl(data.secure_url);
+    setUploading(false);
+  }
+
+  function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!imageUrl) return alert("Please upload an image.");
+    const slug = slugify(title);
+    onSubmit({
+      title,
+      content,
+      image: imageUrl,
+  tags: tags.split(',').map((t: string) => t.trim()).filter(Boolean),
+      category,
+      author,
+      slug
+    });
+  }
+
+  return (
+    <form onSubmit={handleSubmit} className="space-y-4 text-[#232946]">
+      <div>
+        <label className="block font-medium mb-1 text-[#232946]">Title</label>
+        <input value={title} onChange={e => setTitle(e.target.value)} className="w-full border rounded px-3 py-2 text-[#232946]" required />
+      </div>
+      <div>
+        <label className="block font-medium mb-1 text-[#232946]">Content</label>
+        <textarea value={content} onChange={e => setContent(e.target.value)} className="w-full border rounded px-3 py-2 text-[#232946]" rows={5} required />
+      </div>
+      <div>
+        <label className="block font-medium mb-1 text-[#232946]">Tags (comma separated)</label>
+        <input value={tags} onChange={e => setTags(e.target.value)} className="w-full border rounded px-3 py-2 text-[#232946]" placeholder="e.g. diy, toy" />
+      </div>
+      <div>
+        <label className="block font-medium mb-1 text-[#232946]">Category</label>
+        <select value={category} onChange={e => setCategory(e.target.value)} className="w-full border rounded px-3 py-2 text-[#232946]" required>
+          <option value="">Select category</option>
+          {categories.map((cat: any) => (
+            <option key={cat.id} value={cat.name}>{cat.name}</option>
+          ))}
+        </select>
+      </div>
+      <div>
+        <label className="block font-medium mb-1 text-[#232946]">Author</label>
+        <select value={author} onChange={e => setAuthor(e.target.value)} className="w-full border rounded px-3 py-2 text-[#232946]" required>
+          <option value="">Select author</option>
+          {authors.map((auth: any) => (
+            <option key={auth.id} value={auth.name}>{auth.name}</option>
+          ))}
+        </select>
+      </div>
+      <div>
+        <label className="block font-medium mb-1 text-[#232946]">Image</label>
+        <input type="file" accept="image/*" onChange={handleImageUpload} className="text-[#232946]" />
+        {uploading && <div className="text-sm text-blue-500">Uploading...</div>}
+        {imageUrl && <img src={imageUrl} alt="Preview" className="mt-2 h-32 rounded" />}
+      </div>
+      <button type="submit" className="bg-[#3CB371] text-white px-6 py-2 rounded font-bold">Save Post</button>
+    </form>
+  );
+}

@@ -1,0 +1,43 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // Admins collection - managed only from the Firebase Console or server-side
+    match /admins/{adminId} {
+      // deny client reads/writes so admins docs can only be created/edited via Console or server admin SDK
+      allow read, write: if false;
+    }
+
+    // Newsletter collection
+    match /newsletter/{docId} {
+      // Allow anyone (including unauthenticated users) to create a newsletter signup.
+      // This keeps the public signup form working without server-side code.
+      allow create: if true;
+
+      // Only authenticated users who have an 'admins' document (doc id == their uid) can read/update/delete
+      allow read, update, delete: if request.auth != null
+        && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Existing collections (posts, authors, categories)
+    match /posts/{document=**} {
+      allow read: if true;
+      // Only allow writes (create/update/delete) if the user is authenticated and has an admins/{uid} doc
+      allow write: if request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    match /authors/{document=**} {
+      allow read: if true;
+      allow write: if request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    match /categories/{document=**} {
+      allow read: if true;
+      allow write: if request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Fallback: default to public reads and deny writes for any other documents
+    match /{document=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}
