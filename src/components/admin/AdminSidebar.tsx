@@ -11,6 +11,7 @@ const links = [
   { href: '/admin/categories', label: 'Categories' },
   { href: '/admin/newsletter', label: 'Newsletter' },
   { href: '/admin/authors', label: 'Authors' },
+  { href: '/admin/contacts', label: 'Contacts' },
   { href: '/admin/settings', label: 'Settings' },
 ];
 
@@ -32,7 +33,11 @@ export default function AdminSidebar() {
         <Link
           key={link.href}
           href={link.href}
-          className={`rounded px-4 py-2 font-medium transition-colors duration-150 ${pathname === link.href ? 'bg-[#3CB371] text-white' : 'hover:bg-[#3CB371]/80 hover:text-white'}`}
+          className={`rounded px-4 py-2 font-medium transition-colors duration-150 ${
+            pathname === link.href
+              ? 'bg-[#3CB371] text-white'
+              : 'hover:bg-[#3CB371]/80 text-[#eaf0f6] hover:text-white'
+          }`}
         >
           {link.label}
         </Link>

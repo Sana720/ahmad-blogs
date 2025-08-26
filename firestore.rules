@@ -19,7 +19,7 @@ service cloud.firestore {
         && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
-    // Existing collections (posts, authors, categories)
+    // Existing collections (posts, authors, categories, contacts)
     match /posts/{document=**} {
       allow read: if true;
       // Only allow writes (create/update/delete) if the user is authenticated and has an admins/{uid} doc
@@ -32,6 +32,13 @@ service cloud.firestore {
     match /categories/{document=**} {
       allow read: if true;
       allow write: if request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+    // Contacts collection
+    match /contacts/{docId} {
+      // Allow anyone to create a contact message
+      allow create: if true;
+      // Only authenticated admins can read/update/delete
+      allow read, update, delete: if request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
     // Fallback: default to public reads and deny writes for any other documents

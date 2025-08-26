@@ -217,14 +217,15 @@ export default function Home() {
   useEffect(() => {
     async function fetchPosts() {
       const querySnapshot = await getDocs(collection(db, "posts"));
-      const postsData = querySnapshot.docs.map((doc) => doc.data() as Post);
-  setTotalPages(Math.ceil(postsData.length / POSTS_PER_PAGE));
-  // Sort by date descending if available
-  postsData.sort((a, b) => new Date(b.date || b.created || 0).getTime() - new Date(a.date || a.created || 0).getTime());
-  const start = (page - 1) * POSTS_PER_PAGE;
-  const end = start + POSTS_PER_PAGE;
-  setPosts(postsData.slice(start, end));
-  setLoading(false);
+      let postsData = querySnapshot.docs.map((doc) => doc.data() as Post);
+      // Sort by date descending (newest first)
+      postsData = postsData.sort((a, b) => new Date(b.date || b.created || 0).getTime() - new Date(a.date || a.created || 0).getTime());
+      setTotalPages(Math.ceil(postsData.length / POSTS_PER_PAGE));
+      // Always show the newest post as featured (first in sorted array)
+      const start = (page - 1) * POSTS_PER_PAGE;
+      const end = start + POSTS_PER_PAGE;
+      setPosts(postsData.slice(start, end));
+      setLoading(false);
     }
     fetchPosts();
   }, [page]);
@@ -240,7 +241,7 @@ export default function Home() {
   let featured: Post | undefined = undefined;
   let gridPosts: Post[] = [];
   if (posts.length > 0) {
-    featured = posts[0];
+    featured = posts[0]; // Always the newest post
     gridPosts = posts.slice(1);
   }
 
