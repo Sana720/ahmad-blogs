@@ -5,14 +5,8 @@ import { notFound } from 'next/navigation';
 import { db } from "../../../utils/firebase";
 import { collection, query, where, getDocs, limit, doc, updateDoc, increment } from "firebase/firestore";
 
-interface PostPageProps {
-  params: { slug: string };
-}
 
-
-
-
-export default async function PostPage({ params }: PostPageProps) {
+export default async function PostPage({ params }: any) {
   const q = query(collection(db, "posts"), where("slug", "==", params.slug), limit(1));
   const querySnapshot = await getDocs(q);
   if (querySnapshot.empty) return notFound();

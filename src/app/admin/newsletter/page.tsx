@@ -1,7 +1,7 @@
 "use client";
 import RequireAuth from '../../../components/admin/RequireAuth';
 import AdminLayout from '../../../components/admin/AdminLayout';
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useCallback } from 'react';
 import { collection, getDocs, deleteDoc, doc, updateDoc } from 'firebase/firestore';
 import { db, app } from '../../../utils/firebase';
 import { getAuth } from 'firebase/auth';
@@ -9,54 +9,55 @@ import Toasts from '../../../components/Toast';
 import { uid } from '../../../utils/uid';
 
 export default function AdminNewsletter() {
-  const [list, setList] = useState<any[]>([]);
+  const [list, setList] = useState<Array<Record<string, unknown> & { id: string }>>([]);
   const [loading, setLoading] = useState(true);
   const [editingId, setEditingId] = useState<string | null>(null);
   const [editingEmail, setEditingEmail] = useState('');
   const [toasts, setToasts] = useState<{ id: string; type?: 'success' | 'error' | 'info'; message: string }[]>([]);
-  const pushToast = (message: string, type: 'success' | 'error' | 'info' = 'info') => {
+  const pushToast = useCallback((message: string, type: 'success' | 'error' | 'info' = 'info') => {
     const id = uid();
     setToasts((s) => [...s, { id, message, type }]);
-  };
-  const removeToast = (id: string) => setToasts((s) => s.filter(t => t.id !== id));
+  }, []);
+  const removeToast = useCallback((id: string) => setToasts((s) => s.filter(t => t.id !== id)), []);
   const [currentUid, setCurrentUid] = useState<string | null>(null);
 
-  const refetchList = async () => {
+  const refetchList = useCallback(async () => {
     setLoading(true);
     try {
       const snap = await getDocs(collection(db, 'newsletter'));
-      setList(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-    } catch (err: any) {
+      setList(snap.docs.map(d => ({ id: d.id, ...d.data() })) as Array<Record<string, unknown> & { id: string }>);
+    } catch (err: unknown) {
       console.error(err);
-      pushToast(err?.message || 'Could not load subscribers', 'error');
+      const msg = err instanceof Error ? err.message : 'Could not load subscribers';
+      pushToast(msg, 'error');
     } finally {
       setLoading(false);
     }
-  };
+  }, [pushToast]);
 
   useEffect(() => {
-  const auth = getAuth(app);
-  setCurrentUid(auth.currentUser?.uid ?? null);
-  refetchList();
-  }, []);
+    const auth = getAuth(app);
+    setCurrentUid(auth.currentUser?.uid ?? null);
+    void refetchList();
+  }, [refetchList]);
 
   const handleDelete = async (id: string) => {
     try {
       await deleteDoc(doc(db, 'newsletter', id));
       setList(list.filter(i => i.id !== id));
       pushToast('Subscriber deleted', 'success');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      const msg = err?.code === 'permission-denied' || /insufficient permissions/i.test(err?.message || '')
+      const msg = (err instanceof Error && (err as any).code === 'permission-denied') || (err instanceof Error && /insufficient permissions/i.test(err.message))
         ? 'Permission denied. Make sure your user UID exists in the admins collection.'
-        : (err?.message || 'Could not delete subscriber');
+        : (err instanceof Error ? err.message : 'Could not delete subscriber');
       pushToast(msg, 'error');
     }
   };
 
-  const startEdit = (item: any) => {
+  const startEdit = (item: Record<string, unknown> & { id: string }) => {
     setEditingId(item.id);
-    setEditingEmail(item.email);
+    setEditingEmail((item.email as string) || '');
   };
 
   const saveEdit = async () => {
@@ -67,11 +68,11 @@ export default function AdminNewsletter() {
       setEditingId(null);
       setEditingEmail('');
       pushToast('Subscriber updated', 'success');
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error(err);
-      const msg = err?.code === 'permission-denied' || /insufficient permissions/i.test(err?.message || '')
+      const msg = (err instanceof Error && (err as any).code === 'permission-denied') || (err instanceof Error && /insufficient permissions/i.test(err.message))
         ? 'Permission denied. Make sure your user UID exists in the admins collection.'
-        : (err?.message || 'Could not update subscriber');
+        : (err instanceof Error ? err.message : 'Could not update subscriber');
       pushToast(msg, 'error');
     }
   };
@@ -113,13 +114,17 @@ export default function AdminNewsletter() {
                       <input value={editingEmail} onChange={e => setEditingEmail(e.target.value)} className="border px-2 py-1" />
                     ) : (
                       // show common field names as fallback and finally the raw object for debugging
-                      item.email || item.Email || item.emailAddress || JSON.stringify(item)
+                      <>{(item.email as string) || (item.Email as string) || (item.emailAddress as string) || JSON.stringify(item)}</>
                     )}</td>
                     <td className="text-[#232946]">{
-                      // createdAt may be a Firestore Timestamp, a string, or missing
-                      item.createdAt && typeof item.createdAt === 'object' && typeof item.createdAt.toDate === 'function'
-                        ? item.createdAt.toDate().toLocaleString()
-                        : (item.createdAt ? String(item.createdAt) : '')
+                      // createdAt may be a Firestore Timestamp-like object, a string, or missing
+                      (() => {
+                        const ca = item.createdAt as unknown;
+                        if (ca && typeof ca === 'object' && 'toDate' in ca && typeof (ca as any).toDate === 'function') {
+                          return (ca as any).toDate().toLocaleString();
+                        }
+                        return ca ? String(ca) : '';
+                      })()
                     }</td>
                     <td className="py-3">
                       <div className="flex items-center gap-2 whitespace-nowrap">

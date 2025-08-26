@@ -20,31 +20,34 @@ async function sendPostEmail(to: string, subject: string, html: string) {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') return res.status(405).end();
+  if (req.method !== 'POST') { res.status(405).end(); return; }
   const { title, excerpt, url } = req.body;
-  if (!title || !url) return res.status(400).json({ error: 'Missing fields' });
+  if (!title || !url) { res.status(400).json({ error: 'Missing fields' }); return; }
 
   if (!admin || !admin.apps || !admin.apps.length) {
-    return res.status(500).json({ error: 'Admin SDK not initialized. Set FIREBASE_SERVICE_ACCOUNT in env.' });
+    res.status(500).json({ error: 'Admin SDK not initialized. Set FIREBASE_SERVICE_ACCOUNT in env.' });
+    return;
   }
 
   try {
     const db = admin.firestore();
-  const snap = await db.collection('newsletter').get();
-  const subscribers = snap.docs.map((d: any) => d.data()).filter(Boolean) as any[];
+    const snap = await db.collection('newsletter').get();
+    const subscribers = snap.docs.map((d) => d.data()).filter(Boolean) as Array<Record<string, unknown>>;
     const html = `<div style="font-family: system-ui, -apple-system, Roboto, 'Helvetica Neue', Arial;line-height:1.4;color:#111"><h2>${title}</h2><p>${excerpt || ''}</p><p><a href="${url}">Read post</a></p></div>`;
-    // send to all subscribers sequentially (small lists ok on free tier)
-  // Safety: avoid sending thousands of emails in a single request on free tier
-  const limit = Number(process.env.NOTIFY_SEND_LIMIT || 200);
-  for (const s of subscribers.slice(0, limit)) {
+    const sendLimit = Number(process.env.NOTIFY_SEND_LIMIT || 200);
+    for (const s of subscribers.slice(0, sendLimit)) {
       const to = (s as any).email;
       if (!to) continue;
+      // best-effort send
+      // eslint-disable-next-line no-await-in-loop
       await sendPostEmail(to, `New post: ${title}`, html);
     }
 
-    return res.status(200).json({ ok: true, sent: subscribers.length });
-  } catch (err: any) {
+    res.status(200).json({ ok: true, sent: subscribers.length });
+    return;
+  } catch (err: unknown) {
     console.error(err);
-    return res.status(500).json({ error: err.message });
+    res.status(500).json({ error: err instanceof Error ? err.message : 'Unknown error' });
+    return;
   }
 }

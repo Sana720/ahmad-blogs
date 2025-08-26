@@ -22,9 +22,9 @@ async function sendWelcomeEmail(email: string) {
 }
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  if (req.method !== 'POST') return res.status(405).end();
+  if (req.method !== 'POST') { res.status(405).end(); return; }
   const { email } = req.body;
-  if (!email) return res.status(400).json({ error: 'Email required' });
+  if (!email) { res.status(400).json({ error: 'Email required' }); return; }
   try {
     // Prefer server-side admin SDK write when available (bypasses rules)
     if (admin && admin.apps && admin.apps.length) {
@@ -35,12 +35,14 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       await addDoc(collection(db, 'newsletter'), { email, createdAt: serverTimestamp() });
     }
 
-    // Send welcome email (best effort)
-    try { await sendWelcomeEmail(email); } catch (e) { console.error('sendWelcomeEmail failed', e); }
+  // Send welcome email (best effort)
+  try { await sendWelcomeEmail(email); } catch (e) { console.error('sendWelcomeEmail failed', e); }
 
-    return res.status(200).json({ ok: true });
+  res.status(200).json({ ok: true });
+  return;
   } catch (err: any) {
-    console.error(err);
-    return res.status(500).json({ error: 'Failed to save' });
+  console.error(err);
+  res.status(500).json({ error: err instanceof Error ? err.message : 'Failed to save' });
+  return;
   }
 }

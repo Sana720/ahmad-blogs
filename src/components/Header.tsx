@@ -1,5 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
+import Link from 'next/link';
 
 export default function Header() {
   const [scrolled, setScrolled] = useState(false);
@@ -28,10 +29,10 @@ export default function Header() {
         </div>
         {/* Desktop Nav */}
         <nav className="hidden md:flex gap-8 text-base font-semibold text-[#222]">
-          <a href="/" className="hover:text-[#3CB371]">Home</a>
-          <a href="/about" className="hover:text-[#3CB371]">About</a>
-          <a href="/contact" className="hover:text-[#3CB371]">Contact</a>
-          <a href="/admin" className="hover:text-[#3CB371]">Admin</a>
+          <Link href="/" className="hover:text-[#3CB371]">Home</Link>
+          <Link href="/about" className="hover:text-[#3CB371]">About</Link>
+          <Link href="/contact" className="hover:text-[#3CB371]">Contact</Link>
+          <Link href="/admin" className="hover:text-[#3CB371]">Admin</Link>
         </nav>
         {/* Mobile Hamburger */}
         <button className="md:hidden p-2 rounded focus:outline-none" onClick={() => setMobileOpen((v) => !v)} aria-label="Open menu">
@@ -40,11 +41,11 @@ export default function Header() {
       </div>
         {/* Mobile Nav */}
       {mobileOpen && (
-        <nav className="md:hidden bg-white border-t border-gray-100 px-4 pb-4 pt-2 flex flex-col gap-2 text-base font-semibold text-[#232946] shadow">
-          <a href="/" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>Home</a>
-          <a href="/about" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>About</a>
-          <a href="/contact" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>Contact</a>
-          <a href="/admin" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>Admin</a>
+          <nav className="md:hidden bg-white border-t border-gray-100 px-4 pb-4 pt-2 flex flex-col gap-2 text-base font-semibold text-[#232946] shadow">
+          <Link href="/" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>Home</Link>
+          <Link href="/about" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>About</Link>
+          <Link href="/contact" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>Contact</Link>
+          <Link href="/admin" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>Admin</Link>
         </nav>
       )}
     </header>
