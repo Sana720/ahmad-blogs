@@ -18,9 +18,65 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
   const querySnapshot = await getDocs(q);
   if (querySnapshot.empty) return { title: "Post Not Found | Ahmed Blogs" };
   const post = querySnapshot.docs[0].data();
+  const url = `https://ahmadblogs.com/posts/${params.slug}`;
+  const image = post.image || "/vercel.svg";
+  const description = post.excerpt || (typeof post.content === 'string' ? post.content.slice(0, 120) : Array.isArray(post.content) ? post.content[0] : "Read this post on Ahmed Blogs.");
   return {
     title: `${post.title} | Ahmed Blogs`,
-    description: post.excerpt || post.content?.slice(0, 120) || "Read this post on Ahmed Blogs."
+    description,
+    openGraph: {
+      title: `${post.title} | Ahmed Blogs`,
+      description,
+      url,
+      type: "article",
+      images: [
+        {
+          url: image,
+          width: 1200,
+          height: 630,
+          alt: post.title,
+        },
+      ],
+      siteName: "Ahmed Blogs",
+      locale: "en_US",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `${post.title} | Ahmed Blogs`,
+      description,
+      images: [image],
+      creator: post.author || "@ahmadblogs"
+    },
+    alternates: {
+      canonical: url
+    },
+    other: {
+      // JSON-LD structured data for Article
+      'application/ld+json': JSON.stringify({
+        "@context": "https://schema.org",
+        "@type": "Article",
+        "headline": post.title,
+        "description": description,
+        "image": [image],
+        "author": {
+          "@type": "Person",
+          "name": post.author || "Ahmed Blogs"
+        },
+        "datePublished": post.date,
+        "publisher": {
+          "@type": "Organization",
+          "name": "Ahmed Blogs",
+          "logo": {
+            "@type": "ImageObject",
+            "url": "https://ahmadblogs.com/vercel.svg"
+          }
+        },
+        "mainEntityOfPage": {
+          "@type": "WebPage",
+          "@id": url
+        }
+      })
+    }
   };
 }
 
