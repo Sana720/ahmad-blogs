@@ -17,15 +17,17 @@ export default function PostCrud() {
   useEffect(() => { fetchPosts(); }, []);
 
   async function handleCreate(data: any) {
-    const docRef = await addDoc(collection(db, "posts"), data);
+    // Remove id if present (for new posts)
+    const { id, ...rest } = data;
+    const docRef = await addDoc(collection(db, "posts"), rest);
     setShowForm(false);
     fetchPosts();
     // notify subscribers about the new post (best-effort)
     try {
-      const slug = data.slug || '';
+      const slug = rest.slug || '';
       const origin = typeof window !== 'undefined' ? window.location.origin : '';
       const url = origin ? `${origin}/posts/${slug}` : `/posts/${slug}`;
-      await fetch('/api/notify-post', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: data.title, excerpt: data.excerpt || '', url }) });
+      await fetch('/api/notify-post', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: rest.title, excerpt: rest.excerpt || '', url }) });
       console.log('Notify sent for new post');
     } catch (err) {
       console.error('Notify failed', err);
@@ -34,7 +36,9 @@ export default function PostCrud() {
 
   async function handleUpdate(data: any) {
     if (!editing) return;
-    await updateDoc(doc(db, "posts", editing.id), data);
+    // Don't update id field in Firestore
+    const { id, ...rest } = data;
+    await updateDoc(doc(db, "posts", editing.id), rest);
     setEditing(null);
     setShowForm(false);
     fetchPosts();

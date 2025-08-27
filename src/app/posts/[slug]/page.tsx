@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
   if (querySnapshot.empty) return { title: "Post Not Found | Ahmed Blogs" };
   const post = querySnapshot.docs[0].data();
   const url = `https://ahmadblogs.com/posts/${params.slug}`;
-  const image = post.image || "/vercel.svg";
+  const image = post.image && post.image.trim() !== "" ? post.image : "/favicon.svg";
   const description = post.excerpt || (typeof post.content === 'string' ? post.content.slice(0, 120) : Array.isArray(post.content) ? post.content[0] : "Read this post on Ahmed Blogs.");
   return {
     title: `${post.title} | Ahmed Blogs`,

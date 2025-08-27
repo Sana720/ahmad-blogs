@@ -17,7 +17,7 @@ export default function PostForm({ onSubmit, initialData }: { onSubmit: (data: a
   const [imageUrl, setImageUrl] = useState(initialData?.image || "");
   const [uploading, setUploading] = useState(false);
   const [tags, setTags] = useState(initialData?.tags?.join(', ') || "");
-  const [category, setCategory] = useState(initialData?.category || "");
+  const [category, setCategory] = useState(initialData?.category ? (Array.isArray(initialData.category) ? initialData.category : [initialData.category]) : []);
   const [author, setAuthor] = useState(initialData?.author || "");
   const [categories, setCategories] = useState<any[]>([]);
   const [authors, setAuthors] = useState<any[]>([]);
@@ -51,12 +51,13 @@ export default function PostForm({ onSubmit, initialData }: { onSubmit: (data: a
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!imageUrl) return alert("Please upload an image.");
-    const slug = slugify(title);
+    let slug = initialData?.slug || slugify(title);
     onSubmit({
+      ...initialData,
       title,
       content,
       image: imageUrl,
-  tags: tags.split(',').map((t: string) => t.trim()).filter(Boolean),
+      tags: tags.split(',').map((t: string) => t.trim()).filter(Boolean),
       category,
       author,
       slug
@@ -78,9 +79,17 @@ export default function PostForm({ onSubmit, initialData }: { onSubmit: (data: a
         <input value={tags} onChange={e => setTags(e.target.value)} className="w-full border rounded px-3 py-2 text-[#232946]" placeholder="e.g. diy, toy" />
       </div>
       <div>
-        <label className="block font-medium mb-1 text-[#232946]">Category</label>
-        <select value={category} onChange={e => setCategory(e.target.value)} className="w-full border rounded px-3 py-2 text-[#232946]" required>
-          <option value="">Select category</option>
+        <label className="block font-medium mb-1 text-[#232946]">Categories (hold Ctrl/Cmd to select multiple)</label>
+        <select
+          multiple
+          value={category}
+          onChange={e => {
+            const selected = Array.from(e.target.selectedOptions, option => option.value);
+            setCategory(selected);
+          }}
+          className="w-full border rounded px-3 py-2 text-[#232946]"
+          required
+        >
           {categories.map((cat: any) => (
             <option key={cat.id} value={cat.name}>{cat.name}</option>
           ))}

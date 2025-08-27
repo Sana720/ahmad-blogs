@@ -25,6 +25,29 @@ const mulish = Mulish({
 export const metadata: Metadata = {
   title: "Ahmed Blogs",
   description: "Ahmed Blogs - Latest posts, news, and updates.",
+  openGraph: {
+    title: "Ahmed Blogs",
+    description: "Ahmed Blogs - Latest posts, news, and updates.",
+    url: "https://ahmadblogs.com/",
+    type: "website",
+    images: [
+      {
+        url: "/favicon.svg",
+        width: 512,
+        height: 512,
+        alt: "Ahmed Blogs Logo",
+      },
+    ],
+    siteName: "Ahmed Blogs",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Ahmed Blogs",
+    description: "Ahmed Blogs - Latest posts, news, and updates.",
+    images: ["/favicon.svg"],
+    creator: "@ahmadblogs"
+  },
 };
 
 export default function RootLayout({
