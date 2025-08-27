@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
+import { getAuthorAvatarByName } from "../utils/getAuthorAvatar";
 import { db } from "../utils/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import Header from "../components/Header";
@@ -21,6 +22,7 @@ type Post = {
   date?: string;
   category?: string;
   excerpt?: string;
+  authorAvatar?: string;
 };
 
 
@@ -224,7 +226,15 @@ export default function Home() {
       // Always show the newest post as featured (first in sorted array)
       const start = (page - 1) * POSTS_PER_PAGE;
       const end = start + POSTS_PER_PAGE;
-      setPosts(postsData.slice(start, end));
+      // Fetch author avatars for all posts in this page
+      const pagePosts = postsData.slice(start, end);
+      const postsWithAvatars = await Promise.all(
+        pagePosts.map(async (post) => {
+          const avatar = post.author ? await getAuthorAvatarByName(post.author) : undefined;
+          return { ...post, authorAvatar: avatar };
+        })
+      );
+      setPosts(postsWithAvatars);
       setLoading(false);
     }
     fetchPosts();
@@ -259,7 +269,11 @@ export default function Home() {
                 <div className="p-6">
                   <div className="flex items-center gap-3 text-[#232946] text-base mb-4 font-medium mt-2">
                     <span className="inline-flex items-center gap-1">
-                      <span className="text-2xl">👨‍🎨</span>
+                      {featured.authorAvatar ? (
+                        <img src={featured.authorAvatar} alt={featured.author} className="w-7 h-7 rounded-full object-cover" />
+                      ) : (
+                        <span className="text-2xl">👨‍🎨</span>
+                      )}
                       <span>{featured.author}</span>
                     </span>
                     <span>{featured.date}</span>
@@ -281,7 +295,11 @@ export default function Home() {
                   <div className="p-4">
                     <div className="flex items-center gap-3 text-[#232946] text-base mb-2 font-medium mt-2">
                       <span className="inline-flex items-center gap-1">
-                        <span className="text-2xl">👨‍🎨</span>
+                        {post.authorAvatar ? (
+                          <img src={post.authorAvatar} alt={post.author} className="w-6 h-6 rounded-full object-cover" />
+                        ) : (
+                          <span className="text-2xl">👨‍🎨</span>
+                        )}
                         <span>{post.author || "Unknown"}</span>
                       </span>
                       <span>{post.created ? new Date(post.created).toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" }) : ""}</span>

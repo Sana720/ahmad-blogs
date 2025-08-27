@@ -1,13 +1,13 @@
 
 import SocialShare from "./SocialShare";
+import Comments from "./Comments";
 import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
 import { notFound } from 'next/navigation';
 import { db } from "../../../utils/firebase";
 import { collection, query, where, getDocs, limit, doc, updateDoc, increment } from "firebase/firestore";
 import React from "react";
-
-
+import { getAuthorAvatarByName } from "./getAuthorAvatar";
 import { Metadata } from "next";
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
@@ -31,6 +31,11 @@ export default async function PostPage({ params }: any) {
   const postDoc = querySnapshot.docs[0];
   const post = postDoc.data();
 
+  // Fetch author avatar
+  const authorAvatar = await getAuthorAvatarByName(post.author);
+  console.log('Author avatar for', post.author, ':', authorAvatar);
+  post.authorAvatar = authorAvatar;
+ 
   // Increment the views field for analytics
   try {
     const postRef = doc(db, "posts", postDoc.id);
@@ -57,8 +62,9 @@ export default async function PostPage({ params }: any) {
           {/* Meta row under title */}
           <div className="flex items-center gap-3 text-[#232946] text-base font-medium mb-4">
             <span className="inline-flex items-center gap-1">
-              <img src={post.authorAvatar || '/public/file.svg'} alt={post.author} className="w-7 h-7 rounded-full object-cover" />
+              <img src={post.authorAvatar} alt={post.authorAvatar} className="w-7 h-7 rounded-full object-cover" />
               <span>{post.author}</span>
+              
             </span>
             <span>{post.date}</span>
             <span> ▣ {post.category}</span>
@@ -99,6 +105,8 @@ export default async function PostPage({ params }: any) {
             <SocialShare post={post} />
           </div>
         </div>
+        {/* Comments Section */}
+        <Comments postId={post.slug} />
         {/* Similar Posts */}
         <div className="max-w-5xl mx-auto mt-16">
           <h2 className="text-3xl font-extrabold text-center mb-10 text-[#232946]">Similar Posts</h2>

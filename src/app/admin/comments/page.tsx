@@ -1,12 +1,12 @@
 import AdminLayout from '../../../components/admin/AdminLayout';
 import RequireAuth from '../../../components/admin/RequireAuth';
-import ContactsCrud from '../../../components/admin/ContactsCrud';
+import CommentsCrud from '../../../components/admin/CommentsCrud';
 
-export default function AdminContacts() {
+export default function AdminComments() {
   return (
     <RequireAuth>
       <AdminLayout>
-        <ContactsCrud />
+        <CommentsCrud />
       </AdminLayout>
     </RequireAuth>
   );

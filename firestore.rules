@@ -33,12 +33,21 @@ service cloud.firestore {
       allow read: if true;
       allow write: if request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
+
     // Contacts collection
     match /contacts/{docId} {
       // Allow anyone to create a contact message
       allow create: if true;
       // Only authenticated admins can read/update/delete
       allow read, update, delete: if request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Comments collection
+    match /comments/{docId} {
+      // Allow anyone to read and create a comment
+      allow read, create: if true;
+      // Only authenticated admins can update/delete
+      allow update, delete: if request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
     // Fallback: default to public reads and deny writes for any other documents
