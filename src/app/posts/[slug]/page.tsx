@@ -1,4 +1,5 @@
 
+
 import SocialShare from "./SocialShare";
 import Comments from "./Comments";
 import Header from "../../../components/Header";
@@ -9,6 +10,7 @@ import { collection, query, where, getDocs, limit, doc, updateDoc, increment } f
 import React from "react";
 import { getAuthorAvatarByName } from "./getAuthorAvatar";
 import { Metadata } from "next";
+import MarkdownRenderer from './MarkdownRenderer';
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
   // Fetch post title for metadata
@@ -118,9 +120,8 @@ export default async function PostPage({ params }: any) {
           {/* Meta row under title */}
           <div className="flex items-center gap-3 text-[#232946] text-base font-medium mb-4">
             <span className="inline-flex items-center gap-1">
-              <img src={post.authorAvatar} alt={post.authorAvatar} className="w-7 h-7 rounded-full object-cover" />
+              <img src={post.authorAvatar} alt={post.authorAvatar} className="w-7 h-7 rounded-full object-contain bg-[#eaf0f6]" />
               <span>{post.author}</span>
-              
             </span>
             <span>{post.date}</span>
             <span> ▣ {post.category}</span>
@@ -128,26 +129,12 @@ export default async function PostPage({ params }: any) {
         </div>
         {/* Image */}
         <div className="flex justify-center mb-8">
-          <img src={post.image} alt={post.title} className="rounded-xl w-full max-w-3xl object-cover" style={{height: 320, background: '#eaf0f6', objectFit: 'cover'}} />
+          <img src={post.image} alt={post.title} className="rounded-xl w-full max-w-3xl object-contain" style={{height: 320, background: '#eaf0f6', objectFit: 'contain'}} />
         </div>
         {/* Content */}
-        <div className="max-w-3xl mx-auto text-lg text-[#232946] space-y-6">
-          {Array.isArray(post.content) ? (
-            <>
-              <p>{post.content[0]}</p>
-              <p>{post.content[1]}</p>
-              <h2 className="text-2xl font-bold mt-8 mb-2">Creative Design</h2>
-              <p>{post.content[2]}</p>
-              {/* Blockquote styled section */}
-              <blockquote className="border-l-4 border-[#3CB371] bg-[#f7f8fa] p-4 my-4 text-[#232946] italic">
-                <span className="text-[#3CB371] text-xl font-bold">“</span>
-                <span className="align-middle">{post.content[3]}</span>
-                <span className="text-[#3CB371] text-xl font-bold">”</span>
-              </blockquote>
-              <p>{post.content[4]}</p>
-            </>
-          ) : (
-            post.content && <p>{post.content}</p>
+        <div className="max-w-3xl mx-auto text-lg text-[#232946] space-y-6 prose prose-headings:text-[#232946] prose-a:text-[#3CB371] prose-img:rounded-xl prose-img:mx-auto">
+          {post.content && (
+            <MarkdownRenderer content={Array.isArray(post.content) ? post.content.join('\n\n') : post.content} />
           )}
         </div>
         {/* Tags and Social Share Icons */}
