@@ -69,7 +69,7 @@ export default function Home() {
 
 
 
-  let filteredPosts = selectedCategory
+  const filteredPosts = selectedCategory
     ? posts.filter(
         (p) =>
           (Array.isArray(p.categories) && p.categories.includes(selectedCategory)) ||
