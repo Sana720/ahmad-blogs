@@ -116,45 +116,60 @@ export default async function PostPage({ params }: any) {
       <main className="max-w-4xl mx-auto py-8 px-4 bg-white flex-1">
         {/* Title */}
         <div className="flex flex-col items-center mt-2 mb-4">
-          <h1 className="text-4xl md:text-5xl font-extrabold leading-tight text-[#232946] text-center mb-2">{post.title}</h1>
-          {/* Meta row under title */}
-          <div className="flex items-center gap-3 text-[#232946] text-base font-medium mb-4">
-            <span className="inline-flex items-center gap-1">
-              <Image
-                src={post.authorAvatar}
-                alt={post.authorAvatar}
-                width={28}
-                height={28}
-                className="rounded-full object-contain bg-[#eaf0f6]"
-              />
-              <span>{post.author}</span>
-            </span>
-            <span>{post.date}</span>
-            <div className="flex flex-wrap gap-2">
-              {(Array.isArray(post.category) ? post.category : [post.category]).map((cat, idx) => (
-                <span
-                  key={idx}
-                  className="bg-[#eaf0f6] text-[#3CB371] text-xs font-medium px-2 py-1 rounded-full"
-                >
-                  {cat}
-                </span>
-              ))}
-            </div>
+          <h1 className="
+  text-2xl sm:text-3xl md:text-4xl lg:text-5xl
+  font-extrabold 
+  leading-snug sm:leading-tight
+  text-[#232946] 
+  text-center 
+  mb-2
+">
+            {post.title}
+          </h1>
 
-          </div>
+          {/* Meta row under title */}
+          <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3 text-[#232946] text-base font-medium mb-4">
+  {/* Author */}
+  <span className="inline-flex items-center gap-2 mb-2 sm:mb-0">
+    <Image
+      src={post.authorAvatar || "/default-avatar.png"}
+      alt={post.author || "Author"}
+      width={28}
+      height={28}
+      className="rounded-full object-contain bg-[#eaf0f6]"
+    />
+    <span className="text-sm sm:text-base">{post.author}</span>
+  </span>
+
+  {/* Date */}
+  <span className="text-sm sm:text-base mb-2 sm:mb-0">{post.date}</span>
+
+  {/* Categories */}
+  <div className="flex flex-wrap gap-2">
+    {(Array.isArray(post.category) ? post.category : [post.category]).map((cat, idx) => (
+      <span
+        key={idx}
+        className="bg-[#eaf0f6] text-[#3CB371] text-xs sm:text-sm font-medium px-2 py-1 rounded-full"
+      >
+        {cat}
+      </span>
+    ))}
+  </div>
+</div>
+
         </div>
         {/* Image */}
         <div className="flex justify-center mb-8">
           <div className="relative w-full aspect-[16/9] sm:aspect-[4/3] md:aspect-[16/7]">
-        <Image
-          src={post.image || "/placeholder.png"}
-          alt={post.title}
-          fill
-          className="object-cover rounded-md"
-          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 70vw, 50vw"
-          priority
-        />
-      </div>
+            <Image
+              src={post.image || "/placeholder.png"}
+              alt={post.title}
+              fill
+              className="object-cover rounded-md"
+              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 70vw, 50vw"
+              priority
+            />
+          </div>
         </div>
         {/* Content */}
         <div className="max-w-3xl mx-auto text-lg text-[#232946] space-y-6 prose prose-headings:text-[#232946] prose-a:text-[#3CB371] prose-img:rounded-xl prose-img:mx-auto">
