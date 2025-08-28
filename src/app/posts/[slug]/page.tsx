@@ -131,15 +131,15 @@ export default async function PostPage({ params }: any) {
             </span>
             <span>{post.date}</span>
             <div className="flex flex-wrap gap-2">
-  {(Array.isArray(post.category) ? post.category : [post.category]).map((cat, idx) => (
-    <span
-      key={idx}
-      className="bg-[#eaf0f6] text-[#3CB371] text-xs font-medium px-2 py-1 rounded-full"
-    >
-      {cat}
-    </span>
-  ))}
-</div>
+              {(Array.isArray(post.category) ? post.category : [post.category]).map((cat, idx) => (
+                <span
+                  key={idx}
+                  className="bg-[#eaf0f6] text-[#3CB371] text-xs font-medium px-2 py-1 rounded-full"
+                >
+                  {cat}
+                </span>
+              ))}
+            </div>
 
           </div>
         </div>
@@ -180,11 +180,27 @@ export default async function PostPage({ params }: any) {
             {similarPosts.map((sp: any, idx: number) => (
               <div key={sp.slug || idx} className="bg-white rounded-xl shadow p-4 flex flex-col items-center">
                 {sp.image && (
-                  <Image src={sp.image} alt={sp.title} className="rounded-lg w-full h-40 object-cover mb-4" style={{ background: '#eaf0f6', objectFit: 'cover' }} />
+                  <div className="relative w-full h-40 mb-4 bg-[#eaf0f6] rounded-lg overflow-hidden">
+                    <Image
+                      src={sp.image}
+                      alt={sp.title}
+                      fill
+                      className="object-cover"
+                    />
+                  </div>
                 )}
                 <div className="flex items-center gap-2 text-[#232946] text-sm mb-1">
                   <span>{sp.date}</span>
-                  <span>• {Array.isArray(sp.categories) ? sp.categories.join(', ') : sp.category || ''}</span>
+                  <div className="flex flex-wrap gap-2">
+                    {(Array.isArray(post.category) ? post.category : [post.category]).map((cat, idx) => (
+                      <span
+                        key={idx}
+                        className="bg-[#eaf0f6] text-[#3CB371] text-xs font-medium px-2 py-1 rounded-full"
+                      >
+                        {cat}
+                      </span>
+                    ))}
+                  </div>
                 </div>
                 <a href={`/posts/${sp.slug}`} className="block text-lg font-bold text-center hover:text-[#3CB371] text-[#232946]">{sp.title}</a>
               </div>

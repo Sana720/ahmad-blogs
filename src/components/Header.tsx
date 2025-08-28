@@ -40,8 +40,8 @@ export default function Header() {
         {/* Desktop Nav */}
         <nav className="hidden md:flex gap-8 text-base font-semibold text-[#222]">
           <Link href="/" className="hover:text-[#3CB371]">Home</Link>
-          <Link href="/about" className="hover:text-[#3CB371]">About</Link>
-          <Link href="/contact" className="hover:text-[#3CB371]">Contact</Link>
+          <Link href="/about" className="hover:text-[#3CB371]">About Me</Link>
+          <Link href="/contact" className="hover:text-[#3CB371]">Contact Me</Link>
         </nav>
         {/* Mobile Hamburger */}
         <button className="md:hidden p-2 rounded focus:outline-none" onClick={() => setMobileOpen((v) => !v)} aria-label="Open menu">

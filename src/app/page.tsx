@@ -160,7 +160,16 @@ function PostGrid({ posts }: { posts: Post[] }) {
                   <span className="font-semibold text-[#222]">{post.author}</span>
                 </span>
                 <span>{post.date}</span>
-                <span>• {Array.isArray(post.categories) ? post.categories.join(', ') : post.category || ''}</span>
+                <div className="flex flex-wrap gap-2">
+              {(Array.isArray(post.category) ? post.category : [post.category]).map((cat, idx) => (
+                <span
+                  key={idx}
+                  className="bg-[#eaf0f6] text-[#3CB371] text-xs font-medium px-2 py-1 rounded-full"
+                >
+                  {cat}
+                </span>
+              ))}
+            </div>
               </div>
               <a href={`/posts/${post.slug}`} className="block text-lg font-extrabold mb-2 hover:text-[#3CB371] text-[#222]">{post.title}</a>
               <p className="text-[#444] text-sm font-normal">{post.excerpt}</p>
@@ -340,7 +349,7 @@ export default function Home() {
               {gridPosts.map((post, idx) => (
                 <div key={post.slug || idx} className="rounded-xl overflow-hidden shadow bg-white">
                   {post.image && (
-                    <div className="relative w-full h-48">
+                    <div className="relative w-full h-58">
                       <Image
                         src={post.image}
                         alt={post.title}
@@ -366,7 +375,16 @@ export default function Home() {
                         <span>{post.author || "Unknown"}</span>
                       </span>
                       <span>{post.created ? new Date(post.created).toLocaleDateString("en-US", { day: "2-digit", month: "short", year: "numeric" }) : ""}</span>
-                      <span>• {Array.isArray(post.categories) ? post.categories.join(', ') : post.category || ''}</span>
+                     <div className="flex flex-wrap gap-2">
+              {(Array.isArray(post.category) ? post.category : [post.category]).map((cat, idx) => (
+                <span
+                  key={idx}
+                  className="bg-[#eaf0f6] text-[#3CB371] text-xs font-medium px-2 py-1 rounded-full"
+                >
+                  {cat}
+                </span>
+              ))}
+            </div>
                     </div>
                     <a href={`/posts/${post.slug}`} className="block text-lg font-extrabold mb-2 hover:text-[#3CB371] text-[#222]">{post.title}</a>
                     <p className="text-[#444] text-sm font-normal line-clamp-2">{typeof post.content === "string" ? post.content.slice(0, 120) + (post.content.length > 120 ? "..." : "") : post.excerpt || ""}</p>
