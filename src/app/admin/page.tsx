@@ -180,7 +180,13 @@ export default function AdminDashboard() {
               <ul className="space-y-4">
                 {topPosts.map(post => (
                   <li key={post.id} className="flex items-center gap-3">
-                    <Image src={post.image || '/public/file.svg'} alt={post.title} className="w-12 h-12 rounded-lg object-cover bg-[#eaf0f6]" />
+                    <Image
+                      src={post.image || '/file.svg'}
+                      alt={post.title}
+                      width={48}
+                      height={48}
+                      className="rounded-lg object-cover bg-[#eaf0f6]"
+                    />
                     <div className="flex-1">
                       <div className="font-semibold text-[#232946] text-base truncate">{post.title}</div>
                       <div className="text-xs text-[#3CB371] flex gap-2 mt-1">
@@ -203,7 +209,13 @@ export default function AdminDashboard() {
               )}
               {recentBlogs.map(blog => (
                 <li key={blog.id} className="flex items-start gap-3 py-2">
-                  <Image src={blog.image || '/public/file.svg'} alt={blog.title} className="w-12 h-12 rounded-lg object-cover bg-[#eaf0f6] flex-shrink-0" />
+                  <Image
+                    src={blog.image || '/file.svg'}
+                    alt={blog.title}
+                    width={48}
+                    height={48}
+                    className="rounded-lg object-cover bg-[#eaf0f6] flex-shrink-0"
+                  />
                   <div className="flex-1 min-w-0 flex flex-col justify-between">
                     <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-1">
                       <div className="font-semibold text-[#232946] text-base break-words line-clamp-2 max-w-full">{blog.title}</div>

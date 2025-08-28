@@ -93,7 +93,7 @@ export default async function PostPage({ params }: any) {
   const authorAvatar = await getAuthorAvatarByName(post.author);
   console.log('Author avatar for', post.author, ':', authorAvatar);
   post.authorAvatar = authorAvatar;
- 
+
   // Increment the views field for analytics
   try {
     const postRef = doc(db, "posts", postDoc.id);
@@ -120,7 +120,13 @@ export default async function PostPage({ params }: any) {
           {/* Meta row under title */}
           <div className="flex items-center gap-3 text-[#232946] text-base font-medium mb-4">
             <span className="inline-flex items-center gap-1">
-              <Image src={post.authorAvatar} alt={post.authorAvatar} className="w-7 h-7 rounded-full object-contain bg-[#eaf0f6]" />
+              <Image
+                src={post.authorAvatar}
+                alt={post.authorAvatar}
+                width={28}
+                height={28}
+                className="rounded-full object-contain bg-[#eaf0f6]"
+              />
               <span>{post.author}</span>
             </span>
             <span>{post.date}</span>
@@ -129,7 +135,14 @@ export default async function PostPage({ params }: any) {
         </div>
         {/* Image */}
         <div className="flex justify-center mb-8">
-          <Image src={post.image} alt={post.title} className="rounded-xl w-full max-w-3xl object-contain" style={{height: 320, background: '#eaf0f6', objectFit: 'contain'}} />
+          <div className="relative w-full max-w-3xl h-[320px] bg-[#eaf0f6] rounded-xl">
+            <Image
+              src={post.image}
+              alt={post.title}
+              fill
+              className="object-contain rounded-xl"
+            />
+          </div>
         </div>
         {/* Content */}
         <div className="max-w-3xl mx-auto text-lg text-[#232946] space-y-6 prose prose-headings:text-[#232946] prose-a:text-[#3CB371] prose-img:rounded-xl prose-img:mx-auto">
@@ -157,7 +170,7 @@ export default async function PostPage({ params }: any) {
             {similarPosts.map((sp: any, idx: number) => (
               <div key={sp.slug || idx} className="bg-white rounded-xl shadow p-4 flex flex-col items-center">
                 {sp.image && (
-                  <Image src={sp.image} alt={sp.title} className="rounded-lg w-full h-40 object-cover mb-4" style={{background: '#eaf0f6', objectFit: 'cover'}} />
+                  <Image src={sp.image} alt={sp.title} className="rounded-lg w-full h-40 object-cover mb-4" style={{ background: '#eaf0f6', objectFit: 'cover' }} />
                 )}
                 <div className="flex items-center gap-2 text-[#232946] text-sm mb-1">
                   <span>{sp.date}</span>

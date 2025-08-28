@@ -94,7 +94,9 @@ export default function Comments({ postId }: { postId: string }) {
               <Image
                 src={comment.avatar}
                 alt={comment.author}
-                className="w-9 h-9 rounded-full object-cover border border-[#3CB371]/30 bg-white"
+                width={36}
+                height={36}
+                className="rounded-full object-cover border border-[#3CB371]/30 bg-white"
               />
             ) : (
               <span className="inline-block w-9 h-9 rounded-full bg-[#3CB371]/20 flex items-center justify-center text-[#3CB371] font-bold text-lg">
