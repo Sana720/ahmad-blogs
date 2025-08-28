@@ -3,6 +3,7 @@ import Image from "next/image";
 import SocialShare from "./SocialShare";
 import Comments from "./Comments";
 import Header from "../../../components/Header";
+import CategoryMenu from "../../../components/CategoryMenu";
 import Footer from "../../../components/Footer";
 import { notFound } from 'next/navigation';
 import { db } from "../../../utils/firebase";
@@ -112,7 +113,7 @@ export default async function PostPage({ params }: any) {
 
   return (
     <div className="bg-white min-h-screen flex flex-col">
-      <Header />
+      <Header categoryMenu={<CategoryMenu />} />
       <main className="max-w-4xl mx-auto py-8 px-4 bg-white flex-1">
         {/* Title */}
         <div className="flex flex-col items-center mt-2 mb-4">

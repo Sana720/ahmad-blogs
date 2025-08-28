@@ -1,5 +1,6 @@
 "use client";
 import Header from '../../components/Header';
+import CategoryMenu from '../../components/CategoryMenu';
 import Footer from '../../components/Footer';
 import { useState } from 'react';
 import { db } from '../../utils/firebase';
@@ -35,7 +36,7 @@ export default function ContactPage() {
 
   return (
     <div className="min-h-screen flex flex-col bg-white">
-      <Header />
+  <Header categoryMenu={<CategoryMenu />} />
       <main className="flex-1 max-w-3xl mx-auto py-16 px-4 text-[#232946] bg-white">
         <h1 className="text-4xl font-extrabold mb-6 text-[#232946]">Contact Us</h1>
         <p className="text-lg text-[#444] mb-4">Have a question, suggestion, or just want to say hello? We'd love to hear from you!</p>

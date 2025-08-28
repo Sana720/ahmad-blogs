@@ -2,9 +2,14 @@
 import React, { useEffect, useState } from "react";
 import Link from 'next/link';
 
-export default function Header() {
+type HeaderProps = {
+  categoryMenu?: React.ReactNode;
+};
+
+export default function Header({ categoryMenu }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
+  const [showMobileCategories, setShowMobileCategories] = useState(false);
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 10);
@@ -12,14 +17,13 @@ export default function Header() {
     window.addEventListener("scroll", onScroll);
     return () => window.removeEventListener("scroll", onScroll);
   }, []);
+
   return (
     <header
-      className={`w-full border-b border-gray-100 bg-white z-30 sticky top-0 transition-shadow duration-300 ${
-        scrolled ? "shadow-md" : "shadow-none"
-      }`}
+      className={`w-full border-b border-gray-100 bg-white z-30 sticky top-0 transition-shadow duration-300 ${scrolled ? "shadow-md" : "shadow-none"}`}
       style={{
         backdropFilter: "saturate(180%) blur(8px)",
-        WebkitBackdropFilter: "saturate(180%) blur(8px)",
+        WebkitBackdropFilter: "saturate(180%) blur(8px)"
       }}
     >
       <div className="max-w-5xl mx-auto flex flex-row items-center justify-between py-3 px-4">
@@ -39,9 +43,18 @@ export default function Header() {
           <span className="text-2xl font-extrabold text-[#222] tracking-tight" style={{letterSpacing: '-1px'}}>Ahmad Blogs</span>
           </Link>
         </div>
-        {/* Desktop Nav */}
-        <nav className="hidden md:flex gap-8 text-base font-semibold text-[#222]">
+        {/* Desktop Nav with Category Dropdown */}
+        <nav className="hidden md:flex gap-8 text-base font-semibold text-[#222] items-center">
           <Link href="/" className="hover:text-[#3CB371]">Home</Link>
+          <div className="relative group">
+            <button className="hover:text-[#3CB371] flex items-center gap-1 focus:outline-none">
+              Categories
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="#3CB371" strokeWidth="2" strokeLinecap="round"/></svg>
+            </button>
+            <div className="absolute left-0 mt-2 w-44 bg-white border border-[#eaf0f6] rounded shadow-lg z-50 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 pointer-events-none group-hover:pointer-events-auto group-focus-within:pointer-events-auto transition-opacity">
+              {categoryMenu}
+            </div>
+          </div>
           <Link href="/about" className="hover:text-[#3CB371]">About Me</Link>
           <Link href="/contact" className="hover:text-[#3CB371]">Contact Me</Link>
         </nav>
@@ -52,8 +65,22 @@ export default function Header() {
       </div>
         {/* Mobile Nav */}
       {mobileOpen && (
-          <nav className="md:hidden bg-white border-t border-gray-100 px-4 pb-4 pt-2 flex flex-col gap-2 text-base font-semibold text-[#232946] shadow">
+        <nav className="md:hidden bg-white border-t border-gray-100 px-4 pb-4 pt-2 flex flex-col gap-2 text-base font-semibold text-[#232946] shadow">
           <Link href="/" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>Home</Link>
+          <div className="relative">
+            <button
+              className="hover:text-[#3CB371] flex items-center gap-1 focus:outline-none"
+              onClick={() => setShowMobileCategories((v) => !v)}
+              aria-expanded={showMobileCategories}
+              aria-controls="mobile-category-menu"
+            >
+              Categories
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="#3CB371" strokeWidth="2" strokeLinecap="round"/></svg>
+            </button>
+            {showMobileCategories && (
+              <div className="mt-2" id="mobile-category-menu">{categoryMenu}</div>
+            )}
+          </div>
           <Link href="/about" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>About</Link>
           <Link href="/contact" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>Contact</Link>
         </nav>

@@ -4,6 +4,7 @@ import { getAuthorAvatarByName } from "../utils/getAuthorAvatar";
 import { db } from "../utils/firebase";
 import { collection, getDocs } from "firebase/firestore";
 import Header from "../components/Header";
+import CategoryMenu from "../components/CategoryMenu";
 import Footer from "../components/Footer";
 import Toasts from '../components/Toast';
 import { uid } from '../utils/uid';
@@ -29,7 +30,8 @@ type Post = {
 
 export default function Home() {
   const [posts, setPosts] = useState<Post[]>([]);
-  const [loading, setLoading] = useState(true);
+  const [selectedCategory, setSelectedCategory] = useState("");
+  // const [loading, setLoading] = useState(true);
   const [page, setPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const POSTS_PER_PAGE = 5;
@@ -61,29 +63,29 @@ export default function Home() {
         })
       );
       setPosts(postsWithAvatars);
-      setLoading(false);
     }
     fetchPosts();
   }, [page]);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <span className="text-xl text-[#3CB371]">Loading posts...</span>
-      </div>
-    );
-  }
 
+
+  let filteredPosts = selectedCategory
+    ? posts.filter(
+        (p) =>
+          (Array.isArray(p.categories) && p.categories.includes(selectedCategory)) ||
+          (typeof p.category === "string" && p.category === selectedCategory)
+      )
+    : posts;
   let featured: Post | undefined = undefined;
   let gridPosts: Post[] = [];
-  if (posts.length > 0) {
-    featured = posts[0]; // Always the newest post
-    gridPosts = posts.slice(1);
+  if (filteredPosts.length > 0) {
+    featured = filteredPosts[0];
+    gridPosts = filteredPosts.slice(1);
   }
   console.log('Featured excerpt:', featured?.excerpt);
   return (
     <div className="bg-white min-h-screen flex flex-col">
-      <Header />
+  <Header categoryMenu={<CategoryMenu />} />
       <main className="flex-1">
         <div className="max-w-4xl mx-auto px-4">
           {featured && (
