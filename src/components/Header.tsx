@@ -24,6 +24,7 @@ export default function Header() {
     >
       <div className="max-w-5xl mx-auto flex flex-row items-center justify-between py-3 px-4">
         <div className="flex items-center">
+          <Link href="/" className="flex items-center">
           {/* Original Eye/Face SVG Logo */}
           <svg width="40" height="40" viewBox="0 0 48 48" fill="none" className="mr-2">
             <ellipse cx="24" cy="24" rx="24" ry="24" fill="#3CB371"/>
@@ -36,6 +37,7 @@ export default function Header() {
             <path d="M20 28c1.5 1.5 6.5 1.5 8 0" stroke="#222" strokeWidth="1.5" strokeLinecap="round"/>
           </svg>
           <span className="text-2xl font-extrabold text-[#222] tracking-tight" style={{letterSpacing: '-1px'}}>Ahmad Blogs</span>
+          </Link>
         </div>
         {/* Desktop Nav */}
         <nav className="hidden md:flex gap-8 text-base font-semibold text-[#222]">
