@@ -130,7 +130,17 @@ export default async function PostPage({ params }: any) {
               <span>{post.author}</span>
             </span>
             <span>{post.date}</span>
-            <span> ▣ {Array.isArray(post.categories) ? post.categories.join(', ') : post.category || ''}</span>
+            <div className="flex flex-wrap gap-2">
+  {(Array.isArray(post.category) ? post.category : [post.category]).map((cat, idx) => (
+    <span
+      key={idx}
+      className="bg-[#eaf0f6] text-[#3CB371] text-xs font-medium px-2 py-1 rounded-full"
+    >
+      {cat}
+    </span>
+  ))}
+</div>
+
           </div>
         </div>
         {/* Image */}

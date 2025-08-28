@@ -58,7 +58,17 @@ function FeaturedPost({ post }: { post: Post }) {
               <span className="font-semibold text-[#222]">{post.author}</span>
             </span>
             <span>{post.date}</span>
-            <span>• {Array.isArray(post.categories) ? post.categories.join(', ') : post.category || ''}</span>
+            <div className="flex flex-wrap gap-2">
+              {(Array.isArray(post.category) ? post.category : [post.category]).map((cat, idx) => (
+                <span
+                  key={idx}
+                  className="bg-[#eaf0f6] text-[#3CB371] text-xs font-medium px-2 py-1 rounded-full"
+                >
+                  {cat}
+                </span>
+              ))}
+            </div>
+
           </div>
           <a href={`/posts/${post.slug}`} className="block text-2xl font-extrabold mb-2 hover:text-[#3CB371] text-[#222]">{post.title}</a>
           <p className="text-[#444] text-base font-normal">{post.excerpt}</p>
@@ -282,7 +292,7 @@ export default function Home() {
             <section className="mt-12">
               <div className="rounded-xl overflow-hidden shadow bg-white">
                 {featured.image && (
-                  <div className="relative w-full h-80">
+                  <div className="relative w-full h-100">
                     <Image
                       src={featured.image}
                       alt={featured.title}
@@ -308,7 +318,16 @@ export default function Home() {
                       <span>{featured.author}</span>
                     </span>
                     <span>{featured.date}</span>
-                    <span>• {featured.category}</span>
+                    <div className="flex flex-wrap gap-2">
+                      {(Array.isArray(featured.category) ? featured.category : [featured.category]).map((cat, idx) => (
+                        <span
+                          key={idx}
+                          className="bg-[#eaf0f6] text-[#3CB371] text-xs font-medium px-2 py-1 rounded-full"
+                        >
+                          {cat}
+                        </span>
+                      ))}
+                    </div>
                   </div>
                   <a href={`/posts/${featured.slug}`} className="block text-2xl font-extrabold mb-2 hover:text-[#3CB371] text-[#222]">{featured.title}</a>
                   <p className="text-[#444] text-base font-normal">{featured.excerpt}</p>
