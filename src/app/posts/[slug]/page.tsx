@@ -145,14 +145,16 @@ export default async function PostPage({ params }: any) {
         </div>
         {/* Image */}
         <div className="flex justify-center mb-8">
-          <div className="relative w-full max-w-3xl h-[320px] bg-[#eaf0f6] rounded-xl">
-            <Image
-              src={post.image}
-              alt={post.title}
-              fill
-              className="object-contain rounded-xl"
-            />
-          </div>
+          <div className="relative w-full aspect-[16/9] sm:aspect-[4/3] md:aspect-[16/7]">
+        <Image
+          src={post.image || "/placeholder.png"}
+          alt={post.title}
+          fill
+          className="object-cover rounded-md"
+          sizes="(max-width: 640px) 100vw, (max-width: 1024px) 70vw, 50vw"
+          priority
+        />
+      </div>
         </div>
         {/* Content */}
         <div className="max-w-3xl mx-auto text-lg text-[#232946] space-y-6 prose prose-headings:text-[#232946] prose-a:text-[#3CB371] prose-img:rounded-xl prose-img:mx-auto">
