@@ -2,6 +2,7 @@
 import { useState, useEffect } from "react";
 import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from "firebase/firestore";
 import { db } from "../../utils/firebase";
+import Image from "next/image";
 
 export default function AuthorCrud() {
   const [authors, setAuthors] = useState<any[]>([]);
@@ -61,7 +62,7 @@ export default function AuthorCrud() {
           {authors.map(author => (
             <tr key={author.id}>
               <td className="p-2 border">{author.name}</td>
-              <td className="p-2 border">{author.avatar && <img src={author.avatar} alt={author.name} className="h-10 w-10 rounded-full object-cover" />}</td>
+              <td className="p-2 border">{author.avatar && <Image src={author.avatar} alt={author.name} className="h-10 w-10 rounded-full object-cover" />}</td>
               <td className="p-2 border">
                 <button onClick={() => { setEditing(author); setName(author.name); setAvatar(author.avatar || ""); }} className="text-blue-600 mr-2">Edit</button>
                 <button onClick={() => handleDelete(author.id)} className="text-red-600">Delete</button>

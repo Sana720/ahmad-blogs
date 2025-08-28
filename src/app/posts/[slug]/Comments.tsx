@@ -1,5 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
+import Image from "next/image";
 import { addComment, getComments } from "./commentsApi";
 
 export type Comment = {
@@ -90,7 +91,7 @@ export default function Comments({ postId }: { postId: string }) {
         >
           <div className="flex items-center gap-3 mb-1">
             {comment.avatar ? (
-              <img
+              <Image
                 src={comment.avatar}
                 alt={comment.author}
                 className="w-9 h-9 rounded-full object-cover border border-[#3CB371]/30 bg-white"

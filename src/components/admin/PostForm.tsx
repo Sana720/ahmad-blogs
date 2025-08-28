@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import dynamic from 'next/dynamic';
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../utils/firebase";
 
@@ -14,6 +15,7 @@ function slugify(str: string) {
 export default function PostForm({ onSubmit, initialData }: { onSubmit: (data: any) => void, initialData?: any }) {
   const [title, setTitle] = useState(initialData?.title || "");
   const [content, setContent] = useState(initialData?.content || "");
+  const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
   const [imageUrl, setImageUrl] = useState(initialData?.image || "");
   const [uploading, setUploading] = useState(false);
   const [tags, setTags] = useState(initialData?.tags?.join(', ') || "");
@@ -51,7 +53,7 @@ export default function PostForm({ onSubmit, initialData }: { onSubmit: (data: a
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!imageUrl) return alert("Please upload an image.");
-    let slug = initialData?.slug || slugify(title);
+    const slug = initialData?.slug || slugify(title);
     onSubmit({
       ...initialData,
       title,
@@ -72,7 +74,9 @@ export default function PostForm({ onSubmit, initialData }: { onSubmit: (data: a
       </div>
       <div>
         <label className="block font-medium mb-1 text-[#232946]">Content</label>
-        <textarea value={content} onChange={e => setContent(e.target.value)} className="w-full border rounded px-3 py-2 text-[#232946]" rows={5} required />
+        <div className="w-full border rounded px-3 py-2 text-[#232946] bg-white">
+          <MDEditor value={content} onChange={setContent} height={300} data-color-mode="light" style={{ background: '#fff', color: '#232946' }} />
+        </div>
       </div>
       <div>
         <label className="block font-medium mb-1 text-[#232946]">Tags (comma separated)</label>

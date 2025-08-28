@@ -1,5 +1,5 @@
 
-
+import Image from "next/image";
 import SocialShare from "./SocialShare";
 import Comments from "./Comments";
 import Header from "../../../components/Header";
@@ -120,16 +120,16 @@ export default async function PostPage({ params }: any) {
           {/* Meta row under title */}
           <div className="flex items-center gap-3 text-[#232946] text-base font-medium mb-4">
             <span className="inline-flex items-center gap-1">
-              <img src={post.authorAvatar} alt={post.authorAvatar} className="w-7 h-7 rounded-full object-contain bg-[#eaf0f6]" />
+              <Image src={post.authorAvatar} alt={post.authorAvatar} className="w-7 h-7 rounded-full object-contain bg-[#eaf0f6]" />
               <span>{post.author}</span>
             </span>
             <span>{post.date}</span>
-            <span> ▣ {post.category}</span>
+            <span> ▣ {Array.isArray(post.categories) ? post.categories.join(', ') : post.category || ''}</span>
           </div>
         </div>
         {/* Image */}
         <div className="flex justify-center mb-8">
-          <img src={post.image} alt={post.title} className="rounded-xl w-full max-w-3xl object-contain" style={{height: 320, background: '#eaf0f6', objectFit: 'contain'}} />
+          <Image src={post.image} alt={post.title} className="rounded-xl w-full max-w-3xl object-contain" style={{height: 320, background: '#eaf0f6', objectFit: 'contain'}} />
         </div>
         {/* Content */}
         <div className="max-w-3xl mx-auto text-lg text-[#232946] space-y-6 prose prose-headings:text-[#232946] prose-a:text-[#3CB371] prose-img:rounded-xl prose-img:mx-auto">
@@ -157,11 +157,11 @@ export default async function PostPage({ params }: any) {
             {similarPosts.map((sp: any, idx: number) => (
               <div key={sp.slug || idx} className="bg-white rounded-xl shadow p-4 flex flex-col items-center">
                 {sp.image && (
-                  <img src={sp.image} alt={sp.title} className="rounded-lg w-full h-40 object-cover mb-4" style={{background: '#eaf0f6', objectFit: 'cover'}} />
+                  <Image src={sp.image} alt={sp.title} className="rounded-lg w-full h-40 object-cover mb-4" style={{background: '#eaf0f6', objectFit: 'cover'}} />
                 )}
                 <div className="flex items-center gap-2 text-[#232946] text-sm mb-1">
                   <span>{sp.date}</span>
-                  <span>• {sp.category}</span>
+                  <span>• {Array.isArray(sp.categories) ? sp.categories.join(', ') : sp.category || ''}</span>
                 </div>
                 <a href={`/posts/${sp.slug}`} className="block text-lg font-bold text-center hover:text-[#3CB371] text-[#232946]">{sp.title}</a>
               </div>

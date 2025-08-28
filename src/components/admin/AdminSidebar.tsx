@@ -28,9 +28,9 @@ export default function AdminSidebar() {
   };
 
   return (
-    <aside className="bg-[#232946] text-white w-full md:w-64 min-h-screen p-6 flex flex-col gap-2">
+    <aside className="bg-[#232946] text-white w-full md:w-64 min-h-screen p-4 md:p-6 flex flex-row md:flex-col gap-2 md:gap-2 items-center md:items-stretch sticky top-0 z-20">
       <div className="text-2xl font-extrabold mb-8 tracking-tight text-center">Admin Panel</div>
-      {links.map(link => (
+      {links.map(link => ( 
         <Link
           key={link.href}
           href={link.href}
