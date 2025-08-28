@@ -71,7 +71,7 @@ export default function AdminDashboard() {
   return (
     <AdminLayout>
       <div className="max-w-7xl mx-auto px-2 md:px-0">
-        <WelcomeCard name="Admin" stats={{ posts: stats.posts, subscribers: 23000 }} />
+        <WelcomeCard name="Admin" stats={{ posts: stats.posts, subscribers: 99 }} />
         <div className="grid grid-cols-1 md:grid-cols-4 gap-6 mb-8">
           {dashboardCards.map(card => (
             <div key={card.key} className={`rounded-2xl shadow flex flex-col items-center justify-center p-6 ${card.color} border border-[#eaf0f6]`}>
