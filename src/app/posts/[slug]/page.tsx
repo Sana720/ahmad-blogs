@@ -12,6 +12,7 @@ import React from "react";
 import { getAuthorAvatarByName } from "./getAuthorAvatar";
 import { Metadata } from "next";
 import MarkdownRenderer from './MarkdownRenderer';
+import styles from './postContent.module.css';
 
 export async function generateMetadata({ params }: any): Promise<Metadata> {
   // Fetch post title for metadata
@@ -173,7 +174,7 @@ export default async function PostPage({ params }: any) {
           </div>
         </div>
         {/* Content */}
-        <div className="max-w-3xl mx-auto text-lg text-[#232946] space-y-6 prose prose-headings:text-[#232946] prose-a:text-[#3CB371] prose-img:rounded-xl prose-img:mx-auto">
+        <div className={`max-w-3xl mx-auto text-lg text-[#232946] space-y-6 prose prose-headings:text-[#232946] prose-img:rounded-xl prose-img:mx-auto ${styles.postContent}`}>
           {post.content && (
             <MarkdownRenderer content={Array.isArray(post.content) ? post.content.join('\n\n') : post.content} />
           )}

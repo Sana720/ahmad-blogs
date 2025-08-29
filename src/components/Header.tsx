@@ -1,15 +1,18 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useContext } from "react";
+import LoaderContext from "../utils/LoaderContext";
 import Link from 'next/link';
+
 
 type HeaderProps = {
   categoryMenu?: React.ReactNode;
 };
 
-export default function Header({ categoryMenu }: HeaderProps) {
+function Header({ categoryMenu }: HeaderProps) {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
   const [showMobileCategories, setShowMobileCategories] = useState(false);
+  const { setLoading } = useContext(LoaderContext);
   useEffect(() => {
     const onScroll = () => {
       setScrolled(window.scrollY > 10);
@@ -28,7 +31,7 @@ export default function Header({ categoryMenu }: HeaderProps) {
     >
       <div className="max-w-5xl mx-auto flex flex-row items-center justify-between py-3 px-4">
         <div className="flex items-center">
-          <Link href="/" className="flex items-center">
+          <Link href="/" className="flex items-center" onClick={() => setLoading(true)}>
           {/* Original Eye/Face SVG Logo */}
           <svg width="40" height="40" viewBox="0 0 48 48" fill="none" className="mr-2">
             <ellipse cx="24" cy="24" rx="24" ry="24" fill="#3CB371"/>
@@ -45,7 +48,7 @@ export default function Header({ categoryMenu }: HeaderProps) {
         </div>
         {/* Desktop Nav with Category Dropdown */}
         <nav className="hidden md:flex gap-8 text-base font-semibold text-[#222] items-center">
-          <Link href="/" className="hover:text-[#3CB371]">Home</Link>
+          <Link href="/" className="hover:text-[#3CB371]" onClick={() => setLoading(true)}>Home</Link>
           <div className="relative group">
             <button className="hover:text-[#3CB371] flex items-center gap-1 focus:outline-none">
               Categories
@@ -66,7 +69,7 @@ export default function Header({ categoryMenu }: HeaderProps) {
         {/* Mobile Nav */}
       {mobileOpen && (
         <nav className="md:hidden bg-white border-t border-gray-100 px-4 pb-4 pt-2 flex flex-col gap-2 text-base font-semibold text-[#232946] shadow">
-          <Link href="/" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>Home</Link>
+          <Link href="/" className="hover:text-[#3CB371]" onClick={() => { setMobileOpen(false); setLoading(true); }}>Home</Link>
           <div className="relative">
             <button
               className="hover:text-[#3CB371] flex items-center gap-1 focus:outline-none"
@@ -88,3 +91,5 @@ export default function Header({ categoryMenu }: HeaderProps) {
     </header>
   );
 }
+
+export default Header;

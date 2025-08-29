@@ -1,5 +1,6 @@
 "use client";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useState, useContext } from "react";
+import LoaderContext from "../utils/LoaderContext";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../utils/firebase";
 import { useRouter } from "next/navigation";
@@ -21,6 +22,7 @@ export default function CategoryMenu() {
 
   const items = useMemo(() => ["All", ...categories], [categories]);
   const router = useRouter();
+  const { setLoading } = useContext(LoaderContext);
 
   return (
     <div className="relative">
@@ -39,6 +41,7 @@ export default function CategoryMenu() {
                 type="button"
                 role="menuitem"
                 onClick={() => {
+                  setLoading(true);
                   if (isAll) router.push("/");
                   else router.push(`/category/${encodeURIComponent(cat)}`);
                 }}

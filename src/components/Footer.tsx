@@ -17,7 +17,7 @@ export default function Footer() {
             {/* Instagram */}
             <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><rect width="22" height="22" x="1" y="1" rx="6" fill="none" stroke="currentColor" strokeWidth="2"/><circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="2"/><circle cx="17" cy="7" r="1.5" fill="currentColor"/></svg>
           </a>
-          <a href="#" className="rounded-lg border border-gray-400 w-12 h-12 flex items-center justify-center text-xl text-gray-100 hover:text-[#3CB371] hover:border-[#3CB371] transition-colors">
+          <a href="https://www.linkedin.com/in/sana-ahmad-73b263177/" className="rounded-lg border border-gray-400 w-12 h-12 flex items-center justify-center text-xl text-gray-100 hover:text-[#3CB371] hover:border-[#3CB371] transition-colors">
             {/* LinkedIn */}
             <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><rect width="22" height="22" x="1" y="1" rx="6" fill="none" stroke="currentColor" strokeWidth="2"/><rect x="7" y="10" width="2" height="7" fill="currentColor"/><rect x="11" y="13" width="2" height="4" fill="currentColor"/><circle cx="8" cy="8" r="1" fill="currentColor"/></svg>
           </a>
