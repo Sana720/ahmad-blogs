@@ -51,13 +51,9 @@ export default function Home() {
       // Sort by date descending (newest first)
       postsData = postsData.sort((a, b) => new Date(b.date || b.created || 0).getTime() - new Date(a.date || a.created || 0).getTime());
       setTotalPages(Math.ceil(postsData.length / POSTS_PER_PAGE));
-      // Always show the newest post as featured (first in sorted array)
-      const start = (page - 1) * POSTS_PER_PAGE;
-      const end = start + POSTS_PER_PAGE;
-      // Fetch author avatars for all posts in this page
-      const pagePosts = postsData.slice(start, end);
+      // Fetch author avatars for all posts
       const postsWithAvatars = await Promise.all(
-        pagePosts.map(async (post) => {
+        postsData.map(async (post) => {
           const avatar = post.author ? await getAuthorAvatarByName(post.author) : undefined;
           return { ...post, authorAvatar: avatar };
         })
@@ -76,11 +72,13 @@ export default function Home() {
           (typeof p.category === "string" && p.category === selectedCategory)
       )
     : posts;
+
+  // Find the featured post (if any), otherwise use the newest
   let featured: Post | undefined = undefined;
   let gridPosts: Post[] = [];
   if (filteredPosts.length > 0) {
-    featured = filteredPosts[0];
-    gridPosts = filteredPosts.slice(1);
+    featured = filteredPosts.find((p) => p.featured) || filteredPosts[0];
+    gridPosts = filteredPosts.filter((p) => p !== featured);
   }
   console.log('Featured excerpt:', featured?.excerpt);
   return (

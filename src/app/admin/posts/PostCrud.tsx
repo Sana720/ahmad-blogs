@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc } from "firebase/firestore";
+import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, writeBatch } from "firebase/firestore";
 import { db } from "../../../utils/firebase";
 import PostForm from "../../../components/admin/PostForm";
 
@@ -49,6 +49,18 @@ export default function PostCrud() {
     fetchPosts();
   }
 
+  async function handleFeature(postId: string) {
+    // Unset 'featured' on all posts, set it on the selected one
+    const snap = await getDocs(collection(db, "posts"));
+    const batch = writeBatch(db);
+    snap.docs.forEach(docSnap => {
+      const isTarget = docSnap.id === postId;
+      batch.update(doc(db, "posts", docSnap.id), { featured: isTarget });
+    });
+    await batch.commit();
+    fetchPosts();
+  }
+
   return (
     <div>
       <div className="flex justify-between items-center mb-6">
@@ -68,6 +80,7 @@ export default function PostCrud() {
               <th className="p-2 border font-semibold">Title</th>
               <th className="p-2 border font-semibold">Image</th>
               <th className="p-2 border font-semibold">Actions</th>
+              <th className="p-2 border font-semibold">Feature</th>
             </tr>
           </thead>
           <tbody>
@@ -78,6 +91,13 @@ export default function PostCrud() {
                 <td className="p-2 border">
                   <button onClick={() => { setEditing(post); setShowForm(true); }} className="text-blue-600 mr-2">Edit</button>
                   <button onClick={() => handleDelete(post.id)} className="text-red-600">Delete</button>
+                </td>
+                <td className="p-2 border text-center">
+                  {post.featured ? (
+                    <span className="text-green-600 font-bold">Featured</span>
+                  ) : (
+                    <button onClick={() => handleFeature(post.id)} className="bg-[#3CB371] text-white px-3 py-1 rounded text-xs">Make Featured</button>
+                  )}
                 </td>
               </tr>
             ))}
