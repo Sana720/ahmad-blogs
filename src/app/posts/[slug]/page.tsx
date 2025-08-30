@@ -1,4 +1,3 @@
-
 import Image from "next/image";
 import SocialShare from "./SocialShare";
 import Comments from "./Comments";
@@ -7,160 +6,113 @@ import CategoryMenu from "../../../components/CategoryMenu";
 import Footer from "../../../components/Footer";
 import { notFound } from 'next/navigation';
 import { db } from "../../../utils/firebase";
-import { collection, query, where, getDocs, limit, doc, updateDoc, increment } from "firebase/firestore";
-import React from "react";
+import { collection, getDocs, doc, updateDoc, increment } from "firebase/firestore";
 import { getAuthorAvatarByName } from "./getAuthorAvatar";
-import { Metadata } from "next";
 import MarkdownRenderer from './MarkdownRenderer';
 import styles from './postContent.module.css';
 
-export async function generateMetadata({ params }: any): Promise<Metadata> {
-  // Fetch post title for metadata
-  const { db } = await import("../../../utils/firebase");
-  const { collection, query, where, getDocs, limit } = await import("firebase/firestore");
-  const q = query(collection(db, "posts"), where("slug", "==", params.slug), limit(1));
-  const querySnapshot = await getDocs(q);
-  if (querySnapshot.empty) return { title: "Post Not Found | Ahmed Blogs" };
-  const post = querySnapshot.docs[0].data();
-  const url = `https://ahmadblogs.com/posts/${params.slug}`;
-  const image = post.image && post.image.trim() !== "" ? post.image : "/favicon.svg";
-  const description = post.excerpt || (typeof post.content === 'string' ? post.content.slice(0, 120) : Array.isArray(post.content) ? post.content[0] : "Read this post on Ahmed Blogs.");
-  return {
-    title: `${post.title} | Ahmed Blogs`,
-    description,
-    openGraph: {
-      title: `${post.title} | Ahmed Blogs`,
-      description,
-      url,
-      type: "article",
-      images: [
-        {
-          url: image,
-          width: 1200,
-          height: 630,
-          alt: post.title,
-        },
-      ],
-      siteName: "Ahmed Blogs",
-      locale: "en_US",
-    },
-    twitter: {
-      card: "summary_large_image",
-      title: `${post.title} | Ahmed Blogs`,
-      description,
-      images: [image],
-      creator: post.author || "@ahmadblogs"
-    },
-    alternates: {
-      canonical: url
-    },
-    other: {
-      // JSON-LD structured data for Article
-      'application/ld+json': JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "Article",
-        "headline": post.title,
-        "description": description,
-        "image": [image],
-        "author": {
-          "@type": "Person",
-          "name": post.author || "Ahmed Blogs"
-        },
-        "datePublished": post.date,
-        "publisher": {
-          "@type": "Organization",
-          "name": "Ahmed Blogs",
-          "logo": {
-            "@type": "ImageObject",
-            "url": "https://ahmadblogs.com/vercel.svg"
-          }
-        },
-        "mainEntityOfPage": {
-          "@type": "WebPage",
-          "@id": url
-        }
-      })
-    }
-  };
+export const revalidate = 60; // ISR: revalidate every 60 seconds
+
+type Post = {
+  slug: string;
+  title: string;
+  author?: string;
+  created?: string;
+  categories?: string[];
+  content?: string;
+  image?: string;
+  featured?: boolean;
+  date?: string;
+  category?: string | string[];
+  excerpt?: string;
+  authorAvatar?: string;
+  tags?: string[];
+};
+
+async function getPostBySlug(slug: string): Promise<{ post: Post; postDoc: any } | null> {
+  const postsSnap = await getDocs(collection(db, "posts"));
+  // Try to find by slug field first
+  let postDoc = postsSnap.docs.find((doc) => {
+    const data = doc.data() as Post;
+    return data.slug === slug;
+  });
+  // Fallback: try to find by document ID (for legacy posts)
+  if (!postDoc) {
+    postDoc = postsSnap.docs.find((doc) => doc.id === slug);
+  }
+  if (!postDoc) return null;
+  const post = postDoc.data() as Post;
+  post.slug = post.slug || postDoc.id;
+  return { post, postDoc };
 }
 
-export default async function PostPage({ params }: any) {
-  const q = query(collection(db, "posts"), where("slug", "==", params.slug), limit(1));
-  const querySnapshot = await getDocs(q);
-  if (querySnapshot.empty) return notFound();
-  const postDoc = querySnapshot.docs[0];
-  const post = postDoc.data();
-
-  // Fetch author avatar
-  const authorAvatar = await getAuthorAvatarByName(post.author);
-  console.log('Author avatar for', post.author, ':', authorAvatar);
-  post.authorAvatar = authorAvatar;
-
-  // Increment the views field for analytics
-  try {
-    const postRef = doc(db, "posts", postDoc.id);
-    await updateDoc(postRef, {
-      views: increment(1)
+async function getSimilarPosts(currentSlug: string, currentCategories: string[] = []) {
+  const postsSnap = await getDocs(collection(db, "posts"));
+  const allPosts: Post[] = postsSnap.docs
+    .filter((doc) => doc.id !== currentSlug)
+    .map((doc) => {
+      const data = doc.data() as Post;
+      return { ...data, slug: doc.id };
     });
-  } catch (e) {
-    // Ignore errors for analytics
+  let similar = allPosts.filter((p) =>
+    p.category && currentCategories.some((cat: string) =>
+      Array.isArray(p.category) ? (p.category as string[]).includes(cat) : p.category === cat
+    )
+  );
+  if (similar.length < 3) {
+    similar = [
+      ...similar,
+      ...allPosts.filter((p) => !similar.includes(p))
+    ];
   }
+  return similar.slice(0, 3);
+}
 
-  const allPostsSnap = await getDocs(collection(db, "posts"));
-  const similarPosts = allPostsSnap.docs
-    .filter((doc) => doc.id !== postDoc.id)
-    .slice(0, 3)
-    .map((doc) => doc.data());
+export default async function PostPage({ params }: { params: { slug: string } }) {
+  const data = await getPostBySlug(params.slug);
+  if (!data) return notFound();
+  const { post, postDoc } = data;
+
+  post.authorAvatar = post.author ? await getAuthorAvatarByName(post.author) : undefined;
+  updateDoc(doc(db, "posts", postDoc.id), { views: increment(1) }).catch(() => {});
+  const categories = (Array.isArray(post.category) ? post.category : [post.category]).filter((cat): cat is string => typeof cat === 'string');
+  const similarPosts = await getSimilarPosts(post.slug, categories);
 
   return (
     <div className="bg-white min-h-screen flex flex-col">
       <Header categoryMenu={<CategoryMenu />} />
       <main className="max-w-4xl mx-auto py-8 px-4 bg-white flex-1">
-        {/* Title */}
         <div className="flex flex-col items-center mt-2 mb-4">
-          <h1 className="
-  text-2xl sm:text-3xl md:text-4xl lg:text-5xl
-  font-extrabold 
-  leading-snug sm:leading-tight
-  text-[#232946] 
-  text-center 
-  mb-2
-">
+          <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-snug sm:leading-tight text-[#232946] text-center mb-2">
             {post.title}
           </h1>
-
-          {/* Meta row under title */}
           <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3 text-[#232946] text-base font-medium mb-4">
-  {/* Author */}
-  <span className="inline-flex items-center gap-2 mb-2 sm:mb-0">
-    <Image
-      src={post.authorAvatar || "/default-avatar.png"}
-      alt={post.author || "Author"}
-      width={28}
-      height={28}
-      className="rounded-full object-contain bg-[#eaf0f6]"
-    />
-    <span className="text-sm sm:text-base">{post.author}</span>
-  </span>
-
-  {/* Date */}
-  <span className="text-sm sm:text-base mb-2 sm:mb-0">{post.date}</span>
-
-  {/* Categories */}
-  <div className="flex flex-wrap gap-2">
-    {(Array.isArray(post.category) ? post.category : [post.category]).map((cat, idx) => (
-      <span
-        key={idx}
-        className="bg-[#eaf0f6] text-[#3CB371] text-xs sm:text-sm font-medium px-2 py-1 rounded-full"
-      >
-        {cat}
-      </span>
-    ))}
-  </div>
-</div>
-
+            <span className="inline-flex items-center gap-2 mb-2 sm:mb-0">
+              <Image
+                src={post.authorAvatar || "/default-avatar.png"}
+                alt={post.author || "Author"}
+                width={28}
+                height={28}
+                className="rounded-full object-contain bg-[#eaf0f6]"
+                priority
+              />
+              <span className="text-sm sm:text-base">{post.author}</span>
+            </span>
+            <span className="text-sm sm:text-base mb-2 sm:mb-0">{post.date}</span>
+            <div className="flex flex-wrap gap-2">
+              {(Array.isArray(post.category) ? post.category : [post.category])
+                .filter((cat: unknown): cat is string => typeof cat === 'string' && !!cat)
+                .map((cat: string, idx: number) => (
+                  <span
+                    key={idx}
+                    className="bg-[#eaf0f6] text-[#3CB371] text-xs sm:text-sm font-medium px-2 py-1 rounded-full"
+                  >
+                    {cat}
+                  </span>
+                ))}
+            </div>
+          </div>
         </div>
-        {/* Image */}
         <div className="flex justify-center mb-8">
           <div className="relative w-full aspect-[16/9] sm:aspect-[4/3] md:aspect-[16/7]">
             <Image
@@ -173,13 +125,11 @@ export default async function PostPage({ params }: any) {
             />
           </div>
         </div>
-        {/* Content */}
         <div className={`max-w-3xl mx-auto text-lg text-[#232946] space-y-6 prose prose-headings:text-[#232946] prose-img:rounded-xl prose-img:mx-auto ${styles.postContent}`}>
           {post.content && (
             <MarkdownRenderer content={Array.isArray(post.content) ? post.content.join('\n\n') : post.content} />
           )}
         </div>
-        {/* Tags and Social Share Icons */}
         <div className="max-w-3xl mx-auto flex flex-col md:flex-row justify-between items-center mt-8 mb-6 gap-4">
           <div className="flex gap-2 flex-wrap">
             {post.tags?.map((tag: string) => (
@@ -190,13 +140,11 @@ export default async function PostPage({ params }: any) {
             <SocialShare post={post} />
           </div>
         </div>
-        {/* Comments Section */}
         <Comments postId={post.slug} />
-        {/* Similar Posts */}
         <div className="max-w-5xl mx-auto mt-16">
           <h2 className="text-3xl font-extrabold text-center mb-10 text-[#232946]">Similar Posts</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            {similarPosts.map((sp: any, idx: number) => (
+            {similarPosts.map((sp: Post, idx: number) => (
               <div key={sp.slug || idx} className="bg-white rounded-xl shadow p-4 flex flex-col items-center">
                 {sp.image && (
                   <div className="relative w-full h-40 mb-4 bg-[#eaf0f6] rounded-lg overflow-hidden">
@@ -205,20 +153,23 @@ export default async function PostPage({ params }: any) {
                       alt={sp.title}
                       fill
                       className="object-cover"
+                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 70vw, 33vw"
                     />
                   </div>
                 )}
                 <div className="flex items-center gap-2 text-[#232946] text-sm mb-1">
                   <span>{sp.date}</span>
                   <div className="flex flex-wrap gap-2">
-                    {(Array.isArray(post.category) ? post.category : [post.category]).map((cat, idx) => (
-                      <span
-                        key={idx}
-                        className="bg-[#eaf0f6] text-[#3CB371] text-xs font-medium px-2 py-1 rounded-full"
-                      >
-                        {cat}
-                      </span>
-                    ))}
+                    {(Array.isArray(sp.category) ? sp.category : [sp.category])
+                      .filter((cat: unknown): cat is string => typeof cat === 'string' && !!cat)
+                      .map((cat: string, idx: number) => (
+                        <span
+                          key={idx}
+                          className="bg-[#eaf0f6] text-[#3CB371] text-xs font-medium px-2 py-1 rounded-full"
+                        >
+                          {cat}
+                        </span>
+                      ))}
                   </div>
                 </div>
                 <a href={`/posts/${sp.slug}`} className="block text-lg font-bold text-center hover:text-[#3CB371] text-[#232946]">{sp.title}</a>
@@ -231,4 +182,3 @@ export default async function PostPage({ params }: any) {
     </div>
   );
 }
-

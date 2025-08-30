@@ -14,7 +14,7 @@ export async function GET() {
 
   // Fetch all post slugs
   const postsSnap = await getDocs(collection(db, 'posts'));
-  const postUrls = postsSnap.docs.map(doc => `${baseUrl}/posts/${doc.data().slug}`);
+  const postUrls = postsSnap.docs.map(doc => `${baseUrl}/posts/${doc.id}`);
   urls = urls.concat(postUrls);
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls
