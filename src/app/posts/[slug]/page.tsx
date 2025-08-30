@@ -1,6 +1,5 @@
 import Image from "next/image";
-import SocialShare from "./SocialShare";
-import Comments from "./Comments";
+import PostClientContent from "./PostClientContent";
 import Header from "../../../components/Header";
 import CategoryMenu from "../../../components/CategoryMenu";
 import Footer from "../../../components/Footer";
@@ -68,7 +67,8 @@ async function getSimilarPosts(currentSlug: string, currentCategories: string[] 
   return similar.slice(0, 3);
 }
 
-export default async function PostPage({ params }: { params: { slug: string } }) {
+export default async function PostPage(props: { params: { slug: string } }) {
+  const { params } = await props;
   const data = await getPostBySlug(params.slug);
   if (!data) return notFound();
   const { post, postDoc } = data;
@@ -114,13 +114,14 @@ export default async function PostPage({ params }: { params: { slug: string } })
           </div>
         </div>
         <div className="flex justify-center mb-8">
-          <div className="relative w-full aspect-[16/9] sm:aspect-[4/3] md:aspect-[16/7]">
+          <div style={{ width: 800, height: 450, maxWidth: '100%' }} className="relative rounded-md overflow-hidden bg-[#eaf0f6]">
             <Image
               src={post.image || "/placeholder.png"}
               alt={post.title}
-              fill
+              width={800}
+              height={450}
               className="object-cover rounded-md"
-              sizes="(max-width: 640px) 100vw, (max-width: 1024px) 70vw, 50vw"
+              style={{ width: '100%', height: 'auto' }}
               priority
             />
           </div>
@@ -136,24 +137,23 @@ export default async function PostPage({ params }: { params: { slug: string } })
               <span key={tag} className="bg-[#f7f8fa] text-[#232946] px-4 py-2 rounded-lg text-base font-medium">#{tag}</span>
             ))}
           </div>
-          <div className="flex-shrink-0">
-            <SocialShare post={post} />
-          </div>
+          {/* SocialShare and Comments are now lazy-loaded in a client component for performance */}
+          <PostClientContent post={post} />
         </div>
-        <Comments postId={post.slug} />
         <div className="max-w-5xl mx-auto mt-16">
           <h2 className="text-3xl font-extrabold text-center mb-10 text-[#232946]">Similar Posts</h2>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {similarPosts.map((sp: Post, idx: number) => (
               <div key={sp.slug || idx} className="bg-white rounded-xl shadow p-4 flex flex-col items-center">
                 {sp.image && (
-                  <div className="relative w-full h-40 mb-4 bg-[#eaf0f6] rounded-lg overflow-hidden">
+                  <div style={{ width: 320, height: 160 }} className="relative mb-4 bg-[#eaf0f6] rounded-lg overflow-hidden">
                     <Image
                       src={sp.image}
                       alt={sp.title}
-                      fill
-                      className="object-cover"
-                      sizes="(max-width: 640px) 100vw, (max-width: 1024px) 70vw, 33vw"
+                      width={320}
+                      height={160}
+                      className="object-cover rounded-md"
+                      style={{ width: '100%', height: 'auto' }}
                     />
                   </div>
                 )}

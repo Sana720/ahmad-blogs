@@ -1,3 +1,33 @@
+export const metadata = {
+  title: "About Ahmad Sana | Ahmed Blogs",
+  description: "Learn about Ahmad Sana, a full-stack developer and the creator of Ahmed Blogs. Discover his journey, experience, and mission to share knowledge about AI, coding, and freelancing.",
+  openGraph: {
+    title: "About Ahmad Sana | Ahmed Blogs",
+    description: "Learn about Ahmad Sana, a full-stack developer and the creator of Ahmed Blogs. Discover his journey, experience, and mission to share knowledge about AI, coding, and freelancing.",
+    url: "https://ahmadblogs.com/about",
+    type: "profile",
+    images: [
+      {
+        url: "/favicon.svg",
+        width: 512,
+        height: 512,
+        alt: "Ahmed Blogs Logo",
+      },
+    ],
+    siteName: "Ahmed Blogs",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "About Ahmad Sana | Ahmed Blogs",
+    description: "Learn about Ahmad Sana, a full-stack developer and the creator of Ahmed Blogs. Discover his journey, experience, and mission to share knowledge about AI, coding, and freelancing.",
+    images: ["/favicon.svg"],
+    creator: "@ahmadblogs"
+  },
+  alternates: {
+    canonical: "https://ahmadblogs.com/about"
+  }
+};
 import Header from '../../components/Header';
 import CategoryMenu from '../../components/CategoryMenu';
 import Footer from '../../components/Footer';

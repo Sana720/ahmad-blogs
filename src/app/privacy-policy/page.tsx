@@ -1,3 +1,33 @@
+export const metadata = {
+  title: "Privacy Policy | Ahmed Blogs",
+  description: "Read the privacy policy for Ahmed Blogs. Learn how we collect, use, and protect your personal data, and your rights as a visitor or subscriber.",
+  openGraph: {
+    title: "Privacy Policy | Ahmed Blogs",
+    description: "Read the privacy policy for Ahmed Blogs. Learn how we collect, use, and protect your personal data, and your rights as a visitor or subscriber.",
+    url: "https://ahmadblogs.com/privacy-policy",
+    type: "article",
+    images: [
+      {
+        url: "/favicon.svg",
+        width: 512,
+        height: 512,
+        alt: "Ahmed Blogs Logo",
+      },
+    ],
+    siteName: "Ahmed Blogs",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Privacy Policy | Ahmed Blogs",
+    description: "Read the privacy policy for Ahmed Blogs. Learn how we collect, use, and protect your personal data, and your rights as a visitor or subscriber.",
+    images: ["/favicon.svg"],
+    creator: "@ahmadblogs"
+  },
+  alternates: {
+    canonical: "https://ahmadblogs.com/privacy-policy"
+  }
+};
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 

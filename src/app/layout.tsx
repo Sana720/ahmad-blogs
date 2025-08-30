@@ -25,6 +25,7 @@ const mulish = Mulish({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://ahmadblogs.com"),
   title: "Ahmed Blogs",
   description: "Ahmed Blogs - Latest posts, news, and updates.",
   openGraph: {

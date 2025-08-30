@@ -1,3 +1,33 @@
+export const metadata = {
+  title: "Terms & Conditions | Ahmed Blogs",
+  description: "Read the terms and conditions for using Ahmed Blogs. Understand your rights, responsibilities, and the rules for using our website and services.",
+  openGraph: {
+    title: "Terms & Conditions | Ahmed Blogs",
+    description: "Read the terms and conditions for using Ahmed Blogs. Understand your rights, responsibilities, and the rules for using our website and services.",
+    url: "https://ahmadblogs.com/terms",
+    type: "article",
+    images: [
+      {
+        url: "/favicon.svg",
+        width: 512,
+        height: 512,
+        alt: "Ahmed Blogs Logo",
+      },
+    ],
+    siteName: "Ahmed Blogs",
+    locale: "en_US",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: "Terms & Conditions | Ahmed Blogs",
+    description: "Read the terms and conditions for using Ahmed Blogs. Understand your rights, responsibilities, and the rules for using our website and services.",
+    images: ["/favicon.svg"],
+    creator: "@ahmadblogs"
+  },
+  alternates: {
+    canonical: "https://ahmadblogs.com/terms"
+  }
+};
 import Header from '../../components/Header';
 import Footer from '../../components/Footer';
 

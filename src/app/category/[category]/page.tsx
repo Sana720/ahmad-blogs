@@ -1,3 +1,38 @@
+import type { Metadata } from "next";
+
+export async function generateMetadata({ params }: { params: { category: string } }): Promise<Metadata> {
+  const category = decodeURIComponent(params.category);
+  return {
+    title: `Category: ${category} | Ahmed Blogs`,
+    description: `Browse all posts in the ${category} category on Ahmed Blogs. Discover articles, guides, and news about ${category}.`,
+    openGraph: {
+      title: `Category: ${category} | Ahmed Blogs`,
+      description: `Browse all posts in the ${category} category on Ahmed Blogs. Discover articles, guides, and news about ${category}.`,
+      url: `https://ahmadblogs.com/category/${encodeURIComponent(category)}`,
+      type: "website",
+      images: [
+        {
+          url: "/favicon.svg",
+          width: 512,
+          height: 512,
+          alt: "Ahmed Blogs Logo",
+        },
+      ],
+      siteName: "Ahmed Blogs",
+      locale: "en_US",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: `Category: ${category} | Ahmed Blogs`,
+      description: `Browse all posts in the ${category} category on Ahmed Blogs. Discover articles, guides, and news about ${category}.`,
+      images: ["/favicon.svg"],
+      creator: "@ahmadblogs"
+    },
+    alternates: {
+      canonical: `https://ahmadblogs.com/category/${encodeURIComponent(category)}`
+    }
+  };
+}
 import { db } from '../../../utils/firebase';
 import { collection, getDocs, query, where } from 'firebase/firestore';
 import Header from '../../../components/Header';
