@@ -126,7 +126,7 @@ export default async function PostPage(props: { params: { slug: string } }) {
       </Head>
       <div className="bg-white min-h-screen flex flex-col">
         <Header categoryMenu={<CategoryMenu />} />
-        <main className="max-w-4xl mx-auto py-8 px-4 bg-white flex-1">
+  <main className="max-w-4xl mx-auto py-8 px-2 bg-white flex-1">
           <script type="application/ld+json" suppressHydrationWarning>{JSON.stringify(schema)}</script>
           <script type="application/ld+json" suppressHydrationWarning>{JSON.stringify(breadcrumbSchema)}</script>
           {faqSchema && <script type="application/ld+json" suppressHydrationWarning>{JSON.stringify(faqSchema)}</script>}
@@ -162,14 +162,13 @@ export default async function PostPage(props: { params: { slug: string } }) {
             </div>
           </div>
           <div className="flex justify-center mb-8">
-            <div style={{ width: 800, height: 450, maxWidth: '100%' }} className="relative rounded-md overflow-hidden bg-[#eaf0f6]">
+            <div className="relative w-full max-w-3xl aspect-[16/9] rounded-md overflow-hidden bg-[#eaf0f6]">
               <Image
                 src={post.image || "/placeholder.png"}
                 alt={post.title}
-                width={800}
-                height={450}
-                className="object-cover rounded-md"
-                style={{ width: '100%', height: 'auto' }}
+                fill
+                className="object-cover rounded-md w-full h-auto"
+                sizes="100vw"
                 priority
               />
             </div>

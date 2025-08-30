@@ -60,6 +60,9 @@ export async function generateMetadata({ params }: GenerateMetadataProps): Promi
   const description = post.excerpt || post.content?.slice(0, 160) || post.title;
   const image = post.image || "/default-og.png";
   const canonicalUrl = `https://ahmadblogs.com/posts/${post.slug}`;
+  const publishedTime = post.date || post.created || '';
+  const author = post.author || "Ahmad Blogs";
+  const categories = Array.isArray(post.category) ? post.category : [post.category].filter(Boolean);
   return {
     title: `${post.title} | Ahmad Blogs`,
     description,
@@ -74,22 +77,34 @@ export async function generateMetadata({ params }: GenerateMetadataProps): Promi
       title: `${post.title} | Ahmad Blogs`,
       description,
       url: canonicalUrl,
-      images: [image],
-      type: "article"
+      images: [
+        {
+          url: image,
+          width: 1200,
+          height: 630,
+          alt: post.title || "Ahmad Blogs"
+        }
+      ],
+  type: "article",
+  publishedTime,
+  authors: [author],
+  tags: post.tags || [],
+  siteName: "Ahmad Blogs"
     },
     twitter: {
       card: "summary_large_image",
       title: `${post.title} | Ahmad Blogs`,
       description,
-      images: [image]
+      images: [image],
+      creator: "@ahmadblogs"
     },
     robots: {
       index: true,
       follow: true
     },
     other: {
-      "article:published_time": String(post.date || post.created || ''),
-      "article:author": post.author || "Ahmad Blogs"
+      "article:published_time": String(publishedTime),
+      "article:author": author
     }
   };
 }

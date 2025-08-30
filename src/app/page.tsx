@@ -27,12 +27,12 @@ export default async function Home() {
               <section className="mt-12">
                 <div className="rounded-xl overflow-hidden shadow bg-white">
                   {featured.image && (
-                    <div className="relative w-full aspect-[16/9] sm:aspect-[4/3] md:aspect-[16/7]">
+                    <div className="relative w-full aspect-[16/9] sm:aspect-[4/3] md:aspect-[16/7] max-w-full">
                       <Image
                         src={featured.image || "/placeholder.png"}
                         alt={featured.title}
                         fill
-                        className="object-cover rounded-md"
+                        className="object-cover rounded-md w-full h-auto max-w-full"
                         sizes="(max-width: 768px) 100vw, 50vw"
                         priority={true}
                       />
@@ -90,16 +90,16 @@ export default async function Home() {
                 {gridPosts.map((post: any, idx: number) => (
                   <div key={post.slug || idx} className="rounded-xl overflow-hidden shadow bg-white">
                     {post.image && (
-                      <div className="relative w-full aspect-[16/9] sm:aspect-[4/3] md:aspect-[16/7]">
-                        <Image
-                          src={post.image || "/placeholder.png"}
-                          alt={post.title}
-                          fill
-                          className="object-cover rounded-md"
-                          sizes="(max-width: 768px) 100vw, 50vw"
-                          priority={false}
-                        />
-                      </div>
+                        <div className="relative w-full aspect-[16/9] sm:aspect-[4/3] md:aspect-[16/7] max-w-full">
+                          <Image
+                            src={post.image || "/placeholder.png"}
+                            alt={post.title}
+                            fill
+                            className="object-cover rounded-md w-full h-auto max-w-full"
+                            sizes="(max-width: 768px) 100vw, 50vw"
+                            priority={false}
+                          />
+                        </div>
                     )}
                     <div className="p-4">
                       <div className="flex items-center gap-3 text-[#232946] text-base mb-2 font-medium mt-2">
