@@ -26,6 +26,11 @@ export async function getServerPosts(page = 1, perPage = 5): Promise<{ posts: Po
       slug: data.slug || doc.id,
     };
   });
+  // Filter out Hindi posts (category 'हिंदी' or 'Hindi')
+  postsData = postsData.filter(post => {
+    const cats = Array.isArray(post.category) ? post.category : [post.category];
+    return !cats.some(cat => cat === 'हिंदी' || cat === 'Hindi');
+  });
   // Sort by date descending (newest first)
   postsData = postsData.sort((a, b) => new Date(b.date || b.created || 0).getTime() - new Date(a.date || a.created || 0).getTime());
   // Pagination

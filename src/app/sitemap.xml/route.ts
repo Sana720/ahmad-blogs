@@ -12,10 +12,23 @@ export async function GET() {
     `${baseUrl}/terms`,
   ];
 
-  // Fetch all post slugs
+  // Fetch all English post slugs
   const postsSnap = await getDocs(collection(db, 'posts'));
-  const postUrls = postsSnap.docs.map(doc => `${baseUrl}/posts/${doc.id}`);
+  const postUrls = postsSnap.docs.map(doc => {
+    const data = doc.data();
+    const slug = data.slug || doc.id;
+    return `${baseUrl}/posts/${slug}`;
+  });
   urls = urls.concat(postUrls);
+
+  // Fetch all Hindi post slugs
+  const hindiSnap = await getDocs(collection(db, 'posts_hindi'));
+  const hindiUrls = hindiSnap.docs.map(doc => {
+    const data = doc.data();
+    const slug = data.slug || doc.id;
+    return `${baseUrl}/posts_hindi/${slug}`;
+  });
+  urls = urls.concat(hindiUrls);
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${urls
     .map(

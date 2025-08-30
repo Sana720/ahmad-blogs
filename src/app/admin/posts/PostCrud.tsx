@@ -10,8 +10,13 @@ export default function PostCrud() {
   const [showForm, setShowForm] = useState(false);
 
   async function fetchPosts() {
-    const snap = await getDocs(collection(db, "posts"));
-    setPosts(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+    const [snap, snapHindi] = await Promise.all([
+      getDocs(collection(db, "posts")),
+      getDocs(collection(db, "posts_hindi")),
+    ]);
+    const posts = snap.docs.map(d => ({ id: d.id, ...d.data(), lang: 'en' }));
+    const postsHindi = snapHindi.docs.map(d => ({ id: d.id, ...d.data(), lang: 'hi' }));
+    setPosts([...posts, ...postsHindi]);
   }
 
   useEffect(() => { fetchPosts(); }, []);
@@ -19,18 +24,25 @@ export default function PostCrud() {
   async function handleCreate(data: any) {
     // Remove id if present (for new posts)
     const { id, ...rest } = data;
-    const docRef = await addDoc(collection(db, "posts"), rest);
+    // Determine if Hindi post by category
+    const cats = Array.isArray(rest.category) ? rest.category : [rest.category];
+    const isHindi = cats.some((cat: string) => cat === 'हिंदी' || cat === 'Hindi');
+    const collectionName = isHindi ? 'posts_hindi' : 'posts';
+    // Use client-side addDoc for both collections (user must be authenticated)
+    const docRef = await addDoc(collection(db, collectionName), rest);
     setShowForm(false);
     fetchPosts();
-    // notify subscribers about the new post (best-effort)
-    try {
-      const slug = rest.slug || '';
-      const origin = typeof window !== 'undefined' ? window.location.origin : '';
-      const url = origin ? `${origin}/posts/${slug}` : `/posts/${slug}`;
-      await fetch('/api/notify-post', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: rest.title, excerpt: rest.excerpt || '', url }) });
-      console.log('Notify sent for new post');
-    } catch (err) {
-      console.error('Notify failed', err);
+    // notify subscribers about the new post (best-effort, only for non-Hindi)
+    if (!isHindi) {
+      try {
+        const slug = rest.slug || '';
+        const origin = typeof window !== 'undefined' ? window.location.origin : '';
+        const url = origin ? `${origin}/posts/${slug}` : `/posts/${slug}`;
+        await fetch('/api/notify-post', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ title: rest.title, excerpt: rest.excerpt || '', url }) });
+        console.log('Notify sent for new post');
+      } catch (err) {
+        console.error('Notify failed', err);
+      }
     }
   }
 

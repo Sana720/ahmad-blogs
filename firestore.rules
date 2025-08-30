@@ -20,9 +20,23 @@ service cloud.firestore {
     }
 
     // Existing collections (posts, authors, categories, contacts)
-    match /posts/{document=**} {
+    // Analytics-safe rule: allow public to increment 'views' field only
+    match /posts/{postId} {
       allow read: if true;
-      // Only allow writes (create/update/delete) if the user is authenticated and has an admins/{uid} doc
+      // Allow public to increment 'views' field only (analytics-safe)
+      allow update: if request.resource.data.keys().hasOnly(['views']) &&
+        request.resource.data.views is int &&
+        request.resource.data.views > resource.data.views;
+      // Only allow other writes (create/update/delete) if the user is authenticated and has an admins/{uid} doc
+      allow write: if request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
+
+    // Hindi posts collection (same rules as posts)
+    match /posts_hindi/{postId} {
+      allow read: if true;
+      allow update: if request.resource.data.keys().hasOnly(['views']) &&
+        request.resource.data.views is int &&
+        request.resource.data.views > resource.data.views;
       allow write: if request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
     match /authors/{document=**} {

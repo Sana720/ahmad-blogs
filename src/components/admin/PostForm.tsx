@@ -6,10 +6,17 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../utils/firebase";
 
 function slugify(str: string) {
+  // Always return a Unicode slug (never percent-encoded)
   return str
-    .toLowerCase()
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/(^-|-$)+/g, '');
+    .toString()
+    .normalize('NFKD')
+    .replace(/[\u0300-\u036F]/g, '') // Remove accents
+    .replace(/[^\p{L}\p{N}\s]+/gu, '') // Remove non-word, non-space chars
+    .trim()
+    .replace(/\s+/g, '-') // Replace spaces (including Hindi/Unicode) with dash
+    .replace(/-+/g, '-') // Remove multiple dashes
+    .replace(/(^-|-$)+/g, '')
+    .toLowerCase();
 }
 
 export default function PostForm({ onSubmit, initialData }: { onSubmit: (data: any) => void, initialData?: any }) {
@@ -53,7 +60,7 @@ export default function PostForm({ onSubmit, initialData }: { onSubmit: (data: a
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!imageUrl) return alert("Please upload an image.");
-    const slug = initialData?.slug || slugify(title);
+  const slug = initialData?.slug && initialData.slug.trim() ? initialData.slug : slugify(title);
     onSubmit({
       ...initialData,
       title,
