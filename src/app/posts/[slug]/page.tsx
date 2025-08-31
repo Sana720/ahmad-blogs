@@ -57,7 +57,7 @@ async function getSimilarPosts(currentSlug: string, currentCategories: string[] 
       return { ...data, slug: data.slug || doc.id };
     });
   // Find similar by category
-  let similar = allPosts.filter((p) =>
+  const similar = allPosts.filter((p) =>
     p.category && currentCategories.some((cat: string) =>
       Array.isArray(p.category) ? (p.category as string[]).includes(cat) : p.category === cat
     )
