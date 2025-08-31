@@ -8,9 +8,13 @@ import Link from "next/link";
 import Loader from "../components/Loader";
 import { Suspense } from "react";
 
-export default async function Home() {
-  const POSTS_PER_PAGE = 5;
-  const page = 1;
+interface HomeProps {
+  searchParams?: { page?: string };
+}
+
+export default async function Home({ searchParams }: HomeProps) {
+  const POSTS_PER_PAGE = 3;
+  const page = Number(searchParams?.page) || 1;
   const { posts, totalPages } = await getServerPosts(page, POSTS_PER_PAGE);
 
   // Find the featured post (if any), otherwise use the newest
@@ -144,7 +148,19 @@ export default async function Home() {
               </section>
             )}
             <div className="flex justify-center items-center gap-2 mt-12">
-              {/* Pagination UI can be added here */}
+              {Array.from({ length: totalPages }, (_, i) => {
+                const pageNum = i + 1;
+                const isActive = pageNum === page;
+                return (
+                  <Link
+                    key={pageNum}
+                    href={`/?page=${pageNum}`}
+                    className={`px-4 py-2 rounded-lg border font-semibold transition-colors duration-150 ${isActive ? 'bg-[#3CB371] text-white border-[#3CB371]' : 'bg-white text-[#232946] border-gray-200 hover:bg-[#eaf0f6]'}`}
+                  >
+                    {pageNum}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         </Suspense>

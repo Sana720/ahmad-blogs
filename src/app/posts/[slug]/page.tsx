@@ -49,22 +49,27 @@ async function getPostBySlug(slug: string): Promise<{ post: Post; postDoc: any }
 
 async function getSimilarPosts(currentSlug: string, currentCategories: string[] = []) {
   const postsSnap = await getDocs(collection(db, "posts"));
+  // Exclude current post by both doc.id and slug field
   const allPosts: Post[] = postsSnap.docs
-    .filter((doc) => doc.id !== currentSlug)
+    .filter((doc) => doc.id !== currentSlug && doc.data().slug !== currentSlug)
     .map((doc) => {
       const data = doc.data() as Post;
-      return { ...data, slug: doc.id };
+      return { ...data, slug: data.slug || doc.id };
     });
+  // Find similar by category
   let similar = allPosts.filter((p) =>
     p.category && currentCategories.some((cat: string) =>
       Array.isArray(p.category) ? (p.category as string[]).includes(cat) : p.category === cat
     )
   );
-  if (similar.length < 3) {
-    similar = [
-      ...similar,
-      ...allPosts.filter((p) => !similar.includes(p))
-    ];
+  // Fill up to 3 with unique posts only
+  const seen = new Set(similar.map(p => p.slug));
+  for (const p of allPosts) {
+    if (similar.length >= 3) break;
+    if (!seen.has(p.slug)) {
+      similar.push(p);
+      seen.add(p.slug);
+    }
   }
   return similar.slice(0, 3);
 }
@@ -123,6 +128,19 @@ export default async function PostPage(props: { params: { slug: string } }) {
         <meta name="robots" content="index, follow" />
         <link rel="alternate" href={canonicalUrl} hrefLang="en" />
         <link rel="alternate" href={`https://ahmadblogs.com/posts_hindi/${post.slug}`} hrefLang="hi" />
+        {/* Open Graph meta tags for social sharing */}
+        <meta property="og:type" content="article" />
+        <meta property="og:title" content={post.title} />
+        <meta property="og:description" content={post.excerpt || post.content?.slice(0, 160) || post.title} />
+        <meta property="og:image" content={post.image || '/default-og.png'} />
+        <meta property="og:url" content={canonicalUrl} />
+        <meta property="og:site_name" content="Ahmad Blogs" />
+        {/* Twitter Card meta tags */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content={post.title} />
+        <meta name="twitter:description" content={post.excerpt || post.content?.slice(0, 160) || post.title} />
+        <meta name="twitter:image" content={post.image || '/default-og.png'} />
+        <meta name="twitter:site" content="@ahmadblogs" />
       </Head>
       <div className="bg-white min-h-screen flex flex-col">
         <Header categoryMenu={<CategoryMenu />} />
@@ -131,7 +149,7 @@ export default async function PostPage(props: { params: { slug: string } }) {
           <script type="application/ld+json" suppressHydrationWarning>{JSON.stringify(breadcrumbSchema)}</script>
           {faqSchema && <script type="application/ld+json" suppressHydrationWarning>{JSON.stringify(faqSchema)}</script>}
           <div className="flex flex-col items-center mt-2 mb-4">
-            <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-extrabold leading-snug sm:leading-tight text-[#232946] text-center mb-2">
+            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold leading-snug sm:leading-tight text-[#232946] text-center mb-2">
               {post.title}
             </h1>
             <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3 text-[#232946] text-base font-medium mb-4">
@@ -173,7 +191,7 @@ export default async function PostPage(props: { params: { slug: string } }) {
               />
             </div>
           </div>
-          <div className={`max-w-3xl mx-auto text-lg text-[#232946] space-y-6 prose prose-headings:text-[#232946] prose-img:rounded-xl prose-img:mx-auto ${styles.postContent}`}>
+          <div className={`max-w-3xl mx-auto text-base sm:text-[1rem] text-[#232946] space-y-6 prose prose-headings:text-[#232946] prose-img:rounded-xl prose-img:mx-auto ${styles.postContent}`}>
             {post.content && (
               <MarkdownRenderer content={Array.isArray(post.content) ? post.content.join('\n\n') : post.content} />
             )}
@@ -184,43 +202,40 @@ export default async function PostPage(props: { params: { slug: string } }) {
                 <span key={tag} className="bg-[#f7f8fa] text-[#232946] px-4 py-2 rounded-lg text-base font-medium">#{tag}</span>
               ))}
             </div>
-            {/* SocialShare and Comments are now lazy-loaded in a client component for performance */}
+          </div>
+          {/* Comments section moved after tags, before similar posts */}
+          <div className="max-w-3xl mx-auto mb-12">
             <PostClientContent post={post} />
           </div>
-          <div className="max-w-5xl mx-auto mt-16">
+          <div className="max-w-6xl mx-auto mt-16">
             <h2 className="text-3xl font-extrabold text-center mb-10 text-[#232946]">Similar Posts</h2>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
               {similarPosts.map((sp: Post, idx: number) => (
-                <div key={sp.slug || idx} className="bg-white rounded-xl shadow p-4 flex flex-col items-center">
+                <a
+                  key={sp.slug || idx}
+                  href={`/posts/${sp.slug}`}
+                  className="group bg-white rounded-2xl shadow-lg p-0 flex flex-col items-stretch transition-transform hover:-translate-y-2 hover:shadow-2xl border border-[#eaf0f6] h-full min-h-[270px] max-w-[420px] mx-auto"
+                  style={{ textDecoration: 'none' }}
+                >
                   {sp.image && (
-                    <div style={{ width: 320, height: 160 }} className="relative mb-4 bg-[#eaf0f6] rounded-lg overflow-hidden">
+                    <div className="relative w-full aspect-[16/9] bg-[#eaf0f6] rounded-t-2xl overflow-hidden">
                       <Image
                         src={sp.image}
                         alt={sp.title}
-                        width={320}
-                        height={160}
-                        className="object-cover rounded-md"
-                        style={{ width: '100%', height: 'auto' }}
+                        fill
+                        className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
+                        sizes="(max-width: 768px) 100vw, 420px"
+                        priority={idx === 0}
                       />
                     </div>
                   )}
-                  <div className="flex items-center gap-2 text-[#232946] text-sm mb-1">
-                    <span>{sp.date}</span>
-                    <div className="flex flex-wrap gap-2">
-                      {(Array.isArray(sp.category) ? sp.category : [sp.category])
-                        .filter((cat: unknown): cat is string => typeof cat === 'string' && !!cat)
-                        .map((cat: string, idx: number) => (
-                          <span
-                            key={idx}
-                            className="bg-[#eaf0f6] text-[#3CB371] text-xs font-medium px-2 py-1 rounded-full"
-                          >
-                            {cat}
-                          </span>
-                        ))}
-                    </div>
+                  <div className="flex-1 flex flex-col justify-between p-4">
+                    <h3 className="text-base font-bold text-[#232946] mb-2 line-clamp-2 group-hover:text-[#3CB371] transition-colors text-center">
+                      {sp.title}
+                    </h3>
+                    <div className="text-xs text-[#888] text-center mt-auto">{sp.date || sp.created}</div>
                   </div>
-                  <a href={`/posts/${sp.slug}`} className="block text-lg font-bold text-center hover:text-[#3CB371] text-[#232946]">{sp.title}</a>
-                </div>
+                </a>
               ))}
             </div>
           </div>
