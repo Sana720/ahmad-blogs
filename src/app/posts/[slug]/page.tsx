@@ -1,3 +1,53 @@
+import type { Metadata } from "next";
+// Dynamic metadata for each post
+export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+  // Reuse getPostBySlug logic
+  const postsSnap = await getDocs(collection(db, "posts"));
+  let postDoc = postsSnap.docs.find((doc) => {
+    const data = doc.data() as Post;
+    return data.slug === params.slug;
+  });
+  if (!postDoc) {
+    postDoc = postsSnap.docs.find((doc) => doc.id === params.slug);
+  }
+  if (!postDoc) {
+    return {
+      title: "Post Not Found | Ahmad Blogs",
+      description: "This post could not be found.",
+    };
+  }
+  const post = postDoc.data() as Post;
+  post.slug = post.slug || postDoc.id;
+  const canonicalUrl = `https://ahmadblogs.com/posts/${post.slug}`;
+  const description = post.excerpt || (typeof post.content === 'string' ? post.content.slice(0, 160) : post.title);
+  return {
+    title: post.title,
+    description,
+    openGraph: {
+      title: post.title,
+      description,
+      url: canonicalUrl,
+      type: "article",
+      images: [post.image || "/default-og.png"],
+      siteName: "Ahmad Blogs",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: post.title,
+      description,
+      images: [post.image || "/default-og.png"],
+      site: "@ahmadblogs",
+    },
+    alternates: {
+      canonical: canonicalUrl,
+      languages: {
+        en: canonicalUrl,
+        hi: `https://ahmadblogs.com/posts_hindi/${post.slug}`,
+      },
+    },
+    metadataBase: new URL("https://ahmadblogs.com"),
+  };
+}
 import Image from "next/image";
 import { publisher } from "../../../utils/publisherSchema";
 import Head from "next/head";
@@ -123,28 +173,9 @@ export default async function PostPage(props: { params: { slug: string } }) {
   } : null;
   return (
     <>
-      <Head>
-        <link rel="canonical" href={canonicalUrl} />
-        <meta name="robots" content="index, follow" />
-        <link rel="alternate" href={canonicalUrl} hrefLang="en" />
-        <link rel="alternate" href={`https://ahmadblogs.com/posts_hindi/${post.slug}`} hrefLang="hi" />
-        {/* Open Graph meta tags for social sharing */}
-        <meta property="og:type" content="article" />
-        <meta property="og:title" content={post.title} />
-        <meta property="og:description" content={post.excerpt || post.content?.slice(0, 160) || post.title} />
-        <meta property="og:image" content={post.image || '/default-og.png'} />
-        <meta property="og:url" content={canonicalUrl} />
-        <meta property="og:site_name" content="Ahmad Blogs" />
-        {/* Twitter Card meta tags */}
-        <meta name="twitter:card" content="summary_large_image" />
-        <meta name="twitter:title" content={post.title} />
-        <meta name="twitter:description" content={post.excerpt || post.content?.slice(0, 160) || post.title} />
-        <meta name="twitter:image" content={post.image || '/default-og.png'} />
-        <meta name="twitter:site" content="@ahmadblogs" />
-      </Head>
       <div className="bg-white min-h-screen flex flex-col">
         <Header categoryMenu={<CategoryMenu />} />
-  <main className="max-w-4xl mx-auto py-8 px-2 bg-white flex-1">
+        <main className="max-w-4xl mx-auto py-8 px-2 bg-white flex-1">
           <script type="application/ld+json" suppressHydrationWarning>{JSON.stringify(schema)}</script>
           <script type="application/ld+json" suppressHydrationWarning>{JSON.stringify(breadcrumbSchema)}</script>
           {faqSchema && <script type="application/ld+json" suppressHydrationWarning>{JSON.stringify(faqSchema)}</script>}

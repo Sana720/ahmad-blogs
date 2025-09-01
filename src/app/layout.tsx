@@ -65,6 +65,19 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
         <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png" />
+        {/* Preload Mulish font and featured image for LCP */}
+        <link
+          rel="preload"
+          as="font"
+          href="https://fonts.gstatic.com/s/mulish/v12/1Ptug8zYS_SKggPNyC0ISg.ttf"
+          type="font/ttf"
+          crossOrigin="anonymous"
+        />
+        <link
+          rel="preload"
+          as="image"
+          href="/placeholder.png"
+        />
         {/* Google Analytics */}
         {GA_MEASUREMENT_ID && (
           <>
@@ -90,8 +103,8 @@ export default function RootLayout({
         style={{ fontFamily: 'var(--font-mulish), Mulish, sans-serif' }}
       >
         {children}
-         <Analytics />
-          <SpeedInsights />
+        <Analytics />
+        <SpeedInsights />
       </body>
     </html>
   );

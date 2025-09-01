@@ -13,13 +13,19 @@ interface HomeProps {
 }
 
 export default async function Home({ searchParams }: HomeProps) {
-  const POSTS_PER_PAGE = 3;
+  const POSTS_PER_PAGE = 2; // 1 featured + 2 grid = 3 total per page
   const page = Number(searchParams?.page) || 1;
-  const { posts, totalPages } = await getServerPosts(page, POSTS_PER_PAGE);
-
+  // Always fetch all posts to determine featured and grid
+  const { posts: allPosts, totalPages } = await getServerPosts(1, 1000); // get all posts
   // Find the featured post (if any), otherwise use the newest
-  const featured = posts.length > 0 ? (posts.find((p: any) => p.featured) || posts[0]) : undefined;
-  const gridPosts = posts.length > 0 ? posts.filter((p: any) => p !== featured) : [];
+  const featured = allPosts.length > 0 ? (allPosts.find((p: any) => p.featured) || allPosts[0]) : undefined;
+  // Remove featured from the list
+  const postsWithoutFeatured = featured ? allPosts.filter((p: any) => p.slug !== featured.slug) : allPosts;
+  // Paginate grid posts (excluding featured)
+  const gridStart = (page - 1) * POSTS_PER_PAGE;
+  const gridPosts = postsWithoutFeatured.slice(gridStart, gridStart + POSTS_PER_PAGE);
+  // Calculate total pages for grid (excluding featured)
+  const gridTotalPages = Math.ceil(postsWithoutFeatured.length / POSTS_PER_PAGE);
 
   return (
     <div className="bg-white min-h-screen flex flex-col">
@@ -31,14 +37,15 @@ export default async function Home({ searchParams }: HomeProps) {
               <section className="mt-12">
                 <div className="rounded-xl overflow-hidden shadow bg-white">
                   {featured.image && (
-                    <div className="relative w-full aspect-[16/9] sm:aspect-[4/3] md:aspect-[16/7] max-w-full">
+                    <div className="relative w-full max-w-full overflow-hidden bg-[#f4f4f4]" style={{ aspectRatio: '16/7' }}>
                       <Image
                         src={featured.image || "/placeholder.png"}
                         alt={featured.title}
                         fill
-                        className="object-cover rounded-md w-full h-auto max-w-full"
-                        sizes="(max-width: 768px) 100vw, 50vw"
+                        className="object-cover rounded-md w-full h-full max-w-full"
+                        sizes="(max-width: 600px) 100vw, (max-width: 1200px) 80vw, 900px"
                         priority={true}
+                        quality={70}
                       />
                     </div>
                   )}
@@ -94,14 +101,15 @@ export default async function Home({ searchParams }: HomeProps) {
                 {gridPosts.map((post: any, idx: number) => (
                   <div key={post.slug || idx} className="rounded-xl overflow-hidden shadow bg-white">
                     {post.image && (
-                        <div className="relative w-full aspect-[16/9] sm:aspect-[4/3] md:aspect-[16/7] max-w-full">
+                        <div className="relative w-full max-w-full overflow-hidden bg-[#f4f4f4]" style={{ aspectRatio: '16/7' }}>
                           <Image
                             src={post.image || "/placeholder.png"}
                             alt={post.title}
                             fill
-                            className="object-cover rounded-md w-full h-auto max-w-full"
-                            sizes="(max-width: 768px) 100vw, 50vw"
-                            priority={false}
+                            className="object-cover rounded-md w-full h-full max-w-full"
+                            sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 600px"
+                            loading="lazy"
+                            quality={60}
                           />
                         </div>
                     )}
@@ -148,7 +156,7 @@ export default async function Home({ searchParams }: HomeProps) {
               </section>
             )}
             <div className="flex justify-center items-center gap-2 mt-12">
-              {Array.from({ length: totalPages }, (_, i) => {
+              {Array.from({ length: gridTotalPages }, (_, i) => {
                 const pageNum = i + 1;
                 const isActive = pageNum === page;
                 return (

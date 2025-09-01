@@ -18,19 +18,22 @@ type Post = {
 };
 
 export async function getServerPosts(page = 1, perPage = 5): Promise<{ posts: Post[]; totalPages: number }> {
-  // Always fetch all posts, sort by doc ID descending (newest first)
-  type PostWithId = Post & { _docId: string };
+  // Always fetch all posts, sort by createdAt descending (newest first)
   const querySnapshot = await getDocs(collection(db, "posts"));
-  let postsData: PostWithId[] = querySnapshot.docs.map((doc) => {
-    const data = doc.data() as Omit<Post, 'slug'> & { slug?: string };
+  let postsData: (Post & { createdAt?: string })[] = querySnapshot.docs.map((doc) => {
+    const data = doc.data() as Omit<Post, 'slug'> & { slug?: string, createdAt?: string };
     return {
       ...data,
       slug: data.slug || doc.id,
-      _docId: doc.id,
+      createdAt: data.createdAt,
     };
   });
-  // Sort by doc ID descending (Firestore auto-IDs are roughly chronological)
-  postsData.sort((a, b) => b._docId.localeCompare(a._docId));
+  // Sort by createdAt descending (newest first)
+  postsData.sort((a, b) => {
+    const aTime = a.createdAt ? new Date(a.createdAt).getTime() : 0;
+    const bTime = b.createdAt ? new Date(b.createdAt).getTime() : 0;
+    return bTime - aTime;
+  });
   // Filter out Hindi posts (category 'हिंदी' or 'Hindi')
   postsData = postsData.filter(post => {
     const cats = Array.isArray(post.category) ? post.category : [post.category];
@@ -43,8 +46,7 @@ export async function getServerPosts(page = 1, perPage = 5): Promise<{ posts: Po
   const postsWithAvatars = await Promise.all(
     paginated.map(async (post) => {
       const avatar = post.author ? await getAuthorAvatarByName(post.author) : undefined;
-      // Remove _docId from returned object
-      const { _docId, ...rest } = post;
+      const { createdAt, ...rest } = post;
       return { ...rest, authorAvatar: avatar };
     })
   );

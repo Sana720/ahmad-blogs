@@ -6,7 +6,6 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../utils/firebase";
 
 function slugify(str: string) {
-  // Always return a Unicode slug (never percent-encoded)
   return str
     .toString()
     .normalize('NFKD')
@@ -69,7 +68,8 @@ export default function PostForm({ onSubmit, initialData }: { onSubmit: (data: a
       tags: tags.split(',').map((t: string) => t.trim()).filter(Boolean),
       category,
       author,
-      slug
+      slug,
+      createdAt: initialData?.createdAt || new Date().toISOString(),
     });
   }
 
