@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
-// Dynamic metadata for each post
+
 export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
-  // Reuse getPostBySlug logic
   const postsSnap = await getDocs(collection(db, "posts"));
   let postDoc = postsSnap.docs.find((doc) => {
     const data = doc.data() as Post;
@@ -82,7 +81,6 @@ type Post = {
 
 async function getPostBySlug(slug: string): Promise<{ post: Post; postDoc: any } | null> {
   const postsSnap = await getDocs(collection(db, "posts"));
-  // Try to find by slug field first
   let postDoc = postsSnap.docs.find((doc) => {
     const data = doc.data() as Post;
     return data.slug === slug;

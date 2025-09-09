@@ -26,11 +26,11 @@ const mulish = Mulish({
 
 export const metadata: Metadata = {
   metadataBase: new URL("https://ahmadblogs.com"),
-  title: "Ahmed Blogs",
-  description: "Ahmed Blogs - Latest posts, news, and updates.",
+  title: "Ahmad Blogs",
+  description: "Ahmad Blogs is your go-to resource for AI, coding, freelancing, and tech insights. Discover tutorials, industry news, and expert tips to help you grow as a developer or digital entrepreneur.",
   openGraph: {
-    title: "Ahmed Blogs",
-    description: "Ahmed Blogs - Latest posts, news, and updates.",
+    title: "Ahmad Blogs",
+    description: "Explore Ahmad Blogs for the latest in AI, programming, freelancing, and digital trends. Get actionable guides, news, and resources for tech professionals and enthusiasts.",
     url: "https://ahmadblogs.com/",
     type: "website",
     images: [
@@ -38,20 +38,33 @@ export const metadata: Metadata = {
         url: "/favicon.svg",
         width: 512,
         height: 512,
-        alt: "Ahmed Blogs Logo",
+        alt: "Ahmad Blogs Logo",
       },
     ],
-    siteName: "Ahmed Blogs",
+  siteName: "Ahmad Blogs",
     locale: "en_US",
   },
   twitter: {
     card: "summary_large_image",
-    title: "Ahmed Blogs",
-    description: "Ahmed Blogs - Latest posts, news, and updates.",
+    title: "Ahmad Blogs",
+    description: "Follow Ahmad Blogs for expert tips, tutorials, and news on AI, coding, freelancing, and tech. Stay ahead in the digital world!",
     images: ["/favicon.svg"],
     creator: "@ahmadblogs"
   },
 };
+
+  // Structured data for SEO (WebSite schema)
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "Ahmed Blogs",
+    "url": "https://ahmadblogs.com",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://ahmadblogs.com/search?q={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
+  };
 
 export default function RootLayout({
   children,
@@ -97,6 +110,10 @@ export default function RootLayout({
             </Script>
           </>
         )}
+          <script
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+          />
       </head>
       <body
         className={`${mulish.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}

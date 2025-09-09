@@ -13,6 +13,7 @@ const links = [
   { href: '/admin/authors', label: 'Authors' },
   { href: '/admin/contacts', label: 'Contacts' },
   { href: '/admin/comments', label: 'Comments' },
+  { href: '/admin/portfolio', label: 'Portfolio' },
   { href: '/admin/settings', label: 'Settings' },
 ];
 

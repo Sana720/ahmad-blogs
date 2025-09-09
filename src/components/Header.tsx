@@ -58,8 +58,10 @@ function Header({ categoryMenu }: HeaderProps) {
               {categoryMenu}
             </div>
           </div>
+         
           <Link href="/about" className="hover:text-[#3CB371]">About Me</Link>
           <Link href="/contact" className="hover:text-[#3CB371]">Contact Me</Link>
+           <Link href="/portfolio" className="hover:text-[#3CB371]">Portfolio</Link>
         </nav>
         {/* Mobile Hamburger */}
         <button className="md:hidden p-2 rounded focus:outline-none" onClick={() => setMobileOpen((v) => !v)} aria-label="Open menu">
@@ -84,6 +86,7 @@ function Header({ categoryMenu }: HeaderProps) {
               <div className="mt-2" id="mobile-category-menu">{categoryMenu}</div>
             )}
           </div>
+          <Link href="/portfolio" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>Portfolio</Link>
           <Link href="/about" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>About</Link>
           <Link href="/contact" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>Contact</Link>
         </nav>
