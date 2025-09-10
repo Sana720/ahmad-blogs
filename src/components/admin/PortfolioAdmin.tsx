@@ -44,6 +44,8 @@ export default function PortfolioAdmin() {
     link: ""
   } as Project);
   const [editIdx, setEditIdx] = useState<number | null>(null);
+  // Show all projects, no pagination
+  // Show all testimonials, no slider
 
   // TODO: Replace with Firestore or API calls
   useEffect(() => {
@@ -232,7 +234,7 @@ export default function PortfolioAdmin() {
           <h2 className="text-2xl font-bold mb-4">Projects</h2>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
             {projects.map((p, idx) => (
-              <div key={idx} className="bg-white rounded-xl shadow p-4 flex flex-col gap-2">
+              <div key={p.id || idx} className="bg-white rounded-xl shadow p-4 flex flex-col gap-2">
                 <Image src={p.image} alt={p.title} width={320} height={180} className="rounded-lg object-cover" />
                 <div className="font-bold">{p.title}</div>
                 <div className="text-sm text-[#444]">{p.description}</div>
@@ -245,9 +247,9 @@ export default function PortfolioAdmin() {
             ))}
           </div>
           <h2 className="text-2xl font-bold mb-4">Testimonials</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-10">
             {testimonials.map((t, idx) => (
-              <div key={idx} className="bg-white rounded-xl shadow p-4 flex gap-2 items-center">
+              <div key={t.id || idx} className="bg-white rounded-xl shadow p-4 flex gap-2 items-center">
                 <Image src={t.avatar} alt={t.name} width={64} height={64} className="rounded-full object-cover border-2 border-[#3CB371]" />
                 <div>
                   <div className="font-bold">{t.name} <span className="text-xs text-[#888]">({t.company})</span></div>
