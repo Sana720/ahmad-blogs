@@ -20,7 +20,7 @@ type Post = {
 export async function getServerPosts(page = 1, perPage = 5): Promise<{ posts: Post[]; totalPages: number }> {
   // Fetch normal posts
   const querySnapshot = await getDocs(collection(db, "posts"));
-  let postsData: (Post & { createdAt?: string })[] = querySnapshot.docs.map((doc) => {
+  const postsData: (Post & { createdAt?: string })[] = querySnapshot.docs.map((doc) => {
     const data = doc.data() as Omit<Post, 'slug'> & { slug?: string, createdAt?: string };
     return {
       ...data,
