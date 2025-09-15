@@ -58,12 +58,12 @@ function Header({ categoryMenu }: HeaderProps) {
               {categoryMenu}
             </div>
           </div>
-         
           <Link href="/about" className="hover:text-[#3CB371]">About Me</Link>
           <Link href="/contact" className="hover:text-[#3CB371]">Contact Me</Link>
-           <Link href="/portfolio" className="hover:text-[#3CB371]">Portfolio</Link>
+          <Link href="/portfolio" className="hover:text-[#3CB371]">Portfolio</Link>
+          <Link href="/guest-post" className="hover:text-[#3CB371]">Guest Post</Link>
         </nav>
-        {/* Mobile Hamburger */}
+  {/* Mobile Hamburger */}
         <button className="md:hidden p-2 rounded focus:outline-none" onClick={() => setMobileOpen((v) => !v)} aria-label="Open menu">
           <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="#232946" strokeWidth="2" strokeLinecap="round"/></svg>
         </button>
@@ -89,6 +89,7 @@ function Header({ categoryMenu }: HeaderProps) {
           <Link href="/portfolio" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>Portfolio</Link>
           <Link href="/about" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>About</Link>
           <Link href="/contact" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>Contact</Link>
+          <Link href="/guest-post" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>Guest Post</Link>
         </nav>
       )}
     </header>

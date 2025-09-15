@@ -14,6 +14,7 @@ const links = [
   { href: '/admin/contacts', label: 'Contacts' },
   { href: '/admin/comments', label: 'Comments' },
   { href: '/admin/portfolio', label: 'Portfolio' },
+  { href: '/admin/guest-posts', label: 'Guest Posts' },
   { href: '/admin/settings', label: 'Settings' },
 ];
 

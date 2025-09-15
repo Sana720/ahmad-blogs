@@ -1,0 +1,14 @@
+<svg width="320" height="320" viewBox="0 0 320 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="320" height="320" rx="40" fill="#3CB371"/>
+  <text x="50%" y="40%" text-anchor="middle" fill="#fff" font-size="80" font-family="Arial, Helvetica, sans-serif" font-weight="bold" dy=".3em">404</text>
+  <circle cx="110" cy="200" r="18" fill="#fff" opacity="0.7">
+    <animate attributeName="cy" values="200;220;200" dur="1.2s" repeatCount="indefinite" />
+  </circle>
+  <circle cx="210" cy="200" r="18" fill="#fff" opacity="0.7">
+    <animate attributeName="cy" values="200;220;200" dur="1.2s" repeatCount="indefinite" begin="0.6s" />
+  </circle>
+  <ellipse cx="160" cy="250" rx="40" ry="10" fill="#232946" opacity="0.2">
+    <animate attributeName="rx" values="40;50;40" dur="1.2s" repeatCount="indefinite" />
+  </ellipse>
+  <text x="50%" y="80%" text-anchor="middle" fill="#fff" font-size="22" font-family="Arial, Helvetica, sans-serif" dy=".3em">Page Not Found</text>
+</svg>

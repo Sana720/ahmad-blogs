@@ -56,9 +56,12 @@ service cloud.firestore {
       allow read, update, delete: if request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
     }
 
-    // Comments collection
-    match /comments/{docId} {
-
+    // Guest Posts collection
+    // Anyone can create (submit) a guest post, only admins can read/update/delete
+    match /guest_posts/{docId} {
+      allow create: if true;
+      allow read, update, delete: if request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));
+    }
     // Portfolio Projects collection
     match /portfolio_projects/{docId} {
       allow read, write: if request.auth != null && exists(/databases/$(database)/documents/admins/$(request.auth.uid));

@@ -99,7 +99,10 @@ export default async function Home({ searchParams }: HomeProps) {
             {gridPosts.length > 0 && (
               <section className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
                 {gridPosts.map((post: any, idx: number) => (
-                  <div key={post.slug || idx} className="rounded-xl overflow-hidden shadow bg-white">
+                  <div key={post.slug || idx} className="relative rounded-xl overflow-hidden shadow bg-white">
+                    {post.isGuest && (
+                      <div className="absolute top-0 left-0 z-10 bg-[#3CB371] text-white text-xs font-bold px-3 py-1 rounded-br-xl">Guest Post</div>
+                    )}
                     {post.image && (
                         <div className="relative w-full max-w-full overflow-hidden bg-[#f4f4f4]" style={{ aspectRatio: '16/7' }}>
                           <Image
@@ -144,8 +147,8 @@ export default async function Home({ searchParams }: HomeProps) {
                         </div>
                       </div>
                       <Link 
-                        href={`/posts/${post.slug}`} 
-                        className="block text-lg font-extrabold mb-2 hover:text-[#3CB371] text-[#222]"
+                        href={post.isGuest ? `/guest-post/${post.slug}` : `/posts/${post.slug}`} 
+                        className="block text-lg font-extrabold mb-2 hover:text-[#3CB371] focus:text-[#3CB371] active:text-[#3CB371] text-[#222] transition-colors"
                       >
                         {post.title}
                       </Link>
