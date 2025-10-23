@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import { collection, getDocs, query, orderBy, limit } from 'firebase/firestore';
 import { db } from '../../utils/firebase';
 import Image from "next/image";
+import { cloudinaryUrl } from '../../utils/cloudinary';
 
 export default function AdminDashboard() {
   type StatKey = 'posts' | 'authors' | 'categories' | 'views';
@@ -42,11 +43,11 @@ export default function AdminDashboard() {
         } else {
           setRecentBlogs(snap.docs.map(d => ({ id: d.id, ...d.data() })));
         }
-      } catch (e) {
-        // Fallback: fetch without orderBy if error (e.g., missing date field)
-        const fallbackSnap = await getDocs(collection(db, 'posts'));
-        setRecentBlogs(fallbackSnap.docs.map(d => ({ id: d.id, ...d.data() })));
-      }
+      } catch (_e) {
+          // Fallback: fetch without orderBy if error (e.g., missing date field)
+          const fallbackSnap = await getDocs(collection(db, 'posts'));
+          setRecentBlogs(fallbackSnap.docs.map(d => ({ id: d.id, ...d.data() })));
+        }
     }
     async function fetchTopPosts() {
       const q = query(collection(db, 'posts'), orderBy('views', 'desc'), limit(5));
@@ -181,7 +182,7 @@ export default function AdminDashboard() {
                 {topPosts.map(post => (
                   <li key={post.id} className="flex items-center gap-3">
                     <Image
-                      src={post.image || '/file.svg'}
+                      src={cloudinaryUrl(post.image || '/file.svg', 96) || '/file.svg'}
                       alt={post.title}
                       width={48}
                       height={48}
@@ -210,7 +211,7 @@ export default function AdminDashboard() {
               {recentBlogs.map(blog => (
                 <li key={blog.id} className="flex items-start gap-3 py-2">
                   <Image
-                    src={blog.image || '/file.svg'}
+                    src={cloudinaryUrl(blog.image || '/file.svg', 96) || '/file.svg'}
                     alt={blog.title}
                     width={48}
                     height={48}

@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import dynamic from 'next/dynamic';
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../utils/firebase";
+import Image from 'next/image';
 
 function slugify(str: string) {
   return str
@@ -119,7 +120,7 @@ export default function PostForm({ onSubmit, initialData }: { onSubmit: (data: a
         <label className="block font-medium mb-1 text-[#232946]">Image</label>
         <input type="file" accept="image/*" onChange={handleImageUpload} className="text-[#232946]" />
         {uploading && <div className="text-sm text-blue-500">Uploading...</div>}
-        {imageUrl && <img src={imageUrl} alt="Preview" className="mt-2 h-32 rounded" />}
+  {imageUrl && <div className="mt-2 h-32 w-full max-w-[320px] relative"><Image src={imageUrl} alt="Preview" fill style={{ objectFit: 'cover', borderRadius: '0.5rem' }} className="rounded" /></div>}
       </div>
       <button type="submit" className="bg-[#3CB371] text-white px-6 py-2 rounded font-bold">Save Post</button>
     </form>

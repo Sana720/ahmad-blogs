@@ -14,7 +14,7 @@ export default function AdminGuestPosts() {
       try {
         const snap = await getDocs(collection(db, "guest_posts"));
         setPosts(snap.docs.map(d => ({ id: d.id, ...d.data() })));
-      } catch (e) {
+      } catch (_e) {
         setError("Failed to load guest posts.");
       }
       setLoading(false);

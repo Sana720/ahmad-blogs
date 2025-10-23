@@ -79,6 +79,11 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
         <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png" />
         {/* Preload Mulish font and featured image for LCP */}
+  {/* Preconnects for Google Fonts, Cloudinary and analytics to reduce connection time */}
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://res.cloudinary.com" />
+  <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link
           rel="preload"
           as="font"

@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 
-export async function generateMetadata({ params }: { params: { category: string } }): Promise<Metadata> {
-  const category = decodeURIComponent(params.category);
+export async function generateMetadata({ params }: any): Promise<Metadata> {
+  const category = decodeURIComponent(params?.category || '');
   return {
     title: `Category: ${category} | Ahmed Blogs`,
     description: `Browse all posts in the ${category} category on Ahmed Blogs. Discover articles, guides, and news about ${category}.`,
@@ -41,8 +41,8 @@ import Footer from '../../../components/Footer';
 import Image from 'next/image';
 import Link from 'next/link';
 
-export default async function CategoryPage({ params }: { params: { category: string } }) {
-  const isHindi = params.category === 'हिंदी' || params.category === 'Hindi';
+export default async function CategoryPage({ params }: any): Promise<any> {
+  const isHindi = params?.category === 'हिंदी' || params?.category === 'Hindi';
   let posts: any[] = [];
   if (isHindi) {
     const snap = await getDocs(collection(db, 'posts_hindi'));

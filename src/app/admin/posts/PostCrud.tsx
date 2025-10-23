@@ -1,5 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
+import Image from 'next/image';
 import { collection, addDoc, getDocs, updateDoc, deleteDoc, doc, writeBatch } from "firebase/firestore";
 import { db } from "../../../utils/firebase";
 import PostForm from "../../../components/admin/PostForm";
@@ -99,7 +100,7 @@ export default function PostCrud() {
             {posts.map(post => (
               <tr key={post.id} className="text-[#232946]">
                 <td className="p-2 border">{post.title}</td>
-                <td className="p-2 border">{post.image && <img src={post.image} alt="" className="h-12 rounded" />}</td>
+                <td className="p-2 border">{post.image && <Image src={post.image} alt={post.title || ''} width={48} height={48} className="rounded" />}</td>
                 <td className="p-2 border">
                   <button onClick={() => { setEditing(post); setShowForm(true); }} className="text-blue-600 mr-2">Edit</button>
                   <button onClick={() => handleDelete(post.id)} className="text-red-600">Delete</button>

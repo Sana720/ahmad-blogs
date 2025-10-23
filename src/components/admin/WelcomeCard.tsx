@@ -1,10 +1,11 @@
 import React from 'react';
+import { cloudinaryUrl } from '../../utils/cloudinary';
 import Image from 'next/image';
 export default function WelcomeCard({ name, stats }: { name: string, stats: { posts: number, subscribers: number } }) {
   return (
     <div className="flex items-center bg-gradient-to-r from-[#eaf0f6] to-[#f7f8fa] rounded-2xl shadow p-6 mb-8">
       <Image
-        src="https://res.cloudinary.com/dmklge3gp/image/upload/v1756490593/434514610_975938324187768_1172821101792539874_n_cyqkbx.jpg"
+  src={cloudinaryUrl('https://res.cloudinary.com/dmklge3gp/image/upload/v1756490593/434514610_975938324187768_1172821101792539874_n_cyqkbx.jpg', 256)}
         alt="Welcome"
         width={112}
         height={112}

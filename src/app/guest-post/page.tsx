@@ -1,5 +1,6 @@
 "use client";
 import React, { useState } from "react";
+import Image from 'next/image';
 // import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { addDoc, collection } from "firebase/firestore";
 import { db } from "@/utils/firebase";
@@ -119,7 +120,7 @@ export default function GuestPostPage() {
               className="w-full px-4 py-2 border rounded-lg text-[#232946] placeholder:text-gray-400"
             />
             {uploading && <div className="text-sm text-blue-500">Uploading...</div>}
-            {imageUrl && <img src={imageUrl} alt="Preview" className="mt-2 h-32 rounded" />}
+            {imageUrl && <div className="mt-2 h-32 w-full max-w-[320px] relative"><Image src={imageUrl} alt="Preview" fill style={{ objectFit: 'cover', borderRadius: '0.5rem' }} className="rounded" /></div>}
             <button
               type="submit"
               className="bg-[#3CB371] text-white px-6 py-2 rounded font-bold w-full"
