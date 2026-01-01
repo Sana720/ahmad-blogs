@@ -20,7 +20,7 @@
     "firebase-admin": "^13.4.0",
     "googleapis": "^158.0.0",
     "gray-matter": "^4.0.3",
-    "next": "15.5.0",
+    "next": "15.5.7",
     "react": "19.1.0",
     "react-dom": "19.1.0",
     "react-icons": "^5.5.0",
@@ -35,7 +35,8 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.5.0",
+    "@next/bundle-analyzer": "^13.4.8",
+    "eslint-config-next": "15.5.7",
     "tailwindcss": "^4",
     "typescript": "^5.9.2"
   }
