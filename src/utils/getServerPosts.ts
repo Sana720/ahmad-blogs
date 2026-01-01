@@ -1,4 +1,4 @@
-import { collection, getDocs } from "firebase/firestore";
+import { collection, getDocs, query, orderBy, limit, where } from "firebase/firestore";
 import { db } from "./firebase";
 import { getAuthorAvatarByName } from "./getAuthorAvatar";
 
@@ -18,8 +18,12 @@ type Post = {
 };
 
 export async function getServerPosts(page = 1, perPage = 5): Promise<{ posts: Post[]; totalPages: number }> {
-  // Fetch normal posts
-  const querySnapshot = await getDocs(collection(db, "posts"));
+  // Fetch normal posts with limit
+  // Note: We fetch 'perPage' from *each* collection to ensure we have enough recent content after merging.
+  // Ideally, we'd have a single collection or a server-side index, but this is a significant optimization over fetching ALL docs.
+  const postsQuery = query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(perPage * page + 5)); // Fetch enough for current page + buffer
+  const querySnapshot = await getDocs(postsQuery);
+
   const postsData: (Post & { createdAt?: string })[] = querySnapshot.docs.map((doc) => {
     const data = doc.data() as Omit<Post, 'slug'> & { slug?: string, createdAt?: string };
     return {
@@ -30,11 +34,13 @@ export async function getServerPosts(page = 1, perPage = 5): Promise<{ posts: Po
     };
   });
 
-  // Fetch approved guest posts
-  const guestSnapshot = await getDocs(collection(db, "guest_posts"));
+  // Fetch approved guest posts with limit
+  const guestQuery = query(collection(db, "guest_posts"), where("status", "==", "approved"), orderBy("submittedAt", "desc"), limit(perPage * page + 5));
+  const guestSnapshot = await getDocs(guestQuery);
+
   const guestPosts: (Post & { createdAt?: string; isGuest: boolean; imageUrl?: string })[] = guestSnapshot.docs
     .map((doc) => {
-      const data = doc.data();
+      const data = doc.data() as any; // Using 'any' for simplicity, or define a robust GuestPost type
       return {
         slug: doc.id,
         title: data.title,
@@ -46,8 +52,7 @@ export async function getServerPosts(page = 1, perPage = 5): Promise<{ posts: Po
         isGuest: true,
         status: data.status,
       };
-    })
-    .filter(post => post.status === "approved");
+    });
 
   // Merge and sort all posts
   let allPosts = [...postsData, ...guestPosts];

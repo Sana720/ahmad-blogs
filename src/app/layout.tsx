@@ -6,6 +6,7 @@ import Script from "next/script";
 import { GA_MEASUREMENT_ID } from "../utils/analytics";
 import { Analytics } from "@vercel/analytics/next"
 import { SpeedInsights } from "@vercel/speed-insights/next"
+import WhatsAppButton from "../components/WhatsAppButton";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,7 +42,7 @@ export const metadata: Metadata = {
         alt: "Ahmad Blogs Logo",
       },
     ],
-  siteName: "Ahmad Blogs",
+    siteName: "Ahmad Blogs",
     locale: "en_US",
   },
   twitter: {
@@ -53,18 +54,18 @@ export const metadata: Metadata = {
   },
 };
 
-  // Structured data for SEO (WebSite schema)
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "WebSite",
-    "name": "Ahmed Blogs",
-    "url": "https://ahmadblogs.com",
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://ahmadblogs.com/search?q={search_term_string}",
-      "query-input": "required name=search_term_string"
-    }
-  };
+// Structured data for SEO (WebSite schema)
+const structuredData = {
+  "@context": "https://schema.org",
+  "@type": "WebSite",
+  "name": "Ahmed Blogs",
+  "url": "https://ahmadblogs.com",
+  "potentialAction": {
+    "@type": "SearchAction",
+    "target": "https://ahmadblogs.com/search?q={search_term_string}",
+    "query-input": "required name=search_term_string"
+  }
+};
 
 export default function RootLayout({
   children,
@@ -78,19 +79,9 @@ export default function RootLayout({
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" sizes="180x180" />
         <link rel="icon" type="image/png" sizes="192x192" href="/android-chrome-192x192.png" />
-        {/* Preload Mulish font and featured image for LCP */}
-  {/* Preconnects for Google Fonts, Cloudinary and analytics to reduce connection time */}
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://res.cloudinary.com" />
-  <link rel="preconnect" href="https://www.googletagmanager.com" />
-        <link
-          rel="preload"
-          as="font"
-          href="https://fonts.gstatic.com/s/mulish/v12/1Ptug8zYS_SKggPNyC0ISg.ttf"
-          type="font/ttf"
-          crossOrigin="anonymous"
-        />
+        {/* Preconnects for Cloudinary and analytics to reduce connection time */}
+        <link rel="preconnect" href="https://res.cloudinary.com" />
+        <link rel="preconnect" href="https://www.googletagmanager.com" />
         <link
           rel="preload"
           as="image"
@@ -115,10 +106,10 @@ export default function RootLayout({
             </Script>
           </>
         )}
-          <script
-            type="application/ld+json"
-            dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-          />
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
       </head>
       <body
         className={`${mulish.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
@@ -127,6 +118,7 @@ export default function RootLayout({
         {children}
         <Analytics />
         <SpeedInsights />
+        <WhatsAppButton />
       </body>
     </html>
   );
