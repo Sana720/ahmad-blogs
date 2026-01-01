@@ -8,15 +8,17 @@ import Link from "next/link";
 import Loader from "../components/Loader";
 import { Suspense } from "react";
 
+// Next.js 15: searchParams is a Promise
 interface HomeProps {
-  searchParams?: { page?: string };
+  searchParams: Promise<{ page?: string }>;
 }
 
 export default async function Home({ searchParams }: HomeProps) {
   const POSTS_PER_PAGE = 2; // 1 featured + 2 grid = 3 total per page
-  const page = Number(searchParams?.page) || 1;
+  const resolvedParams = await searchParams; // Await the promise
+  const page = Number(resolvedParams?.page) || 1;
   // Always fetch all posts to determine featured and grid
-  const { posts: allPosts, totalPages } = await getServerPosts(1, 1000); // get all posts
+  const { posts: allPosts, totalPages } = await getServerPosts(1, 10); // get optimized list
   // Find the featured post (if any), otherwise use the newest
   const featured = allPosts.length > 0 ? (allPosts.find((p: any) => p.featured) || allPosts[0]) : undefined;
   // Remove featured from the list
@@ -104,17 +106,17 @@ export default async function Home({ searchParams }: HomeProps) {
                       <div className="absolute top-0 left-0 z-10 bg-[#3CB371] text-white text-xs font-bold px-3 py-1 rounded-br-xl">Guest Post</div>
                     )}
                     {post.image && (
-                        <div className="relative w-full max-w-full overflow-hidden bg-[#f4f4f4]" style={{ aspectRatio: '16/7' }}>
-                          <Image
-                            src={post.image || "/placeholder.png"}
-                            alt={post.title}
-                            fill
-                            className="object-cover rounded-md w-full h-full max-w-full"
-                            sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 600px"
-                            loading="lazy"
-                            quality={60}
-                          />
-                        </div>
+                      <div className="relative w-full max-w-full overflow-hidden bg-[#f4f4f4]" style={{ aspectRatio: '16/7' }}>
+                        <Image
+                          src={post.image || "/placeholder.png"}
+                          alt={post.title}
+                          fill
+                          className="object-cover rounded-md w-full h-full max-w-full"
+                          sizes="(max-width: 600px) 100vw, (max-width: 1200px) 50vw, 600px"
+                          loading="lazy"
+                          quality={60}
+                        />
+                      </div>
                     )}
                     <div className="p-4">
                       <div className="flex items-center gap-3 text-[#232946] text-base mb-2 font-medium mt-2">
@@ -146,8 +148,8 @@ export default async function Home({ searchParams }: HomeProps) {
                             ))}
                         </div>
                       </div>
-                      <Link 
-                        href={post.isGuest ? `/guest-post/${post.slug}` : `/posts/${post.slug}`} 
+                      <Link
+                        href={post.isGuest ? `/guest-post/${post.slug}` : `/posts/${post.slug}`}
                         className="block text-lg font-extrabold mb-2 hover:text-[#3CB371] focus:text-[#3CB371] active:text-[#3CB371] text-[#222] transition-colors"
                       >
                         {post.title}

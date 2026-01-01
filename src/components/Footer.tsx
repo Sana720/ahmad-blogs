@@ -1,6 +1,11 @@
-export default function Footer() {
+interface FooterProps {
+  noMargin?: boolean;
+  bgColor?: string;
+}
+
+export default function Footer({ noMargin = false, bgColor = "bg-[#181f2a]" }: FooterProps) {
   return (
-    <footer className="bg-[#181f2a] text-gray-100 mt-24 pt-12 pb-8">
+    <footer className={`${bgColor} text-gray-100 pt-12 pb-8 ${noMargin ? "mt-0" : "mt-24"}`}>
       <div className="max-w-5xl mx-auto flex flex-col items-center justify-center px-4">
         <div className="flex flex-col sm:flex-row flex-wrap gap-4 sm:gap-12 text-lg font-medium mb-8 w-full justify-center items:center">
           <a href="/about" className="hover:text-[#3CB371]">About</a>
@@ -11,15 +16,15 @@ export default function Footer() {
         <div className="flex flex-wrap gap-4 sm:gap-6 mb-8 justify-center">
           <a href="https://www.facebook.com/profile.php?id=61580138300975" className="rounded-lg border border-gray-400 w-12 h-12 flex items-center justify-center text-xl text-gray-100 hover:text-[#3CB371] hover:border-[#3CB371] transition-colors">
             {/* Facebook */}
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><rect width="22" height="22" x="1" y="1" rx="6" fill="none" stroke="currentColor" strokeWidth="2"/><path d="M15.5 8.5h-2a1 1 0 0 0-1 1v2h3l-.5 2h-2.5v6h-2v-6H8.5v-2h2v-2a3 3 0 0 1 3-3h2v2z" fill="currentColor"/></svg>
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><rect width="22" height="22" x="1" y="1" rx="6" fill="none" stroke="currentColor" strokeWidth="2" /><path d="M15.5 8.5h-2a1 1 0 0 0-1 1v2h3l-.5 2h-2.5v6h-2v-6H8.5v-2h2v-2a3 3 0 0 1 3-3h2v2z" fill="currentColor" /></svg>
           </a>
           <a href="https://www.instagram.com/ahmed_web_developer/" className="rounded-lg border border-gray-400 w-12 h-12 flex items-center justify-center text-xl text-gray-100 hover:text-[#3CB371] hover:border-[#3CB371] transition-colors">
             {/* Instagram */}
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><rect width="22" height="22" x="1" y="1" rx="6" fill="none" stroke="currentColor" strokeWidth="2"/><circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="2"/><circle cx="17" cy="7" r="1.5" fill="currentColor"/></svg>
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><rect width="22" height="22" x="1" y="1" rx="6" fill="none" stroke="currentColor" strokeWidth="2" /><circle cx="12" cy="12" r="5" stroke="currentColor" strokeWidth="2" /><circle cx="17" cy="7" r="1.5" fill="currentColor" /></svg>
           </a>
           <a href="https://www.linkedin.com/in/sana-ahmad-73b263177/" className="rounded-lg border border-gray-400 w-12 h-12 flex items-center justify-center text-xl text-gray-100 hover:text-[#3CB371] hover:border-[#3CB371] transition-colors">
             {/* LinkedIn */}
-            <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><rect width="22" height="22" x="1" y="1" rx="6" fill="none" stroke="currentColor" strokeWidth="2"/><rect x="7" y="10" width="2" height="7" fill="currentColor"/><rect x="11" y="13" width="2" height="4" fill="currentColor"/><circle cx="8" cy="8" r="1" fill="currentColor"/></svg>
+            <svg width="22" height="22" fill="none" viewBox="0 0 24 24"><rect width="22" height="22" x="1" y="1" rx="6" fill="none" stroke="currentColor" strokeWidth="2" /><rect x="7" y="10" width="2" height="7" fill="currentColor" /><rect x="11" y="13" width="2" height="4" fill="currentColor" /><circle cx="8" cy="8" r="1" fill="currentColor" /></svg>
           </a>
         </div>
         <div className="text-center text-base text-gray-400">Copyright © 2022 || Ahmad Blogs</div>
