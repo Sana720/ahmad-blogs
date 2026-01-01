@@ -1,7 +1,6 @@
-"use client";
-
 import React from "react";
 import Link from "next/link";
+import { Metadata } from "next";
 import {
     FaLaptopCode,
     FaMobileAlt,
@@ -17,6 +16,17 @@ import {
 import Header from "../../components/Header";
 import CategoryMenu from "../../components/CategoryMenu";
 import Footer from "../../components/Footer";
+
+export const metadata: Metadata = {
+    title: "Services | Ahmad Blogs - Enterprise Coding & Digital Solutions",
+    description: "Explore our premium technical services: Enterprise ERP, Full-Stack Development, Mobile Apps, AI SEO, and Cloud Infrastructure. We build digital excellence.",
+    openGraph: {
+        title: "Services | Ahmad Blogs - Enterprise Coding & Digital Solutions",
+        description: "Explore our premium technical services: Enterprise ERP, Full-Stack Development, Mobile Apps, AI SEO, and Cloud Infrastructure. We build digital excellence.",
+        url: "https://ahmadblogs.com/services",
+        type: "website",
+    }
+};
 
 // Data Structure
 const services = [

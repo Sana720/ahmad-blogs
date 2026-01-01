@@ -8,6 +8,8 @@ export async function GET() {
     `${baseUrl}/`,
     `${baseUrl}/about`,
     `${baseUrl}/contact`,
+    `${baseUrl}/services`,
+    `${baseUrl}/portfolio`,
     `${baseUrl}/privacy-policy`,
     `${baseUrl}/terms`,
   ];
