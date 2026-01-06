@@ -20,11 +20,28 @@ import Footer from "../../components/Footer";
 export const metadata: Metadata = {
     title: "Services | Ahmad Blogs - Enterprise Coding & Digital Solutions",
     description: "Explore our premium technical services: Enterprise ERP, Full-Stack Development, Mobile Apps, AI SEO, and Cloud Infrastructure. We build digital excellence.",
+    keywords: ["Enterprise ERP", "Full-Stack Development", "Mobile Apps", "AI SEO", "Cloud Infrastructure", "Digital Solutions"],
+    authors: [{ name: "Ahmad Sana" }],
+    publisher: "Ahmad Blogs",
+    robots: {
+        index: true,
+        follow: true,
+        googleBot: {
+            index: true,
+            follow: true,
+            'max-video-preview': -1,
+            'max-image-preview': 'large',
+            'max-snippet': -1,
+        },
+    },
     openGraph: {
         title: "Services | Ahmad Blogs - Enterprise Coding & Digital Solutions",
         description: "Explore our premium technical services: Enterprise ERP, Full-Stack Development, Mobile Apps, AI SEO, and Cloud Infrastructure. We build digital excellence.",
         url: "https://ahmadblogs.com/services",
         type: "website",
+    },
+    alternates: {
+        canonical: "https://ahmadblogs.com/services"
     }
 };
 

@@ -78,6 +78,7 @@ export default function HomeClient({ posts, totalPages }: { posts: Post[]; total
                   </div>
                   <Link
                     href={`/posts/${featured.slug}`}
+                    title={featured.title}
                     className="block mt-3 text-lg sm:text-xl md:text-2xl font-extrabold leading-snug hover:text-[#3CB371] text-[#222] break-words"
                   >
                     {featured.title}
@@ -95,20 +96,20 @@ export default function HomeClient({ posts, totalPages }: { posts: Post[]; total
           )}
           {gridPosts.length > 0 && (
             <section className="mt-12 grid grid-cols-1 md:grid-cols-2 gap-8">
-                {gridPosts.map((post: any, idx: number) => (
-                  <div key={post.slug || idx} className="rounded-xl overflow-hidden shadow bg-white">
-                    {post.image && (
-                      <div className="relative w-full aspect-[16/9] sm:aspect-[4/3] md:aspect-[16/7] max-w-full">
-                        <Image
-                          src={post.image || "/placeholder.png"}
-                          alt={post.title}
-                          fill
-                          className="object-cover rounded-md w-full h-auto max-w-full"
-                          sizes="(max-width: 768px) 100vw, 50vw"
-                          priority={false}
-                        />
-                      </div>
-                    )}
+              {gridPosts.map((post: any, idx: number) => (
+                <div key={post.slug || idx} className="rounded-xl overflow-hidden shadow bg-white">
+                  {post.image && (
+                    <div className="relative w-full aspect-[16/9] sm:aspect-[4/3] md:aspect-[16/7] max-w-full">
+                      <Image
+                        src={post.image || "/placeholder.png"}
+                        alt={post.title}
+                        fill
+                        className="object-cover rounded-md w-full h-auto max-w-full"
+                        sizes="(max-width: 768px) 100vw, 50vw"
+                        priority={false}
+                      />
+                    </div>
+                  )}
                   <div className="p-4">
                     <div className="flex items-center gap-3 text-[#232946] text-base mb-2 font-medium mt-2">
                       <span className="inline-flex items-center gap-1">
@@ -139,8 +140,9 @@ export default function HomeClient({ posts, totalPages }: { posts: Post[]; total
                           ))}
                       </div>
                     </div>
-                    <Link 
-                      href={`/posts/${post.slug}`} 
+                    <Link
+                      href={`/posts/${post.slug}`}
+                      title={post.title}
                       className="block text-lg font-extrabold mb-2 hover:text-[#3CB371] text-[#222]"
                     >
                       {post.title}

@@ -1,6 +1,20 @@
 export const metadata = {
   title: "Privacy Policy | Ahmed Blogs",
   description: "Read the privacy policy for Ahmed Blogs. Learn how we collect, use, and protect your personal data, and your rights as a visitor or subscriber.",
+  keywords: ["Privacy Policy", "Data Protection", "User Rights", "Cookies", "GDPR"],
+  authors: [{ name: "Ahmad Sana" }],
+  publisher: "Ahmad Blogs",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   openGraph: {
     title: "Privacy Policy | Ahmed Blogs",
     description: "Read the privacy policy for Ahmed Blogs. Learn how we collect, use, and protect your personal data, and your rights as a visitor or subscriber.",

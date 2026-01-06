@@ -7,7 +7,7 @@ import PostForm from "../../../components/admin/PostForm";
 
 export default function PostCrud() {
   const [posts, setPosts] = useState<any[]>([]);
-  const [editing, setEditing] = useState<any|null>(null);
+  const [editing, setEditing] = useState<any | null>(null);
   const [showForm, setShowForm] = useState(false);
 
   async function fetchPosts() {

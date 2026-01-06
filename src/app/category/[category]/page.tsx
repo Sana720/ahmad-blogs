@@ -79,6 +79,7 @@ export default async function CategoryPage({ params }: any): Promise<any> {
                 <div className="p-4">
                   <Link
                     href={isHindi ? `/posts_hindi/${post.slug}` : `/posts/${post.slug}`}
+                    title={post.title}
                     className="block text-lg font-extrabold mb-2 hover:text-[#3CB371] text-[#222]"
                   >
                     {post.title}

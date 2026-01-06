@@ -1,6 +1,20 @@
 export const metadata = {
   title: "Terms & Conditions | Ahmed Blogs",
   description: "Read the terms and conditions for using Ahmed Blogs. Understand your rights, responsibilities, and the rules for using our website and services.",
+  keywords: ["Terms and Conditions", "User Agreement", "Legal", "Disclaimer", "Liability"],
+  authors: [{ name: "Ahmad Sana" }],
+  publisher: "Ahmad Blogs",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
   openGraph: {
     title: "Terms & Conditions | Ahmed Blogs",
     description: "Read the terms and conditions for using Ahmed Blogs. Understand your rights, responsibilities, and the rules for using our website and services.",

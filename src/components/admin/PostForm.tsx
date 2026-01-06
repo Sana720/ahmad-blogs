@@ -26,6 +26,7 @@ export default function PostForm({ onSubmit, initialData }: { onSubmit: (data: a
   const [imageUrl, setImageUrl] = useState(initialData?.image || "");
   const [uploading, setUploading] = useState(false);
   const [tags, setTags] = useState(initialData?.tags?.join(', ') || "");
+  const [keywords, setKeywords] = useState(initialData?.keywords?.join(', ') || "");
   const [category, setCategory] = useState(initialData?.category ? (Array.isArray(initialData.category) ? initialData.category : [initialData.category]) : []);
   const [author, setAuthor] = useState(initialData?.author || "");
   const [categories, setCategories] = useState<any[]>([]);
@@ -47,8 +48,8 @@ export default function PostForm({ onSubmit, initialData }: { onSubmit: (data: a
     setUploading(true);
     const formData = new FormData();
     formData.append("file", file);
-  formData.append("upload_preset", "ahmad-blogs");
-  const res = await fetch("https://api.cloudinary.com/v1_1/dmklge3gp/image/upload", {
+    formData.append("upload_preset", "ahmad-blogs");
+    const res = await fetch("https://api.cloudinary.com/v1_1/dmklge3gp/image/upload", {
       method: "POST",
       body: formData,
     });
@@ -60,13 +61,14 @@ export default function PostForm({ onSubmit, initialData }: { onSubmit: (data: a
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!imageUrl) return alert("Please upload an image.");
-  const slug = initialData?.slug && initialData.slug.trim() ? initialData.slug : slugify(title);
+    const slug = initialData?.slug && initialData.slug.trim() ? initialData.slug : slugify(title);
     onSubmit({
       ...initialData,
       title,
       content,
       image: imageUrl,
       tags: tags.split(',').map((t: string) => t.trim()).filter(Boolean),
+      keywords: keywords.split(',').map((k: string) => k.trim()).filter(Boolean),
       category,
       author,
       slug,
@@ -89,6 +91,10 @@ export default function PostForm({ onSubmit, initialData }: { onSubmit: (data: a
       <div>
         <label className="block font-medium mb-1 text-[#232946]">Tags (comma separated)</label>
         <input value={tags} onChange={e => setTags(e.target.value)} className="w-full border rounded px-3 py-2 text-[#232946]" placeholder="e.g. diy, toy" />
+      </div>
+      <div>
+        <label className="block font-medium mb-1 text-[#232946]">Keywords (comma separated)</label>
+        <input value={keywords} onChange={e => setKeywords(e.target.value)} className="w-full border rounded px-3 py-2 text-[#232946]" placeholder="e.g. react, nextjs, seo" />
       </div>
       <div>
         <label className="block font-medium mb-1 text-[#232946]">Categories (hold Ctrl/Cmd to select multiple)</label>
@@ -120,7 +126,7 @@ export default function PostForm({ onSubmit, initialData }: { onSubmit: (data: a
         <label className="block font-medium mb-1 text-[#232946]">Image</label>
         <input type="file" accept="image/*" onChange={handleImageUpload} className="text-[#232946]" />
         {uploading && <div className="text-sm text-blue-500">Uploading...</div>}
-  {imageUrl && <div className="mt-2 h-32 w-full max-w-[320px] relative"><Image src={imageUrl} alt="Preview" fill style={{ objectFit: 'cover', borderRadius: '0.5rem' }} className="rounded" /></div>}
+        {imageUrl && <div className="mt-2 h-32 w-full max-w-[320px] relative"><Image src={imageUrl} alt="Preview" fill style={{ objectFit: 'cover', borderRadius: '0.5rem' }} className="rounded" /></div>}
       </div>
       <button type="submit" className="bg-[#3CB371] text-white px-6 py-2 rounded font-bold">Save Post</button>
     </form>

@@ -31,7 +31,7 @@ function Header({ categoryMenu }: HeaderProps) {
     >
       <div className="max-w-5xl mx-auto flex flex-row items-center justify-between py-3 px-4">
         <div className="flex items-center">
-          <Link href="/" className="flex items-center" onClick={() => setLoading(true)}>
+          <Link href="/" className="flex items-center" onClick={() => setLoading(true)} title="Home">
             {/* Original Eye/Face SVG Logo */}
             <svg width="40" height="40" viewBox="0 0 48 48" fill="none" className="mr-2">
               <ellipse cx="24" cy="24" rx="24" ry="24" fill="#3CB371" />
@@ -48,10 +48,10 @@ function Header({ categoryMenu }: HeaderProps) {
         </div>
         {/* Desktop Nav with Category Dropdown */}
         <nav className="hidden md:flex gap-8 text-base font-semibold text-[#222] items-center">
-          <Link href="/" className="hover:text-[#3CB371]" onClick={() => setLoading(true)}>Home</Link>
-          <Link href="/services" className="hover:text-[#3CB371]" onClick={() => setLoading(true)}>Services</Link>
+          <Link href="/" className="hover:text-[#3CB371]" onClick={() => setLoading(true)} title="Home">Home</Link>
+          <Link href="/services" className="hover:text-[#3CB371]" onClick={() => setLoading(true)} title="Services">Services</Link>
           <div className="relative group">
-            <button className="hover:text-[#3CB371] flex items-center gap-1 focus:outline-none">
+            <button className="hover:text-[#3CB371] flex items-center gap-1 focus:outline-none" title="Categories">
               Categories
               <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="#3CB371" strokeWidth="2" strokeLinecap="round" /></svg>
             </button>
@@ -59,10 +59,10 @@ function Header({ categoryMenu }: HeaderProps) {
               {categoryMenu}
             </div>
           </div>
-          <Link href="/about" className="hover:text-[#3CB371]">About Me</Link>
-          <Link href="/contact" className="hover:text-[#3CB371]">Contact Me</Link>
-          <Link href="/portfolio" className="hover:text-[#3CB371]">Portfolio</Link>
-          <Link href="/guest-post" className="hover:text-[#3CB371]">Guest Post</Link>
+          <Link href="/about" className="hover:text-[#3CB371]" title="About Me">About Me</Link>
+          <Link href="/contact" className="hover:text-[#3CB371]" title="Contact Me">Contact Me</Link>
+          <Link href="/portfolio" className="hover:text-[#3CB371]" title="Portfolio">Portfolio</Link>
+          <Link href="/guest-post" className="hover:text-[#3CB371]" title="Guest Post">Guest Post</Link>
         </nav>
         {/* Mobile Hamburger */}
         <button className="md:hidden p-2 rounded focus:outline-none" onClick={() => setMobileOpen((v) => !v)} aria-label="Open menu">
@@ -72,14 +72,15 @@ function Header({ categoryMenu }: HeaderProps) {
       {/* Mobile Nav */}
       {mobileOpen && (
         <nav className="md:hidden bg-white border-t border-gray-100 px-4 pb-4 pt-2 flex flex-col gap-2 text-base font-semibold text-[#232946] shadow">
-          <Link href="/" className="hover:text-[#3CB371]" onClick={() => { setMobileOpen(false); setLoading(true); }}>Home</Link>
-          <Link href="/services" className="hover:text-[#3CB371]" onClick={() => { setMobileOpen(false); setLoading(true); }}>Services</Link>
+          <Link href="/" className="hover:text-[#3CB371]" onClick={() => { setMobileOpen(false); setLoading(true); }} title="Home">Home</Link>
+          <Link href="/services" className="hover:text-[#3CB371]" onClick={() => { setMobileOpen(false); setLoading(true); }} title="Services">Services</Link>
           <div className="relative">
             <button
               className="hover:text-[#3CB371] flex items-center gap-1 focus:outline-none"
               onClick={() => setShowMobileCategories((v) => !v)}
               aria-expanded={showMobileCategories}
               aria-controls="mobile-category-menu"
+              title="Categories"
             >
               Categories
               <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="#3CB371" strokeWidth="2" strokeLinecap="round" /></svg>
@@ -88,10 +89,10 @@ function Header({ categoryMenu }: HeaderProps) {
               <div className="mt-2" id="mobile-category-menu">{categoryMenu}</div>
             )}
           </div>
-          <Link href="/portfolio" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>Portfolio</Link>
-          <Link href="/about" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>About</Link>
-          <Link href="/contact" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>Contact</Link>
-          <Link href="/guest-post" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)}>Guest Post</Link>
+          <Link href="/portfolio" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)} title="Portfolio">Portfolio</Link>
+          <Link href="/about" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)} title="About">About</Link>
+          <Link href="/contact" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)} title="Contact">Contact</Link>
+          <Link href="/guest-post" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)} title="Guest Post">Guest Post</Link>
         </nav>
       )}
     </header>

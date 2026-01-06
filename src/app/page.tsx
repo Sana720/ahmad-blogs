@@ -1,4 +1,4 @@
-
+import type { Metadata } from "next";
 import { getServerPosts } from "../utils/getServerPosts";
 import Header from "../components/Header";
 import CategoryMenu from "../components/CategoryMenu";
@@ -7,6 +7,31 @@ import Image from "next/image";
 import Link from "next/link";
 import Loader from "../components/Loader";
 import { Suspense } from "react";
+
+
+
+
+export const metadata: Metadata = {
+  title: "Ahmad Blogs | AI, Coding & Tech Insights",
+  description: "Ahmad Blogs is your go-to resource for AI, coding, freelancing, and tech insights. Discover tutorials, industry news, and expert tips to help you grow as a developer or digital entrepreneur.",
+  keywords: ["AI", "Coding", "Freelancing", "Tech Insights", "Web Development", "Next.js", "React", "Tutorials"],
+  authors: [{ name: "Ahmad Sana" }],
+  publisher: "Ahmad Blogs",
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
+  alternates: {
+    canonical: "https://ahmadblogs.com",
+  },
+};
 
 // Next.js 15: searchParams is a Promise
 interface HomeProps {
@@ -83,6 +108,7 @@ export default async function Home({ searchParams }: HomeProps) {
                     </div>
                     <Link
                       href={`/posts/${featured.slug}`}
+                      title={featured.title}
                       className="block mt-3 text-lg sm:text-xl md:text-2xl font-extrabold leading-snug hover:text-[#3CB371] text-[#222] break-words"
                     >
                       {featured.title}
@@ -150,6 +176,7 @@ export default async function Home({ searchParams }: HomeProps) {
                       </div>
                       <Link
                         href={post.isGuest ? `/guest-post/${post.slug}` : `/posts/${post.slug}`}
+                        title={post.title}
                         className="block text-lg font-extrabold mb-2 hover:text-[#3CB371] focus:text-[#3CB371] active:text-[#3CB371] text-[#222] transition-colors"
                       >
                         {post.title}
@@ -168,6 +195,7 @@ export default async function Home({ searchParams }: HomeProps) {
                   <Link
                     key={pageNum}
                     href={`/?page=${pageNum}`}
+                    title={`Page ${pageNum}`}
                     className={`px-4 py-2 rounded-lg border font-semibold transition-colors duration-150 ${isActive ? 'bg-[#3CB371] text-white border-[#3CB371]' : 'bg-white text-[#232946] border-gray-200 hover:bg-[#eaf0f6]'}`}
                   >
                     {pageNum}

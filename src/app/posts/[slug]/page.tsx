@@ -22,6 +22,20 @@ export async function generateMetadata({ params }: { params: { slug: string } })
   return {
     title: post.title,
     description,
+    keywords: post.keywords,
+    authors: post.author ? [{ name: post.author }] : undefined,
+    publisher: "Ahmad Blogs",
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
     openGraph: {
       title: post.title,
       description,
@@ -77,6 +91,7 @@ type Post = {
   excerpt?: string;
   authorAvatar?: string;
   tags?: string[];
+  keywords?: string[] | string;
 };
 
 async function getPostBySlug(slug: string): Promise<{ post: Post; postDoc: any } | null> {
@@ -129,7 +144,7 @@ export default async function PostPage(props: { params: { slug: string } }) {
   const { post, postDoc } = data;
 
   post.authorAvatar = post.author ? await getAuthorAvatarByName(post.author) : undefined;
-  updateDoc(doc(db, "posts", postDoc.id), { views: increment(1) }).catch(() => {});
+  updateDoc(doc(db, "posts", postDoc.id), { views: increment(1) }).catch(() => { });
   const categories = (Array.isArray(post.category) ? post.category : [post.category]).filter((cat): cat is string => typeof cat === 'string');
   const similarPosts = await getSimilarPosts(post.slug, categories);
 
@@ -189,6 +204,7 @@ export default async function PostPage(props: { params: { slug: string } }) {
                   width={28}
                   height={28}
                   className="rounded-full object-contain bg-[#eaf0f6]"
+                  title={post.author || "Author"}
                   priority
                 />
                 <span className="text-sm sm:text-base">{post.author}</span>
@@ -216,6 +232,7 @@ export default async function PostPage(props: { params: { slug: string } }) {
                 fill
                 className="object-cover rounded-md w-full h-auto"
                 sizes="100vw"
+                title={post.title}
                 priority
               />
             </div>
@@ -243,6 +260,7 @@ export default async function PostPage(props: { params: { slug: string } }) {
                 <a
                   key={sp.slug || idx}
                   href={`/posts/${sp.slug}`}
+                  title={sp.title}
                   className="group bg-white rounded-2xl shadow-lg p-0 flex flex-col items-stretch transition-transform hover:-translate-y-2 hover:shadow-2xl border border-[#eaf0f6] h-full min-h-[270px] max-w-[420px] mx-auto"
                   style={{ textDecoration: 'none' }}
                 >
@@ -254,6 +272,7 @@ export default async function PostPage(props: { params: { slug: string } }) {
                         fill
                         className="object-cover w-full h-full group-hover:scale-105 transition-transform duration-300"
                         sizes="(max-width: 768px) 100vw, 420px"
+                        title={sp.title}
                         priority={idx === 0}
                       />
                     </div>
