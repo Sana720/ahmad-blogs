@@ -1,6 +1,6 @@
 import { collection, getDocs, query, orderBy, limit, where } from "firebase/firestore";
 import { db } from "./firebase";
-import { getAuthorAvatarByName } from "./getAuthorAvatar";
+import { getAuthorsMap } from "./getAuthorAvatar";
 
 type Post = {
   slug: string;
@@ -18,13 +18,17 @@ type Post = {
 };
 
 export async function getServerPosts(page = 1, perPage = 5): Promise<{ posts: Post[]; totalPages: number }> {
-  // Fetch normal posts with limit
-  // Note: We fetch 'perPage' from *each* collection to ensure we have enough recent content after merging.
-  // Ideally, we'd have a single collection or a server-side index, but this is a significant optimization over fetching ALL docs.
-  const postsQuery = query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(perPage * page + 5)); // Fetch enough for current page + buffer
-  const querySnapshot = await getDocs(postsQuery);
+  // Parallel Fetching: Start all requests immediately
+  const postsQuery = query(collection(db, "posts"), orderBy("createdAt", "desc"), limit(perPage * page + 5));
+  const guestQuery = query(collection(db, "guest_posts"), where("status", "==", "approved"), orderBy("submittedAt", "desc"), limit(perPage * page + 5));
 
-  const postsData: (Post & { createdAt?: string })[] = querySnapshot.docs.map((doc) => {
+  const [postsSnapshot, guestSnapshot, authorsMap] = await Promise.all([
+    getDocs(postsQuery),
+    getDocs(guestQuery),
+    getAuthorsMap()
+  ]);
+
+  const postsData: (Post & { createdAt?: string })[] = postsSnapshot.docs.map((doc) => {
     const data = doc.data() as Omit<Post, 'slug'> & { slug?: string, createdAt?: string };
     return {
       ...data,
@@ -34,13 +38,9 @@ export async function getServerPosts(page = 1, perPage = 5): Promise<{ posts: Po
     };
   });
 
-  // Fetch approved guest posts with limit
-  const guestQuery = query(collection(db, "guest_posts"), where("status", "==", "approved"), orderBy("submittedAt", "desc"), limit(perPage * page + 5));
-  const guestSnapshot = await getDocs(guestQuery);
-
   const guestPosts: (Post & { createdAt?: string; isGuest: boolean; imageUrl?: string })[] = guestSnapshot.docs
     .map((doc) => {
-      const data = doc.data() as any; // Using 'any' for simplicity, or define a robust GuestPost type
+      const data = doc.data() as any;
       return {
         slug: doc.id,
         title: data.title,
@@ -61,21 +61,32 @@ export async function getServerPosts(page = 1, perPage = 5): Promise<{ posts: Po
     const bTime = b.createdAt ? new Date(b.createdAt).getTime() : (b.created ? new Date(b.created).getTime() : 0);
     return bTime - aTime;
   });
-  // Filter out Hindi posts (category 'हिंदी' or 'Hindi')
+
+  // Filter out Hindi posts
   allPosts = allPosts.filter(post => {
     const cats = Array.isArray(post.category) ? post.category : [post.category];
     return !cats.some(cat => cat === 'हिंदी' || cat === 'Hindi');
   });
+
   // Pagination
   const totalPages = Math.ceil(allPosts.length / perPage);
   const paginated = allPosts.slice((page - 1) * perPage, page * perPage);
-  // Fetch author avatars for all posts
-  const postsWithAvatars = await Promise.all(
-    paginated.map(async (post) => {
-      const avatar = post.author ? await getAuthorAvatarByName(post.author) : undefined;
-      const { createdAt, ...rest } = post;
-      return { ...rest, authorAvatar: avatar };
-    })
-  );
+
+  // Assign avatars from the map
+  const postsWithAvatars = paginated.map((post) => {
+    let avatar = undefined;
+    if (post.author) {
+      // Try exact match first, then partial match if needed (though map is exact/lowercase)
+      avatar = authorsMap[post.author.toLowerCase()];
+      if (!avatar) {
+        // Fallback: Check if any author in map contains this name (legacy behavior approximation)
+        const foundKey = Object.keys(authorsMap).find(k => k.includes(post.author!.toLowerCase()));
+        if (foundKey) avatar = authorsMap[foundKey];
+      }
+    }
+    const { createdAt, ...rest } = post;
+    return { ...rest, authorAvatar: avatar };
+  });
+
   return { posts: postsWithAvatars, totalPages };
 }

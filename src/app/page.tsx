@@ -5,7 +5,7 @@ import CategoryMenu from "../components/CategoryMenu";
 import Footer from "../components/Footer";
 import Image from "next/image";
 import Link from "next/link";
-import Loader from "../components/Loader";
+import HomeSkeleton from "../components/HomeSkeleton";
 import { Suspense } from "react";
 
 
@@ -58,7 +58,7 @@ export default async function Home({ searchParams }: HomeProps) {
     <div className="bg-white min-h-screen flex flex-col">
       <Header categoryMenu={<CategoryMenu />} />
       <main className="flex-1">
-        <Suspense fallback={<Loader />}>
+        <Suspense fallback={<HomeSkeleton />}>
           <div className="max-w-4xl mx-auto px-4">
             {featured && (
               <section className="mt-12">

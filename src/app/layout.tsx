@@ -82,11 +82,7 @@ export default function RootLayout({
         {/* Preconnects for Cloudinary and analytics to reduce connection time */}
         <link rel="preconnect" href="https://res.cloudinary.com" />
         <link rel="preconnect" href="https://www.googletagmanager.com" />
-        <link
-          rel="preload"
-          as="image"
-          href="/placeholder.png"
-        />
+
         {/* Google Analytics */}
         {GA_MEASUREMENT_ID && (
           <>
