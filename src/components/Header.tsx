@@ -30,7 +30,7 @@ function Header({ categoryMenu }: HeaderProps) {
       }}
     >
       <div className="max-w-5xl mx-auto flex flex-row items-center justify-between py-3 px-4">
-        <div className="flex items-center">
+        <div className="flex items-center mr-8">
           <Link href="/" className="flex items-center" onClick={() => setLoading(true)} title="Home">
             {/* Original Eye/Face SVG Logo */}
             <svg width="40" height="40" viewBox="0 0 48 48" fill="none" className="mr-2">
@@ -43,15 +43,16 @@ function Header({ categoryMenu }: HeaderProps) {
               <circle cx="29" cy="23" r="1.2" fill="#222" />
               <path d="M20 28c1.5 1.5 6.5 1.5 8 0" stroke="#222" strokeWidth="1.5" strokeLinecap="round" />
             </svg>
-            <span className="text-2xl font-extrabold text-[#222] tracking-tight" style={{ letterSpacing: '-1px' }}>Ahmad Blogs</span>
+            <span className="text-2xl font-extrabold text-[#222] tracking-tight whitespace-nowrap" style={{ letterSpacing: '-1px' }}>Ahmad Blogs</span>
           </Link>
         </div>
         {/* Desktop Nav with Category Dropdown */}
-        <nav className="hidden md:flex gap-8 text-base font-semibold text-[#222] items-center">
-          <Link href="/" className="hover:text-[#3CB371]" onClick={() => setLoading(true)} title="Home">Home</Link>
-          <Link href="/services" className="hover:text-[#3CB371]" onClick={() => setLoading(true)} title="Services">Services</Link>
+        <nav className="hidden lg:flex gap-5 xl:gap-8 text-base font-semibold text-[#222] items-center whitespace-nowrap">
+          <Link href="/" className="hover:text-[#3CB371] whitespace-nowrap" onClick={() => setLoading(true)} title="Home">Home</Link>
+          <Link href="/services" className="hover:text-[#3CB371] whitespace-nowrap" onClick={() => setLoading(true)} title="Services">Services</Link>
+          <Link href="/products" className="hover:text-[#3CB371] whitespace-nowrap" onClick={() => setLoading(true)} title="Products">Products</Link>
           <div className="relative group">
-            <button className="hover:text-[#3CB371] flex items-center gap-1 focus:outline-none" title="Categories">
+            <button className="hover:text-[#3CB371] flex items-center gap-1 focus:outline-none whitespace-nowrap" title="Categories">
               Categories
               <svg width="16" height="16" fill="none" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6" stroke="#3CB371" strokeWidth="2" strokeLinecap="round" /></svg>
             </button>
@@ -59,21 +60,22 @@ function Header({ categoryMenu }: HeaderProps) {
               {categoryMenu}
             </div>
           </div>
-          <Link href="/about" className="hover:text-[#3CB371]" title="About Me">About Me</Link>
-          <Link href="/contact" className="hover:text-[#3CB371]" title="Contact Me">Contact Me</Link>
-          <Link href="/portfolio" className="hover:text-[#3CB371]" title="Portfolio">Portfolio</Link>
-          <Link href="/guest-post" className="hover:text-[#3CB371]" title="Guest Post">Guest Post</Link>
+          <Link href="/about" className="hover:text-[#3CB371] whitespace-nowrap" title="About Me">About Me</Link>
+          <Link href="/contact" className="hover:text-[#3CB371] whitespace-nowrap" title="Contact Me">Contact Me</Link>
+          <Link href="/portfolio" className="hover:text-[#3CB371] whitespace-nowrap" title="Portfolio">Portfolio</Link>
+          <Link href="/guest-post" className="hover:text-[#3CB371] whitespace-nowrap" title="Guest Post">Guest Post</Link>
         </nav>
         {/* Mobile Hamburger */}
-        <button className="md:hidden p-2 rounded focus:outline-none" onClick={() => setMobileOpen((v) => !v)} aria-label="Open menu">
+        <button className="lg:hidden p-2 rounded focus:outline-none" onClick={() => setMobileOpen((v) => !v)} aria-label="Open menu">
           <svg width="28" height="28" fill="none" viewBox="0 0 24 24"><path d="M4 6h16M4 12h16M4 18h16" stroke="#232946" strokeWidth="2" strokeLinecap="round" /></svg>
         </button>
       </div>
       {/* Mobile Nav */}
       {mobileOpen && (
-        <nav className="md:hidden bg-white border-t border-gray-100 px-4 pb-4 pt-2 flex flex-col gap-2 text-base font-semibold text-[#232946] shadow">
+        <nav className="lg:hidden bg-white border-t border-gray-100 px-4 pb-4 pt-2 flex flex-col gap-2 text-base font-semibold text-[#232946] shadow">
           <Link href="/" className="hover:text-[#3CB371]" onClick={() => { setMobileOpen(false); setLoading(true); }} title="Home">Home</Link>
           <Link href="/services" className="hover:text-[#3CB371]" onClick={() => { setMobileOpen(false); setLoading(true); }} title="Services">Services</Link>
+          <Link href="/products" className="hover:text-[#3CB371]" onClick={() => { setMobileOpen(false); setLoading(true); }} title="Products">Products</Link>
           <div className="relative">
             <button
               className="hover:text-[#3CB371] flex items-center gap-1 focus:outline-none"

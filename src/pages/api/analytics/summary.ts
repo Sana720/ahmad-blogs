@@ -12,7 +12,9 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
     if (!SERVICE_ACCOUNT_JSON) {
       return res.status(500).json({ error: 'GA service account JSON not set in environment' });
     }
-    const credentials = JSON.parse(SERVICE_ACCOUNT_JSON);
+    // Replace raw newlines (which Next.js unescapes) with escaped '\n' to prevent JSON parse errors
+    const cleanJson = SERVICE_ACCOUNT_JSON.replace(/\n/g, '\\n');
+    const credentials = JSON.parse(cleanJson);
     const auth = new google.auth.GoogleAuth({
       credentials,
       scopes: ['https://www.googleapis.com/auth/analytics.readonly'],
