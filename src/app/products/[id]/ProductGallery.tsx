@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React from "react";
 import Image from "next/image";
 
 interface ProductGalleryProps {
@@ -8,7 +8,11 @@ interface ProductGalleryProps {
 }
 
 export default function ProductGallery({ images, title }: ProductGalleryProps) {
-  const [activeImage, setActiveImage] = useState(images[0] || "");
+  const [activeImage, setActiveImage] = React.useState(images[0] || "");
+
+  React.useEffect(() => {
+    setActiveImage(images[0] || "");
+  }, [images]);
 
   if (images.length <= 1) {
     return (

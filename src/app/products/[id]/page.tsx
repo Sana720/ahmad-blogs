@@ -7,6 +7,8 @@ import { getFirestoreProducts, getFirestoreProductById } from "../../../utils/pr
 import ProductGallery from "./ProductGallery";
 import ExpandableDescription from "./ExpandableDescription";
 
+export const revalidate = 60; // Revalidate dynamic pages every 60 seconds (ISR)
+
 interface Props {
   params: Promise<{ id: string }>;
 }
