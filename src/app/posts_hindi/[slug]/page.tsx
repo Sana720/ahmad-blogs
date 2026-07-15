@@ -4,6 +4,8 @@ import { notFound } from "next/navigation";
 import { publisher } from "@/utils/publisherSchema";
 import Head from "next/head";
 
+export const revalidate = 1; // Revalidate dynamic pages every second (near real-time)
+
 interface HindiPostDetailProps {
   params: { slug: string };
 }

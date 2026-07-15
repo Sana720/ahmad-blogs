@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 
+export const revalidate = 1; // Revalidate dynamic pages every second (near real-time)
+
 export async function generateMetadata({ params }: any): Promise<Metadata> {
   const category = decodeURIComponent(params?.category || '');
   return {
