@@ -18,6 +18,9 @@ export interface Product {
   faqs: { question: string; answer: string }[];
   images?: string[];
   pricingType?: 'Free' | 'Paid' | 'Freemium';
+  seoTitle?: string;
+  seoDescription?: string;
+  seoKeywords?: string;
 }
 
 export const products: Product[] = [

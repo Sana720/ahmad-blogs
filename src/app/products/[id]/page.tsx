@@ -25,19 +25,21 @@ export async function generateMetadata({ params }: Props) {
   const product = await getFirestoreProductById(id);
   if (!product) return {};
 
-  const cleanDescription = product.description || product.tagline;
-  const title = `${product.title} | Digital Products | Ahmad Blogs`;
+  const title = product.seoTitle || `${product.title} | Digital Products | Ahmad Blogs`;
+  const cleanDescription = product.seoDescription || product.description || product.tagline;
   
-  // Create rich, context-specific keywords
-  const keywords = [
-    product.title,
-    product.category,
-    ...(product.techStack || []),
-    "Ahmad Blogs",
-    "digital products",
-    "developer tools",
-    "software templates"
-  ];
+  // Create rich, context-specific keywords (support custom overrides)
+  const keywords = product.seoKeywords
+    ? product.seoKeywords.split(",").map(k => k.trim()).filter(Boolean)
+    : [
+        product.title,
+        product.category,
+        ...(product.techStack || []),
+        "Ahmad Blogs",
+        "digital products",
+        "developer tools",
+        "software templates"
+      ];
 
   return {
     title,
@@ -105,7 +107,7 @@ export default async function ProductDetailPage({ params }: Props) {
     "@type": "Product",
     "name": product.title,
     "image": product.images && product.images.length > 0 ? product.images : [product.image],
-    "description": product.description || product.tagline,
+    "description": product.seoDescription || product.description || product.tagline,
     "brand": {
       "@type": "Brand",
       "name": "Ahmad Blogs"

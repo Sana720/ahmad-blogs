@@ -35,6 +35,11 @@ export default function ProductsAdmin() {
   const [reviewsCount, setReviewsCount] = useState("10");
   const [releaseDate, setReleaseDate] = useState("");
   
+  // Custom SEO states
+  const [seoTitle, setSeoTitle] = useState("");
+  const [seoDescription, setSeoDescription] = useState("");
+  const [seoKeywords, setSeoKeywords] = useState("");
+  
   // FAQs State
   const [faqs, setFaqs] = useState<{ question: string; answer: string }[]>([
     { question: "", answer: "" }
@@ -119,6 +124,9 @@ export default function ProductsAdmin() {
     setReviewsCount("10");
     setReleaseDate("");
     setFaqs([{ question: "", answer: "" }]);
+    setSeoTitle("");
+    setSeoDescription("");
+    setSeoKeywords("");
   };
 
   const handleEdit = (product: Product) => {
@@ -142,6 +150,9 @@ export default function ProductsAdmin() {
     setReviewsCount(product.reviewsCount ? String(product.reviewsCount) : "10");
     setReleaseDate(product.releaseDate || "");
     setFaqs(product.faqs && product.faqs.length > 0 ? product.faqs : [{ question: "", answer: "" }]);
+    setSeoTitle(product.seoTitle || "");
+    setSeoDescription(product.seoDescription || "");
+    setSeoKeywords(product.seoKeywords || "");
   };
 
   const handleFaqChange = (index: number, field: "question" | "answer", value: string) => {
@@ -186,7 +197,10 @@ export default function ProductsAdmin() {
       rating: parseFloat(rating) || 4.5,
       reviewsCount: parseInt(reviewsCount) || 10,
       releaseDate: releaseDate || new Date().toLocaleDateString("en-US", { month: "short", year: "numeric" }),
-      faqs: cleanFaqs
+      faqs: cleanFaqs,
+      seoTitle,
+      seoDescription,
+      seoKeywords
     };
 
     try {
@@ -533,6 +547,47 @@ export default function ProductsAdmin() {
                   placeholder="Jan 2026"
                   className="w-full border border-gray-200 rounded-lg p-2.5 text-sm text-[#232946]"
                 />
+              </div>
+            </div>
+
+            {/* Custom SEO Fields Overrides */}
+            <div className="border-t border-gray-200 pt-6">
+              <h3 className="text-base font-bold text-[#232946] mb-4">SEO Metadata Overrides (Optional)</h3>
+              <p className="text-xs text-gray-400 mb-4">
+                If left blank, these fields are automatically generated based on the Product Title, Tagline, and Tech Stack.
+              </p>
+              
+              <div className="space-y-4">
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">Custom SEO Title</label>
+                  <input
+                    type="text"
+                    value={seoTitle}
+                    onChange={(e) => setSeoTitle(e.target.value)}
+                    placeholder="e.g. My Custom Title | Category | Site Name"
+                    className="w-full border border-gray-200 rounded-lg p-2.5 text-sm text-[#232946]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">Custom SEO Description</label>
+                  <textarea
+                    value={seoDescription}
+                    onChange={(e) => setSeoDescription(e.target.value)}
+                    placeholder="e.g. Write a custom meta description for search snippets..."
+                    rows={2}
+                    className="w-full border border-gray-200 rounded-lg p-2.5 text-sm text-[#232946]"
+                  />
+                </div>
+                <div>
+                  <label className="block text-sm font-semibold text-gray-700 mb-1">Custom SEO Keywords (comma separated)</label>
+                  <input
+                    type="text"
+                    value={seoKeywords}
+                    onChange={(e) => setSeoKeywords(e.target.value)}
+                    placeholder="e.g. Chrome Extension, SEO, Developer Tools"
+                    className="w-full border border-gray-200 rounded-lg p-2.5 text-sm text-[#232946]"
+                  />
+                </div>
               </div>
             </div>
 
