@@ -47,8 +47,34 @@ import CategoryMenu from '../../components/CategoryMenu';
 import Footer from '../../components/Footer';
 
 export default function AboutPage() {
+  const personSchema = {
+    "@context": "https://schema.org",
+    "@type": "Person",
+    "name": "Ahmad Sana",
+    "url": "https://ahmadblogs.com/about",
+    "image": "https://ahmadblogs.com/favicon.svg",
+    "jobTitle": "Full-Stack Developer & Freelancer",
+    "worksFor": {
+      "@type": "Organization",
+      "name": "Self-Employed"
+    },
+    "alumniOf": {
+      "@type": "EducationalOrganization",
+      "name": "B.Tech Graduation (2020)"
+    },
+    "sameAs": [
+      "https://github.com/Sana720",
+      "https://twitter.com/ahmadblogs"
+    ],
+    "description": "Full-stack developer specializing in MERN, Next.js, and React Native, and creator of Ahmad Blogs."
+  };
+
   return (
     <div className="min-h-screen flex flex-col bg-white">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(personSchema) }}
+      />
       <Header categoryMenu={<CategoryMenu />} />
       <main className="flex-1 max-w-3xl mx-auto py-16 px-4 text-[#232946] bg-white">
         <h1 className="text-4xl font-extrabold mb-6">About Me</h1>

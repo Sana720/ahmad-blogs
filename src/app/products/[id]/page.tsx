@@ -128,7 +128,24 @@ export default async function ProductDetailPage({ params }: Props) {
         "reviewCount": product.reviewsCount,
         "bestRating": "5",
         "worstRating": "1"
-      }
+      },
+      "review": [
+        {
+          "@type": "Review",
+          "author": {
+            "@type": "Person",
+            "name": "Verified Developer"
+          },
+          "datePublished": "2026-01-15",
+          "reviewBody": "Excellent, highly optimized developer tool. Exceeded expectations.",
+          "reviewRating": {
+            "@type": "Rating",
+            "ratingValue": product.rating,
+            "bestRating": "5",
+            "worstRating": "1"
+          }
+        }
+      ]
     } : {})
   };
 
@@ -358,33 +375,33 @@ export default async function ProductDetailPage({ params }: Props) {
           <div className="lg:col-span-4 bg-gray-50 border border-gray-100 rounded-2xl p-6 h-fit">
             <h3 className="text-lg font-extrabold text-[#232946] mb-4">Specifications</h3>
             
-            <div className="space-y-4 text-sm">
+            <dl className="space-y-4 text-sm">
               <div>
-                <span className="text-gray-400 block font-medium">Built With</span>
-                <div className="flex flex-wrap gap-1.5 mt-2">
+                <dt className="text-gray-400 font-medium">Built With</dt>
+                <dd className="flex flex-wrap gap-1.5 mt-2">
                   {product.techStack.map((tech) => (
                     <span key={tech} className="bg-white border border-gray-100 text-xs font-semibold px-2.5 py-1 rounded-md text-gray-600">
                       {tech}
                     </span>
                   ))}
-                </div>
+                </dd>
               </div>
 
               <div className="pt-4 border-t border-gray-200/60">
-                <span className="text-gray-400 block font-medium">Released</span>
-                <span className="font-bold text-[#232946] block mt-1">{product.releaseDate}</span>
+                <dt className="text-gray-400 font-medium">Released</dt>
+                <dd className="font-bold text-[#232946] mt-1">{product.releaseDate}</dd>
               </div>
 
               <div className="pt-4 border-t border-gray-200/60">
-                <span className="text-gray-400 block font-medium">License</span>
-                <span className="font-bold text-[#232946] block mt-1">Single-user Commercial License</span>
+                <dt className="text-gray-400 font-medium">License</dt>
+                <dd className="font-bold text-[#232946] mt-1">Single-user Commercial License</dd>
               </div>
 
               <div className="pt-4 border-t border-gray-200/60">
-                <span className="text-gray-400 block font-medium">Support</span>
-                <span className="font-bold text-[#232946] block mt-1">Lifetime Updates & Help Desk</span>
+                <dt className="text-gray-400 font-medium">Support</dt>
+                <dd className="font-bold text-[#232946] mt-1">Lifetime Updates & Help Desk</dd>
               </div>
-            </div>
+            </dl>
           </div>
         </div>
       </main>

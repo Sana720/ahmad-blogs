@@ -20,7 +20,15 @@ export default async function HindiPostDetail({ params }: HindiPostDetailProps) 
     "headline": post.title,
     "description": post.content?.slice(0, 160) || post.title,
     "image": post.coverImage || "/default-og.png",
-    "author": post.authorId ? { "@type": "Person", "name": post.authorId } : undefined,
+    "author": post.authorId ? {
+      "@type": "Person",
+      "name": post.authorId,
+      "url": "https://ahmadblogs.com/about",
+      "sameAs": [
+        "https://github.com/Sana720",
+        "https://twitter.com/ahmadblogs"
+      ]
+    } : undefined,
     "datePublished": post.publishedAt || post.createdAt,
     "dateModified": post.updatedAt || post.publishedAt || post.createdAt,
     "url": canonicalUrl,
@@ -67,8 +75,30 @@ export default async function HindiPostDetail({ params }: HindiPostDetailProps) 
           <div>Firestore Slug: <code>{post.slug}</code></div>
           <div>Equal: <b>{slug === post.slug ? 'YES' : 'NO'}</b></div>
         </div>
+
+        {/* Quick Summary Block (AEO) */}
+        {post.content && (
+          <div style={{ background: '#f9f9f9', borderLeft: '4px solid #3CB371', padding: '16px', borderRadius: '0 8px 8px 0', margin: '20px 0' }}>
+            <strong style={{ fontSize: '12px', textTransform: 'uppercase', letterSpacing: '0.05em', color: '#3CB371', display: 'block', marginBottom: '4px' }}>
+              त्वरित सारांश (Quick Summary / Direct Answer)
+            </strong>
+            <p style={{ margin: 0, fontSize: '15px', color: '#232946', fontWeight: 600, lineHeight: 1.6 }}>
+              {post.content.replace(/[#*`_]/g, '').slice(0, 180)}...
+            </p>
+          </div>
+        )}
+
         <MarkdownRenderer content={post.content} />
-        {/* Add SocialShare, Comments, etc. as needed */}
+
+        {/* Citations & References (GEO) */}
+        <div style={{ marginTop: '48px', paddingTop: '24px', borderTop: '1px solid #eee', fontSize: '12px', color: '#888' }}>
+          <p style={{ fontWeight: 'bold', margin: '0 0 4px 0' }}>Citations & References:</p>
+          <p style={{ margin: 0 }}>
+            Originally published on <a href={canonicalUrl} style={{ textDecoration: 'underline', color: '#3CB371' }}>{canonicalUrl}</a>. 
+            Content verified and published by <span style={{ fontWeight: 500, color: '#555' }}>Ahmad Blogs</span>. 
+            For professional inquiries or permissions, contact our editorial team.
+          </p>
+        </div>
       </main>
     </>
   );

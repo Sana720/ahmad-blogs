@@ -156,7 +156,15 @@ export default async function PostPage(props: { params: { slug: string } }) {
     "headline": post.title,
     "description": post.excerpt || post.content?.slice(0, 160) || post.title,
     "image": post.image || "/default-og.png",
-    "author": post.author ? { "@type": "Person", "name": post.author } : undefined,
+    "author": post.author ? {
+      "@type": "Person",
+      "name": post.author,
+      "url": "https://ahmadblogs.com/about",
+      "sameAs": [
+        "https://github.com/Sana720",
+        "https://twitter.com/ahmadblogs"
+      ]
+    } : undefined,
     "datePublished": post.date || post.created,
     "dateModified": post.date || post.created,
     "url": canonicalUrl,
@@ -238,9 +246,28 @@ export default async function PostPage(props: { params: { slug: string } }) {
             </div>
           </div>
           <div className={`max-w-3xl mx-auto text-base sm:text-[1rem] text-[#232946] space-y-6 prose prose-headings:text-[#232946] prose-img:rounded-xl prose-img:mx-auto ${styles.postContent}`}>
+            {post.excerpt && (
+              <div className="bg-gray-50 border-l-4 border-[#3CB371] p-5 rounded-r-xl my-6">
+                <strong className="text-xs font-extrabold uppercase tracking-wider text-[#3CB371] block mb-1">
+                  Quick Summary (Direct Answer)
+                </strong>
+                <p className="text-[#232946] text-base font-semibold leading-relaxed m-0">
+                  {post.excerpt}
+                </p>
+              </div>
+            )}
             {post.content && (
               <MarkdownRenderer content={Array.isArray(post.content) ? post.content.join('\n\n') : post.content} />
             )}
+          </div>
+          {/* Citations / Sources for GEO */}
+          <div className="max-w-3xl mx-auto mt-12 pt-6 border-t border-gray-100 text-xs text-gray-400">
+            <p className="font-semibold mb-1">Citations & References:</p>
+            <p>
+              Originally published on <a href={canonicalUrl} className="underline hover:text-[#3CB371]">{canonicalUrl}</a>. 
+              Content verified and published by <span className="font-medium text-gray-500">Ahmad Blogs</span>. 
+              For professional inquiries or permissions, contact our editorial team.
+            </p>
           </div>
           <div className="max-w-3xl mx-auto flex flex-col md:flex-row justify-between items-center mt-8 mb-6 gap-4">
             <div className="flex gap-2 flex-wrap">
