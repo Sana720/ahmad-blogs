@@ -1,12 +1,10 @@
 import React from "react";
 import Link from "next/link";
-import Image from "next/image";
 import { notFound } from "next/navigation";
 import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
 import { getFirestoreProducts, getFirestoreProductById } from "../../../utils/productsFirestore";
 import ProductGallery from "./ProductGallery";
-import MarkdownRenderer from "../../posts/[slug]/MarkdownRenderer";
 import ExpandableDescription from "./ExpandableDescription";
 
 interface Props {
@@ -25,9 +23,63 @@ export async function generateMetadata({ params }: Props) {
   const product = await getFirestoreProductById(id);
   if (!product) return {};
 
+  const cleanDescription = product.description || product.tagline;
+  const title = `${product.title} | Digital Products | Ahmad Blogs`;
+  
+  // Create rich, context-specific keywords
+  const keywords = [
+    product.title,
+    product.category,
+    ...(product.techStack || []),
+    "Ahmad Blogs",
+    "digital products",
+    "developer tools",
+    "software templates"
+  ];
+
   return {
-    title: `${product.title} | Digital Products`,
-    description: product.tagline,
+    title,
+    description: cleanDescription,
+    keywords,
+    authors: [{ name: "Ahmad Sana" }],
+    publisher: "Ahmad Blogs",
+    alternates: {
+      canonical: `https://ahmadblogs.com/products/${id}`
+    },
+    robots: {
+      index: true,
+      follow: true,
+      googleBot: {
+        index: true,
+        follow: true,
+        'max-video-preview': -1,
+        'max-image-preview': 'large',
+        'max-snippet': -1,
+      },
+    },
+    openGraph: {
+      title,
+      description: cleanDescription,
+      url: `https://ahmadblogs.com/products/${id}`,
+      type: "website",
+      siteName: "Ahmad Blogs",
+      images: [
+        {
+          url: product.image,
+          width: 1200,
+          height: 630,
+          alt: product.title,
+        }
+      ],
+      locale: "en_US",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title,
+      description: cleanDescription,
+      images: [product.image],
+      creator: "@ahmadblogs",
+    }
   };
 }
 
@@ -43,8 +95,98 @@ export default async function ProductDetailPage({ params }: Props) {
     ? `$${product.price.slice(0, -1)}`
     : (product.price.startsWith('$') || isNaN(Number(product.price)) ? product.price : `$${product.price}`);
 
+  const priceVal = parseFloat(product.price.replace(/[^0-9.]/g, "")) || 0;
+
+  // JSON-LD schemas for rich snippet/SEO optimization
+  const productSchema = {
+    "@context": "https://schema.org",
+    "@type": "Product",
+    "name": product.title,
+    "image": product.images && product.images.length > 0 ? product.images : [product.image],
+    "description": product.description || product.tagline,
+    "brand": {
+      "@type": "Brand",
+      "name": "Ahmad Blogs"
+    },
+    "offers": {
+      "@type": "Offer",
+      "url": `https://ahmadblogs.com/products/${id}`,
+      "priceCurrency": "USD",
+      "price": priceVal,
+      "priceValidUntil": "2027-12-31",
+      "itemCondition": "https://schema.org/NewCondition",
+      "availability": "https://schema.org/InStock",
+      "seller": {
+        "@type": "Organization",
+        "name": "Ahmad Blogs"
+      }
+    },
+    ...(product.reviewsCount > 0 ? {
+      "aggregateRating": {
+        "@type": "AggregateRating",
+        "ratingValue": product.rating,
+        "reviewCount": product.reviewsCount,
+        "bestRating": "5",
+        "worstRating": "1"
+      }
+    } : {})
+  };
+
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      {
+        "@type": "ListItem",
+        "position": 1,
+        "name": "Home",
+        "item": "https://ahmadblogs.com"
+      },
+      {
+        "@type": "ListItem",
+        "position": 2,
+        "name": "Products",
+        "item": "https://ahmadblogs.com/products"
+      },
+      {
+        "@type": "ListItem",
+        "position": 3,
+        "name": product.title,
+        "item": `https://ahmadblogs.com/products/${id}`
+      }
+    ]
+  };
+
+  const faqSchema = product.faqs && product.faqs.length > 0 ? {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": product.faqs.map(faq => ({
+      "@type": "Question",
+      "name": faq.question,
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": faq.answer
+      }
+    }))
+  } : null;
+
   return (
     <div className="bg-white min-h-screen flex flex-col">
+      {/* Schema Markup injection */}
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+      />
+      {faqSchema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(faqSchema) }}
+        />
+      )}
       <Header />
       <main className="flex-1 max-w-5xl mx-auto py-12 px-4 w-full">
         {/* Breadcrumb & Back button */}
