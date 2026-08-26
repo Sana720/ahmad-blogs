@@ -17,6 +17,7 @@ export interface Product {
   releaseDate: string;
   faqs: { question: string; answer: string }[];
   images?: string[];
+  youtubeUrls?: string[];
   pricingType?: 'Free' | 'Paid' | 'Freemium';
   seoTitle?: string;
   seoDescription?: string;

@@ -3,9 +3,12 @@ import Link from "next/link";
 import { notFound } from "next/navigation";
 import Header from "../../../components/Header";
 import Footer from "../../../components/Footer";
-import { getFirestoreProducts, getFirestoreProductById } from "../../../utils/productsFirestore";
+import { getFirestoreProducts, getFirestoreProductById, getPlansForProduct } from "../../../utils/productsFirestore";
 import ProductGallery from "./ProductGallery";
 import ExpandableDescription from "./ExpandableDescription";
+import PurchaseCTA from "./PurchaseCTA";
+import ProductReviews from "../../../components/ProductReviews";
+import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
 export const revalidate = 1; // Revalidate dynamic pages every second (near real-time)
 
@@ -94,6 +97,8 @@ export default async function ProductDetailPage({ params }: Props) {
   if (!product) {
     notFound();
   }
+
+  const plans = await getPlansForProduct(product.id);
 
   const priceStr = product.price.endsWith('$')
     ? `$${product.price.slice(0, -1)}`
@@ -229,6 +234,7 @@ export default async function ProductDetailPage({ params }: Props) {
           <div className="lg:col-span-7 w-full">
             <ProductGallery
               images={product.images && product.images.length > 0 ? product.images : [product.image]}
+              youtubeUrls={product.youtubeUrls || []}
               title={product.title}
             />
           </div>
@@ -253,16 +259,17 @@ export default async function ProductDetailPage({ params }: Props) {
             </p>
 
             <div className="flex items-center gap-1.5 mb-6 pb-6 border-b border-gray-100">
-              <div className="flex text-amber-400">
-                {Array.from({ length: 5 }).map((_, idx) => (
-                  <svg
-                    key={idx}
-                    className={`w-4 h-4 ${idx < Math.floor(product.rating) ? 'fill-current' : 'text-gray-300'}`}
-                    viewBox="0 0 20 20"
-                    fill="currentColor"
-                  >
-                    <path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z" />
-                  </svg>
+              <div className="flex text-amber-400 text-lg">
+                {[1, 2, 3, 4, 5].map((star) => (
+                  <span key={star}>
+                    {product.rating >= star ? (
+                      <FaStar />
+                    ) : product.rating >= star - 0.5 ? (
+                      <FaStarHalfAlt />
+                    ) : (
+                      <FaRegStar />
+                    )}
+                  </span>
                 ))}
               </div>
               <span className="text-sm font-bold text-gray-500">
@@ -279,7 +286,7 @@ export default async function ProductDetailPage({ params }: Props) {
                   <>
                     Free <span className="text-base font-medium text-gray-400">Basic</span>
                     <span className="mx-2 text-gray-300">•</span>
-                    {priceStr} <span className="text-base font-medium text-gray-400">Premium Upgrade</span>
+                    <span className="text-lg font-bold text-gray-400 mr-1">From</span>{priceStr}<span className="text-lg font-medium text-gray-400">/mo</span>
                   </>
                 ) : (
                   priceStr
@@ -293,42 +300,7 @@ export default async function ProductDetailPage({ params }: Props) {
             </div>
 
             {/* CTAs */}
-            <div className="flex flex-col sm:flex-row gap-3">
-              {product.downloadUrl && (
-                <a
-                  href={product.downloadUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 text-center py-3.5 bg-[#3CB371] hover:bg-[#2e945b] text-white text-base font-extrabold rounded-xl transition-all shadow-md shadow-[#3cb371]/20 cursor-pointer"
-                >
-                  {product.pricingType === "Freemium" ? "Install Free Extension" : "Download Now"}
-                </a>
-              )}
-              {product.purchaseUrl && (
-                <a
-                  href={product.purchaseUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className={`flex-1 text-center py-3.5 text-base font-extrabold rounded-xl transition-all cursor-pointer ${
-                    product.pricingType === "Freemium"
-                      ? "bg-white hover:bg-gray-50 text-[#3CB371] border-2 border-[#3CB371]"
-                      : "bg-[#3CB371] hover:bg-[#2e945b] text-white shadow-md shadow-[#3cb371]/20"
-                  }`}
-                >
-                  {product.pricingType === "Freemium" ? `Get Premium (${priceStr})` : "Buy Now"}
-                </a>
-              )}
-              {product.demoUrl && (
-                <a
-                  href={product.demoUrl}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="flex-1 text-center py-3.5 bg-gray-50 hover:bg-gray-100 text-[#232946] text-base font-extrabold rounded-xl border border-gray-200 transition-all cursor-pointer"
-                >
-                  Live Demo
-                </a>
-              )}
-            </div>
+            <PurchaseCTA product={product} priceStr={priceStr} plans={plans} />
           </div>
         </div>
 
@@ -408,6 +380,9 @@ export default async function ProductDetailPage({ params }: Props) {
             </dl>
           </div>
         </div>
+
+        {/* Reviews Section */}
+        <ProductReviews productId={product.id} rating={product.rating} reviewsCount={product.reviewsCount} />
       </main>
       <Footer />
     </div>

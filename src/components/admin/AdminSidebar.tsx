@@ -7,6 +7,8 @@ import { app } from '../../utils/firebase';
 
 const links = [
   { href: '/admin', label: 'Dashboard' },
+  { href: '/admin/orders', label: 'Orders' },
+  { href: '/admin/licenses', label: 'Licenses' },
   { href: '/admin/posts', label: 'Posts' },
   { href: '/admin/categories', label: 'Categories' },
   { href: '/admin/newsletter', label: 'Newsletter' },
@@ -15,6 +17,7 @@ const links = [
   { href: '/admin/comments', label: 'Comments' },
   { href: '/admin/portfolio', label: 'Portfolio' },
   { href: '/admin/products', label: 'Products' },
+  { href: '/admin/reviews', label: 'Reviews' },
   { href: '/admin/guest-posts', label: 'Guest Posts' },
   { href: '/admin/settings', label: 'Settings' },
 ];

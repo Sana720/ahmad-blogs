@@ -4,9 +4,12 @@ import {
   getFirestoreProducts,
   addFirestoreProduct,
   updateFirestoreProduct,
-  deleteFirestoreProduct
+  deleteFirestoreProduct,
+  getPlansForProduct,
+  savePlansForProduct
 } from "../../utils/productsFirestore";
 import { Product } from "../../utils/productsData";
+import { Plan } from "../../types/license";
 import RequireAuth from "./RequireAuth";
 
 export default function ProductsAdmin() {
@@ -44,6 +47,9 @@ export default function ProductsAdmin() {
   const [faqs, setFaqs] = useState<{ question: string; answer: string }[]>([
     { question: "", answer: "" }
   ]);
+  
+  // Plans State
+  const [plans, setPlans] = useState<Partial<Plan>[]>([]);
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const files = e.target.files;
@@ -124,12 +130,13 @@ export default function ProductsAdmin() {
     setReviewsCount("10");
     setReleaseDate("");
     setFaqs([{ question: "", answer: "" }]);
+    setPlans([]);
     setSeoTitle("");
     setSeoDescription("");
     setSeoKeywords("");
   };
 
-  const handleEdit = (product: Product) => {
+  const handleEdit = async (product: Product) => {
     setEditingId(product.id);
     setId(product.id);
     setTitle(product.title || "");
@@ -153,6 +160,15 @@ export default function ProductsAdmin() {
     setSeoTitle(product.seoTitle || "");
     setSeoDescription(product.seoDescription || "");
     setSeoKeywords(product.seoKeywords || "");
+
+    // Fetch plans
+    try {
+      const fetchedPlans = await getPlansForProduct(product.id);
+      setPlans(fetchedPlans);
+    } catch (err) {
+      console.error("Error fetching plans", err);
+      setPlans([]);
+    }
   };
 
   const handleFaqChange = (index: number, field: "question" | "answer", value: string) => {
@@ -206,6 +222,7 @@ export default function ProductsAdmin() {
     try {
       if (editingId) {
         await updateFirestoreProduct(editingId, productData);
+        await savePlansForProduct(editingId, plans);
         alert("Product updated successfully!");
       } else {
         // Double check uniqueness of id
@@ -215,6 +232,7 @@ export default function ProductsAdmin() {
           return;
         }
         await addFirestoreProduct(id, productData);
+        await savePlansForProduct(id, plans);
         alert("Product added successfully!");
       }
       resetForm();
@@ -632,6 +650,159 @@ export default function ProductsAdmin() {
                         rows={2}
                         className="w-full border border-gray-200 rounded-lg p-2 text-xs text-[#232946]"
                       />
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Plans management */}
+            <div className="border-t border-gray-200 pt-6">
+              <div className="flex items-center justify-between mb-4">
+                <h3 className="text-base font-bold text-[#232946]">Product Subscription Plans</h3>
+                <button
+                  type="button"
+                  onClick={() => setPlans([...plans, { name: "", slug: "", price: 0, currency: "USD", active: true, maxDevices: 1, durationDays: 30, lifetime: false }])}
+                  className="px-3 py-1 bg-[#3CB371] hover:bg-[#2e945b] text-white text-xs font-bold rounded-md"
+                >
+                  + Add Plan
+                </button>
+              </div>
+              <div className="space-y-4">
+                {plans.map((plan, idx) => (
+                  <div key={idx} className="bg-white border border-gray-200 rounded-xl p-4 flex flex-col gap-3 relative">
+                    <button
+                      type="button"
+                      onClick={() => setPlans(plans.filter((_, i) => i !== idx))}
+                      className="absolute top-3 right-3 text-red-500 hover:text-red-700 text-xs font-bold"
+                    >
+                      Delete
+                    </button>
+                    <div className="grid grid-cols-2 md:grid-cols-5 gap-4 w-[90%]">
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-500 mb-1">Plan Name</label>
+                        <input
+                          type="text"
+                          value={plan.name || ""}
+                          onChange={(e) => {
+                            const newPlans = [...plans];
+                            newPlans[idx].name = e.target.value;
+                            setPlans(newPlans);
+                          }}
+                          placeholder="e.g. Monthly"
+                          className="w-full border border-gray-200 rounded-lg p-2 text-xs text-[#232946]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-500 mb-1">Slug</label>
+                        <input
+                          type="text"
+                          value={plan.slug || ""}
+                          onChange={(e) => {
+                            const newPlans = [...plans];
+                            newPlans[idx].slug = e.target.value.toLowerCase().replace(/[^a-z0-9-]/g, "-");
+                            setPlans(newPlans);
+                          }}
+                          placeholder="e.g. monthly"
+                          className="w-full border border-gray-200 rounded-lg p-2 text-xs text-[#232946]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-500 mb-1">Regular Price</label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          value={plan.regularPrice === undefined ? "" : plan.regularPrice}
+                          onChange={(e) => {
+                            const newPlans = [...plans];
+                            newPlans[idx].regularPrice = e.target.value ? parseFloat(e.target.value) : undefined;
+                            setPlans(newPlans);
+                          }}
+                          placeholder="Optional"
+                          className="w-full border border-gray-200 rounded-lg p-2 text-xs text-[#232946]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-500 mb-1">Sale Price</label>
+                        <input
+                          type="number"
+                          step="0.01"
+                          value={plan.price || 0}
+                          onChange={(e) => {
+                            const newPlans = [...plans];
+                            newPlans[idx].price = parseFloat(e.target.value);
+                            setPlans(newPlans);
+                          }}
+                          className="w-full border border-gray-200 rounded-lg p-2 text-xs text-[#232946]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-500 mb-1">Currency</label>
+                        <input
+                          type="text"
+                          value={plan.currency || "USD"}
+                          onChange={(e) => {
+                            const newPlans = [...plans];
+                            newPlans[idx].currency = e.target.value.toUpperCase();
+                            setPlans(newPlans);
+                          }}
+                          className="w-full border border-gray-200 rounded-lg p-2 text-xs text-[#232946]"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-500 mb-1">Duration (Days)</label>
+                        <input
+                          type="number"
+                          value={plan.durationDays === null ? "" : plan.durationDays || 30}
+                          disabled={plan.lifetime}
+                          onChange={(e) => {
+                            const newPlans = [...plans];
+                            newPlans[idx].durationDays = parseInt(e.target.value);
+                            setPlans(newPlans);
+                          }}
+                          className="w-full border border-gray-200 rounded-lg p-2 text-xs text-[#232946] disabled:bg-gray-100"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-xs font-semibold text-gray-500 mb-1">Max Devices</label>
+                        <input
+                          type="number"
+                          value={plan.maxDevices || 1}
+                          onChange={(e) => {
+                            const newPlans = [...plans];
+                            newPlans[idx].maxDevices = parseInt(e.target.value);
+                            setPlans(newPlans);
+                          }}
+                          className="w-full border border-gray-200 rounded-lg p-2 text-xs text-[#232946]"
+                        />
+                      </div>
+                      <div className="flex items-center gap-2 mt-6">
+                        <input
+                          type="checkbox"
+                          checked={plan.lifetime || false}
+                          onChange={(e) => {
+                            const newPlans = [...plans];
+                            newPlans[idx].lifetime = e.target.checked;
+                            if (e.target.checked) newPlans[idx].durationDays = null;
+                            setPlans(newPlans);
+                          }}
+                          className="w-4 h-4 accent-[#3CB371]"
+                        />
+                        <label className="text-xs font-semibold text-gray-500">Lifetime Plan</label>
+                      </div>
+                      <div className="flex items-center gap-2 mt-6">
+                        <input
+                          type="checkbox"
+                          checked={plan.active !== false}
+                          onChange={(e) => {
+                            const newPlans = [...plans];
+                            newPlans[idx].active = e.target.checked;
+                            setPlans(newPlans);
+                          }}
+                          className="w-4 h-4 accent-[#3CB371]"
+                        />
+                        <label className="text-xs font-semibold text-gray-500">Active</label>
+                      </div>
                     </div>
                   </div>
                 ))}
