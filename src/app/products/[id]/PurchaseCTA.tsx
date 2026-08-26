@@ -93,6 +93,9 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
               <div className="bg-[#232946] text-white text-[8px] font-bold px-1 py-0.5 rounded-sm w-12 text-center leading-none h-[20px] flex items-center justify-center border-b-[2px] border-[#F9A021] shadow-sm">DISCOVER</div>
             </div>
             <p className="text-gray-400 text-[13px] font-medium text-center">Skip the forms and pay faster with PayPal!</p>
+            <div className="mt-3 p-3 bg-orange-50 border border-orange-200 rounded-lg text-[12px] text-orange-800 text-center w-full max-w-sm mx-auto">
+              <span className="font-bold">🇮🇳 Indian Users:</span> PayPal does not support domestic payments. Please <a href="https://wa.me/917209362004" target="_blank" className="font-bold underline text-orange-900">WhatsApp me</a> to buy via UPI.
+            </div>
           </div>
         )}
       </div>

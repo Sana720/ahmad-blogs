@@ -26,7 +26,7 @@ export async function sendLicenseEmail(
 
   try {
     const data = await resend.emails.send({
-      from: `Ahmed Blogs <${fromEmail}>`,
+      from: `Ahmad Blogs <${fromEmail}>`,
       to: [toEmail],
       subject: `Your ${productName} License Key (${planName})`,
       html: `

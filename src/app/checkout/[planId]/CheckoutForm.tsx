@@ -43,6 +43,12 @@ export default function CheckoutForm({ planId, planName }: CheckoutFormProps) {
             customerName={name} 
           />
         </div>
+
+        <div className="mt-4 p-4 bg-orange-50 border border-orange-200 rounded-xl text-sm text-orange-800 text-center">
+          <span className="font-bold">🇮🇳 Indian Users:</span> PayPal does not support domestic payments in India. 
+          <br/>
+          Please <a href="https://wa.me/917209362004" target="_blank" className="font-bold underline text-orange-900">WhatsApp me (+91 7209362004)</a> to buy your license directly via UPI!
+        </div>
       </div>
     );
   }
