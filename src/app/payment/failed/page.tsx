@@ -3,7 +3,14 @@ import Link from "next/link";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
-export default function PaymentFailedPage() {
+interface Props {
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
+}
+
+export default async function PaymentFailedPage({ searchParams }: Props) {
+  const resolvedParams = await searchParams;
+  const planId = typeof resolvedParams.planId === "string" ? resolvedParams.planId : undefined;
+
   return (
     <div className="min-h-screen bg-gray-50 flex flex-col">
       <Header />
@@ -20,12 +27,22 @@ export default function PaymentFailedPage() {
             We couldn't process your payment. Your card has not been charged, and no license was generated.
           </p>
           
-          <Link
-            href="/products"
-            className="inline-block w-full py-3.5 px-4 bg-[#232946] hover:bg-[#1a1f35] text-white font-bold rounded-xl transition-colors shadow-md"
-          >
-            Return to Products
-          </Link>
+          <div className="flex flex-col space-y-3">
+            {planId && (
+              <Link
+                href={`/checkout/${planId}`}
+                className="inline-block w-full py-3.5 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-colors shadow-md"
+              >
+                Retry Payment
+              </Link>
+            )}
+            <Link
+              href="/products"
+              className={`inline-block w-full py-3.5 px-4 ${planId ? 'bg-gray-100 hover:bg-gray-200 text-gray-800' : 'bg-[#232946] hover:bg-[#1a1f35] text-white'} font-bold rounded-xl transition-colors shadow-md`}
+            >
+              Return to Products
+            </Link>
+          </div>
         </div>
       </main>
       <Footer />

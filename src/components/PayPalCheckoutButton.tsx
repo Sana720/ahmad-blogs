@@ -98,12 +98,12 @@ export default function PayPalCheckoutButton({
           }}
           onCancel={() => {
             // Optional: Handle cancellation
-            router.push("/payment/failed");
+            router.push(`/payment/failed?planId=${planId}`);
           }}
           onError={(err) => {
             console.error("PayPal Error:", err);
             setError("An unexpected error occurred with PayPal.");
-            router.push("/payment/failed");
+            router.push(`/payment/failed?planId=${planId}`);
           }}
         />
       </PayPalScriptProvider>
