@@ -286,7 +286,7 @@ export default async function ProductDetailPage({ params }: Props) {
                   <>
                     Free <span className="text-base font-medium text-gray-400">Basic</span>
                     <span className="mx-2 text-gray-300">•</span>
-                    <span className="text-lg font-bold text-gray-400 mr-1">From</span>{priceStr}<span className="text-lg font-medium text-gray-400">/mo</span>
+                    <span className="text-lg font-bold text-gray-400 mr-1">From</span>{priceStr}
                   </>
                 ) : (
                   priceStr
