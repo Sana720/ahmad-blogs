@@ -199,7 +199,7 @@ export default function ProductReviews({ productId, rating, reviewsCount }: Prod
                     required
                     value={formData.authorName}
                     onChange={(e) => setFormData({...formData, authorName: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-[#3CB371] focus:border-transparent outline-none transition-all"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-[#3CB371] focus:border-transparent outline-none transition-all text-gray-900"
                     placeholder="John Doe"
                   />
                 </div>
@@ -211,7 +211,7 @@ export default function ProductReviews({ productId, rating, reviewsCount }: Prod
                     rows={4}
                     value={formData.text}
                     onChange={(e) => setFormData({...formData, text: e.target.value})}
-                    className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-[#3CB371] focus:border-transparent outline-none transition-all resize-none"
+                    className="w-full border border-gray-300 rounded-lg px-4 py-2.5 focus:ring-2 focus:ring-[#3CB371] focus:border-transparent outline-none transition-all resize-none text-gray-900"
                     placeholder="Tell others what you think about this product..."
                   />
                 </div>

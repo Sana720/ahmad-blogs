@@ -7,10 +7,11 @@ import Head from "next/head";
 export const revalidate = 1; // Revalidate dynamic pages every second (near real-time)
 
 interface HindiPostDetailProps {
-  params: { slug: string };
+  params: Promise<{ slug: string }>;
 }
 
-export default async function HindiPostDetail({ params }: HindiPostDetailProps) {
+export default async function HindiPostDetail(props: HindiPostDetailProps) {
+  const params = await props.params;
   const { slug } = params;
   const post = await getHindiPostBySlug(slug);
   if (!post) return notFound();

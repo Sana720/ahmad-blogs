@@ -1,13 +1,14 @@
 import type { Metadata } from "next";
 
-export async function generateMetadata({ params }: { params: { slug: string } }): Promise<Metadata> {
+export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }): Promise<Metadata> {
+  const { slug } = await params;
   const postsSnap = await getDocs(collection(db, "posts"));
   let postDoc = postsSnap.docs.find((doc) => {
     const data = doc.data() as Post;
-    return data.slug === params.slug;
+    return data.slug === slug;
   });
   if (!postDoc) {
-    postDoc = postsSnap.docs.find((doc) => doc.id === params.slug);
+    postDoc = postsSnap.docs.find((doc) => doc.id === slug);
   }
   if (!postDoc) {
     return {
@@ -137,8 +138,8 @@ async function getSimilarPosts(currentSlug: string, currentCategories: string[] 
   return similar.slice(0, 3);
 }
 
-export default async function PostPage(props: { params: { slug: string } }) {
-  const { params } = await props;
+export default async function PostPage(props: { params: Promise<{ slug: string }> }) {
+  const params = await props.params;
   const data = await getPostBySlug(params.slug);
   if (!data) return notFound();
   const { post, postDoc } = data;
