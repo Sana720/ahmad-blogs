@@ -50,38 +50,40 @@ export default function AuthorCrud() {
         <button type="submit" className="bg-[#3CB371] text-white px-4 py-2 rounded font-bold">{editing ? "Update" : "Add"}</button>
         {editing && <button type="button" onClick={() => { setEditing(null); setName(""); setAvatar(""); }} className="bg-gray-300 text-[#232946] px-4 py-2 rounded font-bold">Cancel</button>}
       </form>
-      <table className="w-full border text-[#232946]">
-        <thead>
-          <tr className="bg-[#f7f8fa] text-[#232946]">
-            <th className="p-2 border font-semibold">Name</th>
-            <th className="p-2 border font-semibold">Avatar</th>
-            <th className="p-2 border font-semibold">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {authors.map(author => (
-            <tr key={author.id}>
-              <td className="p-2 border">{author.name}</td>
-             <td className="p-2 border">
-  {author.avatar && (
-    <Image
-      src={author.avatar}
-      alt={author.name}
-      width={40}     // explicitly set width
-      height={40}    // explicitly set height
-      className="h-10 w-10 rounded-full object-cover"
-    />
-  )}
-</td>
-
-              <td className="p-2 border">
-                <button onClick={() => { setEditing(author); setName(author.name); setAvatar(author.avatar || ""); }} className="text-blue-600 mr-2">Edit</button>
-                <button onClick={() => handleDelete(author.id)} className="text-red-600">Delete</button>
-              </td>
+      <div className="overflow-x-auto">
+        <table className="w-full border text-[#232946] min-w-max">
+          <thead>
+            <tr className="bg-[#f7f8fa] text-[#232946]">
+              <th className="p-2 border font-semibold">Name</th>
+              <th className="p-2 border font-semibold">Avatar</th>
+              <th className="p-2 border font-semibold">Actions</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {authors.map(author => (
+              <tr key={author.id}>
+                <td className="p-2 border">{author.name}</td>
+               <td className="p-2 border">
+    {author.avatar && (
+      <Image
+        src={author.avatar}
+        alt={author.name}
+        width={40}     // explicitly set width
+        height={40}    // explicitly set height
+        className="h-10 w-10 rounded-full object-cover"
+      />
+    )}
+  </td>
+
+                <td className="p-2 border">
+                  <button onClick={() => { setEditing(author); setName(author.name); setAvatar(author.avatar || ""); }} className="text-blue-600 mr-2">Edit</button>
+                  <button onClick={() => handleDelete(author.id)} className="text-red-600">Delete</button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 }

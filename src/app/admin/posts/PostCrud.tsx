@@ -86,8 +86,8 @@ export default function PostCrud() {
           initialData={editing}
         />
       )}
-      <div className="mt-8">
-        <table className="w-full border text-[#232946]">
+      <div className="mt-8 overflow-x-auto">
+        <table className="w-full border text-[#232946] min-w-max">
           <thead>
             <tr className="bg-[#f7f8fa] text-[#232946]">
               <th className="p-2 border font-semibold">Title</th>

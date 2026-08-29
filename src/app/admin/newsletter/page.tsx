@@ -103,48 +103,50 @@ export default function AdminNewsletter() {
         </div>
         {loading ? <div>Loading...</div> : (
           <div className="bg-white rounded-xl shadow p-6">
-            <table className="w-full">
-              <thead>
-                <tr className="text-left text-sm text-[#666]"><th>Email</th><th>Created</th><th className="w-40">Actions</th></tr>
-              </thead>
-              <tbody>
-                {list.map(item => (
-                  <tr key={item.id} className="border-t py-2">
-                    <td className="py-3 text-[#232946]">{editingId === item.id ? (
-                      <input value={editingEmail} onChange={e => setEditingEmail(e.target.value)} className="border px-2 py-1" />
-                    ) : (
-                      // show common field names as fallback and finally the raw object for debugging
-                      <>{(item.email as string) || (item.Email as string) || (item.emailAddress as string) || JSON.stringify(item)}</>
-                    )}</td>
-                    <td className="text-[#232946]">{
-                      // createdAt may be a Firestore Timestamp-like object, a string, or missing
-                      (() => {
-                        const ca = item.createdAt as unknown;
-                        if (ca && typeof ca === 'object' && 'toDate' in ca && typeof (ca as any).toDate === 'function') {
-                          return (ca as any).toDate().toLocaleString();
-                        }
-                        return ca ? String(ca) : '';
-                      })()
-                    }</td>
-                    <td className="py-3">
-                      <div className="flex items-center gap-2 whitespace-nowrap">
-                        {editingId === item.id ? (
-                          <>
-                            <button onClick={saveEdit} className="bg-[#3CB371] text-white px-3 py-1 rounded text-sm">Save</button>
-                            <button onClick={() => setEditingId(null)} className="border px-3 py-1 rounded text-sm bg-white">Cancel</button>
-                          </>
-                        ) : (
-                          <>
-                            <button onClick={() => startEdit(item)} className="border px-3 py-1 rounded text-sm">Edit</button>
-                            <button onClick={() => handleDelete(item.id)} className="bg-red-500 text-white px-3 py-1 rounded text-sm">Delete</button>
-                          </>
-                        )}
-                      </div>
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            <div className="overflow-x-auto">
+              <table className="w-full min-w-max">
+                <thead>
+                  <tr className="text-left text-sm text-[#666]"><th>Email</th><th>Created</th><th className="w-40">Actions</th></tr>
+                </thead>
+                <tbody>
+                  {list.map(item => (
+                    <tr key={item.id} className="border-t py-2">
+                      <td className="py-3 text-[#232946]">{editingId === item.id ? (
+                        <input value={editingEmail} onChange={e => setEditingEmail(e.target.value)} className="border px-2 py-1" />
+                      ) : (
+                        // show common field names as fallback and finally the raw object for debugging
+                        <>{(item.email as string) || (item.Email as string) || (item.emailAddress as string) || JSON.stringify(item)}</>
+                      )}</td>
+                      <td className="text-[#232946]">{
+                        // createdAt may be a Firestore Timestamp-like object, a string, or missing
+                        (() => {
+                          const ca = item.createdAt as unknown;
+                          if (ca && typeof ca === 'object' && 'toDate' in ca && typeof (ca as any).toDate === 'function') {
+                            return (ca as any).toDate().toLocaleString();
+                          }
+                          return ca ? String(ca) : '';
+                        })()
+                      }</td>
+                      <td className="py-3">
+                        <div className="flex items-center gap-2 whitespace-nowrap">
+                          {editingId === item.id ? (
+                            <>
+                              <button onClick={saveEdit} className="bg-[#3CB371] text-white px-3 py-1 rounded text-sm">Save</button>
+                              <button onClick={() => setEditingId(null)} className="border px-3 py-1 rounded text-sm bg-white">Cancel</button>
+                            </>
+                          ) : (
+                            <>
+                              <button onClick={() => startEdit(item)} className="border px-3 py-1 rounded text-sm">Edit</button>
+                              <button onClick={() => handleDelete(item.id)} className="bg-red-500 text-white px-3 py-1 rounded text-sm">Delete</button>
+                            </>
+                          )}
+                        </div>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
             <Toasts toasts={toasts} removeToast={removeToast} />
           </div>
         )}

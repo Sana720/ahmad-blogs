@@ -76,3 +76,97 @@ export async function sendLicenseEmail(
     return { success: false, error };
   }
 }
+
+/**
+ * Sends an abandoned cart / pending transaction follow-up email
+ */
+export async function sendAbandonedCartEmail(
+  toEmail: string,
+  customerName: string | undefined,
+  productName: string,
+  planId: string,
+  stage: '1-hour' | '24-hour'
+) {
+  if (!resend) {
+    console.warn('RESEND_API_KEY is not set. Email not sent.');
+    console.warn(`Simulated Abandoned Cart Email (${stage}) to ${toEmail} for ${productName}`);
+    return { success: true, simulated: true };
+  }
+
+  const name = customerName || 'there';
+  const fromEmail = process.env.NEXT_PUBLIC_FROM_EMAIL || 'support@yourdomain.com';
+  const checkoutUrl = `https://ahmadblogs.com/checkout/${planId}`;
+
+  const subject = stage === '1-hour' 
+    ? `Need help completing your purchase for ${productName}?` 
+    : `Here is a 10% discount for ${productName}!`;
+
+  const heading = stage === '1-hour'
+    ? `Hi ${name}, did you face any issues?`
+    : `Hi ${name}, still thinking about ${productName}?`;
+
+  const bodyContent = stage === '1-hour'
+    ? `<p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin-bottom: 24px; text-align: center;">
+        We noticed that you started the checkout process for <strong>${productName}</strong> but didn't quite finish. 
+        If you faced any payment errors or technical issues, please reply to this email and let me know so I can help!
+       </p>
+       <div style="text-align: center; margin: 30px 0;">
+         <a href="${checkoutUrl}" style="background-color: #3CB371; color: #ffffff; padding: 14px 28px; border-radius: 8px; font-weight: 700; text-decoration: none; display: inline-block; font-size: 16px;">
+           Complete My Purchase
+         </a>
+       </div>`
+    : `<p style="color: #4b5563; font-size: 16px; line-height: 1.6; margin-bottom: 24px; text-align: center;">
+        We noticed you left <strong>${productName}</strong> in your cart yesterday. 
+        To help you get started, here is a <strong>10% off</strong> coupon code valid for the next 48 hours:
+       </p>
+       <div style="background-color: #f3f4f6; border: 2px dashed #3CB371; border-radius: 12px; padding: 24px; margin: 30px 0; text-align: center;">
+         <p style="margin: 0; color: #6b7280; font-size: 14px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">Use Code at Checkout</p>
+         <div style="font-family: 'Courier New', Courier, monospace; font-size: 26px; font-weight: 900; color: #111827; letter-spacing: 2px;">
+           COMEBACK10
+         </div>
+       </div>
+       <div style="text-align: center; margin: 30px 0;">
+         <a href="${checkoutUrl}" style="background-color: #3CB371; color: #ffffff; padding: 14px 28px; border-radius: 8px; font-weight: 700; text-decoration: none; display: inline-block; font-size: 16px;">
+           Claim My Discount & Checkout
+         </a>
+       </div>`;
+
+  try {
+    const data = await resend.emails.send({
+      from: `Ahmad Blogs <${fromEmail}>`,
+      to: [toEmail],
+      subject,
+      html: `
+        <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
+          
+          <div style="text-align: center; margin-bottom: 30px;">
+            <img src="https://ahmadblogs.com/apple-touch-icon.png" alt="Ahmad Blogs" style="height: 60px; width: auto; border-radius: 12px;" />
+          </div>
+
+          <h2 style="color: #111827; font-size: 24px; font-weight: 800; margin-bottom: 16px; text-align: center;">
+            ${heading}
+          </h2>
+          
+          ${bodyContent}
+
+          <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;" />
+
+          <div style="color: #374151; font-size: 15px; line-height: 1.6;">
+            <p style="margin: 0 0 10px 0;">If you have any questions, need technical support, or just want to say hi, feel free to reply directly to this email or reach out on WhatsApp.</p>
+            
+            <div style="margin-top: 24px; padding-left: 16px; border-left: 4px solid #3CB371;">
+              <p style="margin: 0; font-weight: 700; color: #111827;">Ahmad Sana</p>
+              <p style="margin: 4px 0; color: #4b5563;"><a href="https://ahmadblogs.com" style="color: #3CB371; text-decoration: none; font-weight: 600;">ahmadblogs.com</a></p>
+              <p style="margin: 0; color: #4b5563;">+91-720 936 2004 (WhatsApp/Call)</p>
+            </div>
+          </div>
+        </div>
+      `,
+    });
+
+    return { success: true, data };
+  } catch (error) {
+    console.error('Error sending abandoned cart email:', error);
+    return { success: false, error };
+  }
+}

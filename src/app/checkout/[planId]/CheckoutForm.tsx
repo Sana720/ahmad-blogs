@@ -2,6 +2,7 @@
 
 import React, { useState } from "react";
 import PayPalCheckoutButton from "@/components/PayPalCheckoutButton";
+import ExitIntentPopup from "@/components/ExitIntentPopup";
 
 interface CheckoutFormProps {
   planId: string;
@@ -11,6 +12,7 @@ interface CheckoutFormProps {
 export default function CheckoutForm({ planId, planName }: CheckoutFormProps) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
+  const [discountCode, setDiscountCode] = useState("");
   const [isReadyForPayment, setIsReadyForPayment] = useState(false);
 
   const handleContinue = (e: React.FormEvent) => {
@@ -25,9 +27,13 @@ export default function CheckoutForm({ planId, planName }: CheckoutFormProps) {
   if (isReadyForPayment) {
     return (
       <div className="space-y-6">
+        <ExitIntentPopup />
         <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
           <p className="text-sm text-gray-500 mb-1">Sending license to:</p>
           <p className="font-bold text-gray-900">{email}</p>
+          {discountCode && (
+            <p className="text-sm text-gray-600 mt-2 font-medium">Discount applied: <span className="uppercase text-[#3CB371] font-bold">{discountCode}</span></p>
+          )}
           <button 
             onClick={() => setIsReadyForPayment(false)}
             className="text-sm text-[#3CB371] hover:underline mt-2 font-medium"
@@ -40,7 +46,8 @@ export default function CheckoutForm({ planId, planName }: CheckoutFormProps) {
           <PayPalCheckoutButton 
             planId={planId} 
             customerEmail={email} 
-            customerName={name} 
+            customerName={name}
+            discountCode={discountCode}
           />
         </div>
 
@@ -54,7 +61,9 @@ export default function CheckoutForm({ planId, planName }: CheckoutFormProps) {
   }
 
   return (
-    <form onSubmit={handleContinue} className="space-y-5">
+    <>
+      <ExitIntentPopup />
+      <form onSubmit={handleContinue} className="space-y-5">
       <div>
         <label htmlFor="name" className="block text-sm font-semibold text-gray-700 mb-1">
           Full Name <span className="text-gray-400 font-normal">(Optional)</span>
@@ -87,6 +96,20 @@ export default function CheckoutForm({ planId, planName }: CheckoutFormProps) {
         </p>
       </div>
 
+      <div>
+        <label htmlFor="discountCode" className="block text-sm font-semibold text-gray-700 mb-1">
+          Discount Code <span className="text-gray-400 font-normal">(Optional)</span>
+        </label>
+        <input
+          type="text"
+          id="discountCode"
+          value={discountCode}
+          onChange={(e) => setDiscountCode(e.target.value)}
+          className="w-full px-4 py-3 text-gray-900 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#3CB371] focus:border-[#3CB371] outline-none transition-all uppercase"
+          placeholder="e.g. SAVE20"
+        />
+      </div>
+
       <button
         type="submit"
         className="w-full py-3.5 px-4 bg-[#232946] hover:bg-[#1a1f35] text-white font-bold rounded-xl transition-colors shadow-md"
@@ -94,5 +117,6 @@ export default function CheckoutForm({ planId, planName }: CheckoutFormProps) {
         Continue to Payment
       </button>
     </form>
+    </>
   );
 }

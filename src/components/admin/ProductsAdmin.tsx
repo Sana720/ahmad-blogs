@@ -835,8 +835,8 @@ export default function ProductsAdmin() {
         ) : products.length === 0 ? (
           <p className="text-gray-500 text-sm">No products found in Firestore.</p>
         ) : (
-          <div className="border border-gray-100 rounded-2xl overflow-hidden shadow-sm">
-            <table className="w-full text-left border-collapse text-sm">
+          <div className="border border-gray-100 rounded-2xl overflow-x-auto shadow-sm">
+            <table className="w-full text-left border-collapse text-sm min-w-max">
               <thead>
                 <tr className="bg-gray-50 border-b border-gray-100 text-gray-600 font-semibold">
                   <th className="p-4">Image</th>

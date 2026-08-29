@@ -33,6 +33,10 @@ export interface Order {
   licenseId?: string;
   createdAt: string;
   updatedAt: string;
+  abandonmentEmail1Sent?: boolean;
+  abandonmentEmail2Sent?: boolean;
+  discountCode?: string;
+  originalAmount?: number;
 }
 
 export type LicenseStatus = 'ACTIVE' | 'EXPIRED' | 'REVOKED' | 'REFUNDED' | 'SUSPENDED';

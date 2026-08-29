@@ -26,9 +26,45 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'This plan is no longer available' }, { status: 400 });
     }
 
+    // Process Discount Code
+    let finalPrice = plan.price;
+    const bodyCode = body.discountCode?.trim().toUpperCase();
+    let appliedCode = '';
+    const originalAmount = plan.price;
+
+    if (bodyCode === 'COMEBACK10') {
+      // Validate that this user has an abandoned cart > 24 hours
+      const ordersSnapshot = await db.collection('orders')
+        .where('customerEmail', '==', customerEmail)
+        .where('paymentStatus', '==', 'PENDING')
+        .get();
+
+      let isEligible = false;
+      const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
+
+      for (const doc of ordersSnapshot.docs) {
+        const orderData = doc.data();
+        if (orderData.createdAt) {
+          const createdAtDate = new Date(orderData.createdAt);
+          if (createdAtDate < twentyFourHoursAgo) {
+            isEligible = true;
+            break;
+          }
+        }
+      }
+
+      if (!isEligible) {
+        return NextResponse.json({ error: 'This coupon code is not valid for your account.' }, { status: 400 });
+      }
+
+      // Apply 10% discount
+      finalPrice = finalPrice * 0.9;
+      appliedCode = 'COMEBACK10';
+    }
+
     // 2. Create the order in PayPal
     // We convert the price to string with 2 decimal places (e.g. 9.99)
-    const amountStr = plan.price.toFixed(2);
+    const amountStr = finalPrice.toFixed(2);
     const { jsonResponse, httpStatusCode } = await createOrder(amountStr, plan.currency);
 
     if (httpStatusCode !== 200 && httpStatusCode !== 201) {
@@ -48,12 +84,17 @@ export async function POST(req: Request) {
       customerName: customerName || '',
       productId: plan.productId || 'default-product', // handle existing ones that might not have it yet
       planId,
-      amount: plan.price,
+      amount: finalPrice, // The actual paid amount
       currency: plan.currency,
       paymentStatus: 'PENDING',
       createdAt: new Date().toISOString(),
       updatedAt: new Date().toISOString(),
     };
+
+    if (appliedCode) {
+      newOrder.discountCode = appliedCode;
+      newOrder.originalAmount = originalAmount;
+    }
 
     await newOrderRef.set(newOrder);
 

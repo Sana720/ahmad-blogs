@@ -1,43 +1,42 @@
 "use client";
 
 import React, { useState } from "react";
-import { PayPalScriptProvider, PayPalButtons } from "@paypal/react-paypal-js";
+import { PayPalScriptProvider, PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { useRouter } from "next/navigation";
 
 interface PayPalCheckoutButtonProps {
   planId: string;
   customerEmail: string;
   customerName?: string;
+  discountCode?: string;
 }
 
-export default function PayPalCheckoutButton({
+function PayPalButtonsWrapper({
   planId,
   customerEmail,
   customerName,
+  discountCode,
 }: PayPalCheckoutButtonProps) {
+  const [{ isPending }] = usePayPalScriptReducer();
   const [error, setError] = useState<string | null>(null);
   const router = useRouter();
 
-  const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "";
-
-  if (!clientId) {
-    return <div className="text-red-500 font-bold">PayPal Client ID is missing!</div>;
-  }
-
-  const initialOptions = {
-    clientId,
-    currency: "USD",
-    intent: "capture",
-  };
-
   return (
-    <div className="w-full">
+    <>
       {error && (
         <div className="mb-4 p-4 text-sm text-red-700 bg-red-100 rounded-lg">
           {error}
         </div>
       )}
-      <PayPalScriptProvider options={initialOptions}>
+      
+      {isPending && (
+        <div className="w-full flex flex-col space-y-4 animate-pulse">
+          <div className="h-12 bg-gray-200 rounded-md w-full"></div>
+          <div className="h-12 bg-gray-200 rounded-md w-full"></div>
+        </div>
+      )}
+
+      <div className={isPending ? "hidden" : "block"}>
         <PayPalButtons
           style={{ layout: "vertical", shape: "rect" }}
           createOrder={async () => {
@@ -52,6 +51,7 @@ export default function PayPalCheckoutButton({
                   planId,
                   customerEmail,
                   customerName,
+                  discountCode,
                 }),
               });
 
@@ -97,7 +97,6 @@ export default function PayPalCheckoutButton({
             }
           }}
           onCancel={() => {
-            // Optional: Handle cancellation
             router.push(`/payment/failed?planId=${planId}`);
           }}
           onError={(err) => {
@@ -106,6 +105,28 @@ export default function PayPalCheckoutButton({
             router.push(`/payment/failed?planId=${planId}`);
           }}
         />
+      </div>
+    </>
+  );
+}
+
+export default function PayPalCheckoutButton(props: PayPalCheckoutButtonProps) {
+  const clientId = process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID || "";
+
+  if (!clientId) {
+    return <div className="text-red-500 font-bold">PayPal Client ID is missing!</div>;
+  }
+
+  const initialOptions = {
+    clientId,
+    currency: "USD",
+    intent: "capture",
+  };
+
+  return (
+    <div className="w-full">
+      <PayPalScriptProvider options={initialOptions}>
+        <PayPalButtonsWrapper {...props} />
       </PayPalScriptProvider>
     </div>
   );
