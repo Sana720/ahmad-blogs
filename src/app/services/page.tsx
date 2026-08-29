@@ -212,9 +212,9 @@ export default function ServicesPage() {
                                         </ul>
 
                                         {/* Link Text - Turns Green */}
-                                        <div className="pt-4 border-t border-slate-100 flex items-center text-slate-900 font-semibold text-sm group-hover:text-green-600 transition-colors">
+                                        <a href="https://wa.me/917209362004" target="_blank" rel="noopener noreferrer" className="pt-4 border-t border-slate-100 flex items-center text-slate-900 font-semibold text-sm group-hover:text-green-600 transition-colors cursor-pointer">
                                             Explore Solution <FaArrowRight className="ml-2 w-3 h-3 transition-transform group-hover:translate-x-1" />
-                                        </div>
+                                        </a>
                                     </div>
                                 </div>
                             ))}
