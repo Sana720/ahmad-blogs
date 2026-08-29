@@ -39,7 +39,7 @@ export default async function handler(req: NextApiRequest, res: NextApiResponse)
       const to = (s as any).email;
       if (!to) continue;
       // best-effort send
-      // eslint-disable-next-line no-await-in-loop
+       
       await sendPostEmail(to, `New post: ${title}`, html);
     }
 
