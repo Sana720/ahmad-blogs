@@ -12,6 +12,7 @@ import {
     FaLayerGroup,
     FaCloud
 } from "react-icons/fa";
+import { servicesData } from "../../data/servicesContent";
 // Assuming you have these components set up
 import Header from "../../components/Header";
 import CategoryMenu from "../../components/CategoryMenu";
@@ -45,45 +46,7 @@ export const metadata: Metadata = {
     }
 };
 
-// Data Structure
-const services = [
-    {
-        title: "Enterprise ERP Solutions",
-        description: "Scalable architecture to unify your business operations. We build custom ERPs that integrate finance, HR, and supply chain into one cohesive ecosystem.",
-        icon: FaCogs,
-        features: ["Automated Workflows", "Real-time Analytics", "Secure Cloud Infrastructure"]
-    },
-    {
-        title: "Full-Stack Web Development",
-        description: "Performance-first web applications. We utilize Next.js and modern frameworks to deliver SEO-optimized, lightning-fast, and responsive digital experiences.",
-        icon: FaLaptopCode,
-        features: ["Server Side Rendering", "API Integration", "Progressive Web Apps"]
-    },
-    {
-        title: "Mobile Application Development",
-        description: "Native and Cross-platform solutions. We engineer intuitive mobile apps for iOS and Android that focus on retention and seamless user capability.",
-        icon: FaMobileAlt,
-        features: ["React Native / Flutter", "Offline Capabilities", "Biometric Security"]
-    },
-    {
-        title: "Data-Driven Digital Marketing",
-        description: "ROI-focused campaigns. We don't just run ads; we analyze user behavior to construct funnels that convert visitors into loyal customers.",
-        icon: FaChartLine,
-        features: ["Conversion Optimization", "Audience Segmentation", "Retargeting Strategies"]
-    },
-    {
-        title: "AI-Powered SEO & Discovery",
-        description: "Next-gen search dominance. Utilizing AI to analyze search intent and optimize content structure for maximum organic visibility and authority.",
-        icon: FaSearchDollar,
-        features: ["Semantic Search", "Technical Audits", "Competitor Analysis"]
-    },
-    {
-        title: "Cloud Infrastructure & DevOps",
-        description: "Resilient environments for your code. We architect secure, scalable cloud infrastructure and automated CI/CD pipelines to ensure zero downtime.",
-        icon: FaCloud,
-        features: ["AWS / Azure / GCP", "Automated Pipelines", "Container Orchestration"]
-    },
-];
+// Services data now imported from servicesContent.ts
 
 export default function ServicesPage() {
     return (
@@ -178,7 +141,7 @@ export default function ServicesPage() {
                         </div>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {services.map((service, index) => (
+                            {servicesData.map((service, index) => (
                                 <div
                                     key={index}
                                     // Border hover changes to green
@@ -198,7 +161,7 @@ export default function ServicesPage() {
                                         </h3>
 
                                         <p className="text-slate-600 leading-relaxed text-sm mb-6">
-                                            {service.description}
+                                            {service.shortDescription}
                                         </p>
 
                                         {/* Tech Features List - Checkmarks are Green */}
@@ -212,9 +175,9 @@ export default function ServicesPage() {
                                         </ul>
 
                                         {/* Link Text - Turns Green */}
-                                        <a href="https://wa.me/917209362004" target="_blank" rel="noopener noreferrer" className="pt-4 border-t border-slate-100 flex items-center text-slate-900 font-semibold text-sm group-hover:text-green-600 transition-colors cursor-pointer">
+                                        <Link href={`/services/${service.slug}`} className="pt-4 border-t border-slate-100 flex items-center text-slate-900 font-semibold text-sm group-hover:text-green-600 transition-colors cursor-pointer">
                                             Explore Solution <FaArrowRight className="ml-2 w-3 h-3 transition-transform group-hover:translate-x-1" />
-                                        </a>
+                                        </Link>
                                     </div>
                                 </div>
                             ))}
