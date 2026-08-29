@@ -37,11 +37,11 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Services | Ahmad Blogs - Enterprise Coding & Digital Solutions",
         description: "Explore our premium technical services: Enterprise ERP, Full-Stack Development, Mobile Apps, AI SEO, and Cloud Infrastructure. We build digital excellence.",
-        url: "https://ahmadblogs.com/services",
+        url: "https://www.ahmadblogs.com/services",
         type: "website",
     },
     alternates: {
-        canonical: "https://ahmadblogs.com/services"
+        canonical: "https://www.ahmadblogs.com/services"
     }
 };
 

@@ -7,6 +7,6 @@ export default function robots(): MetadataRoute.Robots {
             allow: '/',
             disallow: ['/admin/', '/api/'],
         },
-        sitemap: 'https://ahmadblogs.com/sitemap.xml',
+        sitemap: 'https://www.ahmadblogs.com/sitemap.xml',
     };
 }

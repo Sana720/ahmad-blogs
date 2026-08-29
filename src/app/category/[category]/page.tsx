@@ -10,7 +10,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
     openGraph: {
       title: `Category: ${category} | Ahmed Blogs`,
       description: `Browse all posts in the ${category} category on Ahmed Blogs. Discover articles, guides, and news about ${category}.`,
-      url: `https://ahmadblogs.com/category/${encodeURIComponent(category)}`,
+      url: `https://www.ahmadblogs.com/category/${encodeURIComponent(category)}`,
       type: "website",
       images: [
         {
@@ -31,7 +31,7 @@ export async function generateMetadata({ params }: any): Promise<Metadata> {
       creator: "@ahmadblogs"
     },
     alternates: {
-      canonical: `https://ahmadblogs.com/category/${encodeURIComponent(category)}`
+      canonical: `https://www.ahmadblogs.com/category/${encodeURIComponent(category)}`
     }
   };
 }

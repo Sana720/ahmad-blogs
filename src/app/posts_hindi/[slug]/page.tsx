@@ -16,7 +16,7 @@ export default async function HindiPostDetail(props: HindiPostDetailProps) {
   const post = await getHindiPostBySlug(slug);
   if (!post) return notFound();
   // Article schema for SEO
-  const canonicalUrl = `https://ahmadblogs.com/posts_hindi/${post.slug}`;
+  const canonicalUrl = `https://www.ahmadblogs.com/posts_hindi/${post.slug}`;
   const schema = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -26,7 +26,7 @@ export default async function HindiPostDetail(props: HindiPostDetailProps) {
     "author": post.authorId ? {
       "@type": "Person",
       "name": post.authorId,
-      "url": "https://ahmadblogs.com/about",
+      "url": "https://www.ahmadblogs.com/about",
       "sameAs": [
         "https://github.com/Sana720",
         "https://twitter.com/ahmadblogs"
@@ -42,8 +42,8 @@ export default async function HindiPostDetail(props: HindiPostDetailProps) {
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ahmadblogs.com/" },
-      { "@type": "ListItem", "position": 2, "name": "हिंदी पोस्ट्स", "item": "https://ahmadblogs.com/posts_hindi" },
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.ahmadblogs.com/" },
+      { "@type": "ListItem", "position": 2, "name": "हिंदी पोस्ट्स", "item": "https://www.ahmadblogs.com/posts_hindi" },
       { "@type": "ListItem", "position": 3, "name": post.title, "item": canonicalUrl }
     ]
   };
@@ -65,7 +65,7 @@ export default async function HindiPostDetail(props: HindiPostDetailProps) {
         <link rel="canonical" href={canonicalUrl} />
         <meta name="robots" content="index, follow" />
         <link rel="alternate" href={canonicalUrl} hrefLang="hi" />
-        <link rel="alternate" href={`https://ahmadblogs.com/posts/${post.slug}`} hrefLang="en" />
+        <link rel="alternate" href={`https://www.ahmadblogs.com/posts/${post.slug}`} hrefLang="en" />
       </Head>
       <main>
         <script type="application/ld+json" suppressHydrationWarning>{JSON.stringify(schema)}</script>

@@ -18,7 +18,7 @@ export const metadata = {
   openGraph: {
     title: "Terms & Conditions | Ahmed Blogs",
     description: "Read the terms and conditions for using Ahmed Blogs. Understand your rights, responsibilities, and the rules for using our website and services.",
-    url: "https://ahmadblogs.com/terms",
+    url: "https://www.ahmadblogs.com/terms",
     type: "article",
     images: [
       {
@@ -39,7 +39,7 @@ export const metadata = {
     creator: "@ahmadblogs"
   },
   alternates: {
-    canonical: "https://ahmadblogs.com/terms"
+    canonical: "https://www.ahmadblogs.com/terms"
   }
 };
 import Header from '../../components/Header';

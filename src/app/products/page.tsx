@@ -20,7 +20,7 @@ export const metadata: Metadata = {
     },
   },
   alternates: {
-    canonical: "https://ahmadblogs.com/products"
+    canonical: "https://www.ahmadblogs.com/products"
   }
 };
 

@@ -18,7 +18,7 @@ export const metadata = {
   openGraph: {
     title: "About Ahmad Sana | Ahmed Blogs",
     description: "Learn about Ahmad Sana, a full-stack developer and the creator of Ahmed Blogs. Discover his journey, experience, and mission to share knowledge about AI, coding, and freelancing.",
-    url: "https://ahmadblogs.com/about",
+    url: "https://www.ahmadblogs.com/about",
     type: "profile",
     images: [
       {
@@ -39,7 +39,7 @@ export const metadata = {
     creator: "@ahmadblogs"
   },
   alternates: {
-    canonical: "https://ahmadblogs.com/about"
+    canonical: "https://www.ahmadblogs.com/about"
   }
 };
 import Header from '../../components/Header';
@@ -51,8 +51,8 @@ export default function AboutPage() {
     "@context": "https://schema.org",
     "@type": "Person",
     "name": "Ahmad Sana",
-    "url": "https://ahmadblogs.com/about",
-    "image": "https://ahmadblogs.com/favicon.svg",
+    "url": "https://www.ahmadblogs.com/about",
+    "image": "https://www.ahmadblogs.com/favicon.svg",
     "jobTitle": "Full-Stack Developer & Freelancer",
     "worksFor": {
       "@type": "Organization",

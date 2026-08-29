@@ -4,7 +4,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { getFirestoreProducts } from '../../utils/productsFirestore';
 
 export async function GET() {
-  const baseUrl = 'https://ahmadblogs.com';
+  const baseUrl = 'https://www.ahmadblogs.com';
   let urls = [
     `${baseUrl}/`,
     `${baseUrl}/about`,

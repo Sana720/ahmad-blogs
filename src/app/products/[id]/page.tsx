@@ -51,7 +51,7 @@ export async function generateMetadata({ params }: Props) {
     authors: [{ name: "Ahmad Sana" }],
     publisher: "Ahmad Blogs",
     alternates: {
-      canonical: `https://ahmadblogs.com/products/${id}`
+      canonical: `https://www.ahmadblogs.com/products/${id}`
     },
     robots: {
       index: true,
@@ -67,7 +67,7 @@ export async function generateMetadata({ params }: Props) {
     openGraph: {
       title,
       description: cleanDescription,
-      url: `https://ahmadblogs.com/products/${id}`,
+      url: `https://www.ahmadblogs.com/products/${id}`,
       type: "website",
       siteName: "Ahmad Blogs",
       images: [
@@ -119,7 +119,7 @@ export default async function ProductDetailPage({ params }: Props) {
     },
     "offers": {
       "@type": "Offer",
-      "url": `https://ahmadblogs.com/products/${id}`,
+      "url": `https://www.ahmadblogs.com/products/${id}`,
       "priceCurrency": "USD",
       "price": priceVal,
       "priceValidUntil": "2027-12-31",
@@ -166,19 +166,19 @@ export default async function ProductDetailPage({ params }: Props) {
         "@type": "ListItem",
         "position": 1,
         "name": "Home",
-        "item": "https://ahmadblogs.com"
+        "item": "https://www.ahmadblogs.com"
       },
       {
         "@type": "ListItem",
         "position": 2,
         "name": "Products",
-        "item": "https://ahmadblogs.com/products"
+        "item": "https://www.ahmadblogs.com/products"
       },
       {
         "@type": "ListItem",
         "position": 3,
         "name": product.title,
-        "item": `https://ahmadblogs.com/products/${id}`
+        "item": `https://www.ahmadblogs.com/products/${id}`
       }
     ]
   };

@@ -4,7 +4,7 @@ export const metadata = {
   openGraph: {
     title: "Contact Us | Ahmed Blogs",
     description: "Contact Ahmed Blogs for questions, suggestions, or business inquiries. Get in touch with Ahmad Sana and the team.",
-    url: "https://ahmadblogs.com/contact",
+    url: "https://www.ahmadblogs.com/contact",
     type: "website",
     images: [
       {
@@ -25,6 +25,6 @@ export const metadata = {
     creator: "@ahmadblogs"
   },
   alternates: {
-    canonical: "https://ahmadblogs.com/contact"
+    canonical: "https://www.ahmadblogs.com/contact"
   }
 };

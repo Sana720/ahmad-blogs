@@ -33,7 +33,7 @@ export async function sendLicenseEmail(
         <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
           
           <div style="text-align: center; margin-bottom: 30px;">
-            <img src="https://ahmadblogs.com/apple-touch-icon.png" alt="Ahmad Blogs" style="height: 60px; width: auto; border-radius: 12px;" />
+            <img src="https://www.ahmadblogs.com/apple-touch-icon.png" alt="Ahmad Blogs" style="height: 60px; width: auto; border-radius: 12px;" />
           </div>
 
           <h2 style="color: #111827; font-size: 24px; font-weight: 800; margin-bottom: 16px; text-align: center;">
@@ -62,7 +62,7 @@ export async function sendLicenseEmail(
             
             <div style="margin-top: 24px; padding-left: 16px; border-left: 4px solid #3CB371;">
               <p style="margin: 0; font-weight: 700; color: #111827;">Ahmad Sana</p>
-              <p style="margin: 4px 0; color: #4b5563;"><a href="https://ahmadblogs.com" style="color: #3CB371; text-decoration: none; font-weight: 600;">ahmadblogs.com</a></p>
+              <p style="margin: 4px 0; color: #4b5563;"><a href="https://www.ahmadblogs.com" style="color: #3CB371; text-decoration: none; font-weight: 600;">ahmadblogs.com</a></p>
               <p style="margin: 0; color: #4b5563;">+91-720 936 2004 (WhatsApp/Call)</p>
             </div>
           </div>
@@ -95,7 +95,7 @@ export async function sendAbandonedCartEmail(
 
   const name = customerName || 'there';
   const fromEmail = process.env.NEXT_PUBLIC_FROM_EMAIL || 'support@yourdomain.com';
-  const checkoutUrl = `https://ahmadblogs.com/checkout/${planId}`;
+  const checkoutUrl = `https://www.ahmadblogs.com/checkout/${planId}`;
 
   const subject = stage === '1-hour' 
     ? `Need help completing your purchase for ${productName}?` 
@@ -140,7 +140,7 @@ export async function sendAbandonedCartEmail(
         <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 30px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 12px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);">
           
           <div style="text-align: center; margin-bottom: 30px;">
-            <img src="https://ahmadblogs.com/apple-touch-icon.png" alt="Ahmad Blogs" style="height: 60px; width: auto; border-radius: 12px;" />
+            <img src="https://www.ahmadblogs.com/apple-touch-icon.png" alt="Ahmad Blogs" style="height: 60px; width: auto; border-radius: 12px;" />
           </div>
 
           <h2 style="color: #111827; font-size: 24px; font-weight: 800; margin-bottom: 16px; text-align: center;">
@@ -156,7 +156,7 @@ export async function sendAbandonedCartEmail(
             
             <div style="margin-top: 24px; padding-left: 16px; border-left: 4px solid #3CB371;">
               <p style="margin: 0; font-weight: 700; color: #111827;">Ahmad Sana</p>
-              <p style="margin: 4px 0; color: #4b5563;"><a href="https://ahmadblogs.com" style="color: #3CB371; text-decoration: none; font-weight: 600;">ahmadblogs.com</a></p>
+              <p style="margin: 4px 0; color: #4b5563;"><a href="https://www.ahmadblogs.com" style="color: #3CB371; text-decoration: none; font-weight: 600;">ahmadblogs.com</a></p>
               <p style="margin: 0; color: #4b5563;">+91-720 936 2004 (WhatsApp/Call)</p>
             </div>
           </div>

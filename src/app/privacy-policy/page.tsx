@@ -18,7 +18,7 @@ export const metadata = {
   openGraph: {
     title: "Privacy Policy | Ahmed Blogs",
     description: "Read the privacy policy for Ahmed Blogs. Learn how we collect, use, and protect your personal data, and your rights as a visitor or subscriber.",
-    url: "https://ahmadblogs.com/privacy-policy",
+    url: "https://www.ahmadblogs.com/privacy-policy",
     type: "article",
     images: [
       {
@@ -39,7 +39,7 @@ export const metadata = {
     creator: "@ahmadblogs"
   },
   alternates: {
-    canonical: "https://ahmadblogs.com/privacy-policy"
+    canonical: "https://www.ahmadblogs.com/privacy-policy"
   }
 };
 import Header from '../../components/Header';

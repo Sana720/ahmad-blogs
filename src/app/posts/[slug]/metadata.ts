@@ -45,7 +45,7 @@ export async function generateMetadata({ params }: GenerateMetadataProps): Promi
       openGraph: {
         title: "Ahmad Blogs",
         description: "Ahmad Blogs – Latest posts, news, and updates.",
-        url: "https://ahmadblogs.com/",
+        url: "https://www.ahmadblogs.com/",
         images: ["/default-og.png"],
         type: "website"
       },
@@ -59,7 +59,7 @@ export async function generateMetadata({ params }: GenerateMetadataProps): Promi
   }
   const description = post.excerpt || post.content?.slice(0, 160) || post.title;
   const image = post.image || "/default-og.png";
-  const canonicalUrl = `https://ahmadblogs.com/posts/${post.slug}`;
+  const canonicalUrl = `https://www.ahmadblogs.com/posts/${post.slug}`;
   const publishedTime = post.date || post.created || '';
   const author = post.author || "Ahmad Blogs";
   const categories = Array.isArray(post.category) ? post.category : [post.category].filter(Boolean);
@@ -70,7 +70,7 @@ export async function generateMetadata({ params }: GenerateMetadataProps): Promi
       canonical: canonicalUrl,
       languages: {
         en: canonicalUrl,
-        hi: `https://ahmadblogs.com/posts_hindi/${post.slug}`
+        hi: `https://www.ahmadblogs.com/posts_hindi/${post.slug}`
       }
     },
     openGraph: {

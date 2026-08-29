@@ -26,13 +26,13 @@ const mulish = Mulish({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://ahmadblogs.com"),
+  metadataBase: new URL("https://www.ahmadblogs.com"),
   title: "Ahmad Blogs",
   description: "Ahmad Blogs is your go-to resource for AI, coding, freelancing, and tech insights. Discover tutorials, industry news, and expert tips to help you grow as a developer or digital entrepreneur.",
   openGraph: {
     title: "Ahmad Blogs",
     description: "Explore Ahmad Blogs for the latest in AI, programming, freelancing, and digital trends. Get actionable guides, news, and resources for tech professionals and enthusiasts.",
-    url: "https://ahmadblogs.com/",
+    url: "https://www.ahmadblogs.com/",
     type: "website",
     images: [
       {
@@ -59,10 +59,10 @@ const structuredData = {
   "@context": "https://schema.org",
   "@type": "WebSite",
   "name": "Ahmed Blogs",
-  "url": "https://ahmadblogs.com",
+  "url": "https://www.ahmadblogs.com",
   "potentialAction": {
     "@type": "SearchAction",
-    "target": "https://ahmadblogs.com/search?q={search_term_string}",
+    "target": "https://www.ahmadblogs.com/search?q={search_term_string}",
     "query-input": "required name=search_term_string"
   }
 };

@@ -2,10 +2,10 @@
 export const publisher = {
   "@type": "Organization",
   name: "Ahmad Blogs",
-  url: "https://ahmadblogs.com",
+  url: "https://www.ahmadblogs.com",
   logo: {
     "@type": "ImageObject",
-    url: "https://ahmadblogs.com/public/vercel.svg"
+    url: "https://www.ahmadblogs.com/public/vercel.svg"
   },
   sameAs: [
     "https://facebook.com/ahmadblogscc",

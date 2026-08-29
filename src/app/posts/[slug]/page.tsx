@@ -18,7 +18,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   }
   const post = postDoc.data() as Post;
   post.slug = post.slug || postDoc.id;
-  const canonicalUrl = `https://ahmadblogs.com/posts/${post.slug}`;
+  const canonicalUrl = `https://www.ahmadblogs.com/posts/${post.slug}`;
   const description = post.excerpt || (typeof post.content === 'string' ? post.content.slice(0, 160) : post.title);
   return {
     title: post.title,
@@ -56,10 +56,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       canonical: canonicalUrl,
       languages: {
         en: canonicalUrl,
-        hi: `https://ahmadblogs.com/posts_hindi/${post.slug}`,
+        hi: `https://www.ahmadblogs.com/posts_hindi/${post.slug}`,
       },
     },
-    metadataBase: new URL("https://ahmadblogs.com"),
+    metadataBase: new URL("https://www.ahmadblogs.com"),
   };
 }
 import Image from "next/image";
@@ -150,7 +150,7 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
   const similarPosts = await getSimilarPosts(post.slug, categories);
 
   // Article schema for SEO
-  const canonicalUrl = `https://ahmadblogs.com/posts/${post.slug}`;
+  const canonicalUrl = `https://www.ahmadblogs.com/posts/${post.slug}`;
   const schema = {
     "@context": "https://schema.org",
     "@type": "Article",
@@ -160,7 +160,7 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
     "author": post.author ? {
       "@type": "Person",
       "name": post.author,
-      "url": "https://ahmadblogs.com/about",
+      "url": "https://www.ahmadblogs.com/about",
       "sameAs": [
         "https://github.com/Sana720",
         "https://twitter.com/ahmadblogs"
@@ -176,8 +176,8 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
     "@context": "https://schema.org",
     "@type": "BreadcrumbList",
     "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ahmadblogs.com/" },
-      { "@type": "ListItem", "position": 2, "name": "Posts", "item": "https://ahmadblogs.com/posts" },
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://www.ahmadblogs.com/" },
+      { "@type": "ListItem", "position": 2, "name": "Posts", "item": "https://www.ahmadblogs.com/posts" },
       { "@type": "ListItem", "position": 3, "name": post.title, "item": canonicalUrl }
     ]
   };
