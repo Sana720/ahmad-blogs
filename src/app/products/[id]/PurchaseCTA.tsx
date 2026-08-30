@@ -219,6 +219,8 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
                   <CheckoutForm 
                     planId={selectedPlan.id || selectedPlan.slug} 
                     planName={selectedPlan.name} 
+                    planPrice={selectedPlan.price}
+                    currency={selectedPlan.currency}
                   />
                 </div>
               )}

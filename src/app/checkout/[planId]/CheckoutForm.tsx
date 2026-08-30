@@ -7,9 +7,11 @@ import ExitIntentPopup from "@/components/ExitIntentPopup";
 interface CheckoutFormProps {
   planId: string;
   planName: string;
+  planPrice: number;
+  currency: string;
 }
 
-export default function CheckoutForm({ planId, planName }: CheckoutFormProps) {
+export default function CheckoutForm({ planId, planName, planPrice, currency }: CheckoutFormProps) {
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
   const [discountCode, setDiscountCode] = useState("");
@@ -34,6 +36,22 @@ export default function CheckoutForm({ planId, planName }: CheckoutFormProps) {
           {discountCode && (
             <p className="text-sm text-gray-600 mt-2 font-medium">Discount applied: <span className="uppercase text-[#3CB371] font-bold">{discountCode}</span></p>
           )}
+          
+          <div className="mt-3 pt-3 border-t border-gray-200">
+            <div className="flex justify-between items-center text-sm mb-1">
+              <span className="text-gray-500">Original Price:</span>
+              <span className={discountCode && (discountCode.trim().toUpperCase() === 'COMEBACK10' || discountCode.trim().toUpperCase() === 'EXISTINGUSER' || discountCode.trim().toUpperCase() === 'EXISTING10') ? "line-through text-gray-400" : "font-bold text-gray-900"}>
+                {currency === "USD" ? "$" : ""}{planPrice}
+              </span>
+            </div>
+            {discountCode && (discountCode.trim().toUpperCase() === 'COMEBACK10' || discountCode.trim().toUpperCase() === 'EXISTINGUSER' || discountCode.trim().toUpperCase() === 'EXISTING10') && (
+              <div className="flex justify-between items-center text-base font-bold">
+                <span className="text-[#232946]">Total Due:</span>
+                <span className="text-[#3CB371]">{currency === "USD" ? "$" : ""}{(planPrice * 0.9).toFixed(2)}</span>
+              </div>
+            )}
+          </div>
+
           <button 
             onClick={() => setIsReadyForPayment(false)}
             className="text-sm text-[#3CB371] hover:underline mt-2 font-medium"

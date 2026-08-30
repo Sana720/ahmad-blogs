@@ -82,7 +82,12 @@ export default async function CheckoutPage({ params }: Props) {
             <div className="p-8 md:p-12">
               <h2 className="text-xl font-bold text-gray-900 mb-6">Payment Details</h2>
               {/* We use a Client Component for the form to handle state */}
-              <CheckoutForm planId={planId} planName={plan.name} />
+              <CheckoutForm 
+                planId={planId} 
+                planName={plan.name} 
+                planPrice={plan.price}
+                currency={plan.currency}
+              />
             </div>
           </div>
         </div>

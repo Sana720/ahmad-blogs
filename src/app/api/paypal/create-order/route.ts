@@ -60,10 +60,10 @@ export async function POST(req: Request) {
       // Apply 10% discount
       finalPrice = finalPrice * 0.9;
       appliedCode = 'COMEBACK10';
-    } else if (bodyCode === 'EXISTINGUSER') {
+    } else if (bodyCode === 'EXISTINGUSER' || bodyCode === 'EXISTING10') {
       // Apply 10% discount
       finalPrice = finalPrice * 0.9;
-      appliedCode = 'EXISTINGUSER';
+      appliedCode = bodyCode;
     }
 
     // 2. Create the order in PayPal
