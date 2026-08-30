@@ -23,6 +23,13 @@ export default function CheckoutForm({ planId, planName, planPrice, currency }: 
       alert("Please enter a valid email address.");
       return;
     }
+    if (discountCode) {
+      const code = discountCode.trim().toUpperCase();
+      if (code !== 'COMEBACK10' && code !== 'EXISTINGUSER' && code !== 'EXISTING10') {
+        alert("Invalid discount code.");
+        return;
+      }
+    }
     setIsReadyForPayment(true);
   };
 
