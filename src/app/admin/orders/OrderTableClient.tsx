@@ -1,34 +1,34 @@
 "use client";
 
 import React, { useState } from "react";
-import { License } from "@/types/license";
-import LicenseActions from "@/components/admin/LicenseActions";
+import { Order } from "@/types/license";
 
 interface Props {
-  initialLicenses: License[];
+  initialOrders: Order[];
 }
 
-export default function LicenseTableClient({ initialLicenses }: Props) {
+export default function OrderTableClient({ initialOrders }: Props) {
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
   // Filter logic
-  const filteredLicenses = initialLicenses.filter((license) => {
+  const filteredOrders = initialOrders.filter((order) => {
     const matchesSearch = 
-      license.customerEmail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      license.key.toLowerCase().includes(searchTerm.toLowerCase());
+      order.customerEmail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
+      order.paypalOrderId?.toLowerCase().includes(searchTerm.toLowerCase());
       
-    const matchesStatus = statusFilter === "ALL" || license.status === statusFilter;
+    const matchesStatus = statusFilter === "ALL" || order.paymentStatus === statusFilter;
 
     return matchesSearch && matchesStatus;
   });
 
   // Pagination logic
-  const totalPages = Math.ceil(filteredLicenses.length / itemsPerPage);
+  const totalPages = Math.ceil(filteredOrders.length / itemsPerPage);
   const startIndex = (currentPage - 1) * itemsPerPage;
-  const currentLicenses = filteredLicenses.slice(startIndex, startIndex + itemsPerPage);
+  const currentOrders = filteredOrders.slice(startIndex, startIndex + itemsPerPage);
 
   const handlePageChange = (newPage: number) => {
     if (newPage >= 1 && newPage <= totalPages) {
@@ -43,11 +43,12 @@ export default function LicenseTableClient({ initialLicenses }: Props) {
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
+      
       {/* FILTER BAR */}
       <div className="p-4 border-b border-gray-200 flex flex-col md:flex-row gap-4 items-center justify-between">
         <input
           type="text"
-          placeholder="Search by email or license key..."
+          placeholder="Search by email, name, or PayPal ID..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
           className="w-full md:max-w-md px-4 py-2 text-gray-900 placeholder-gray-400 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3CB371] focus:border-transparent"
@@ -59,8 +60,9 @@ export default function LicenseTableClient({ initialLicenses }: Props) {
           className="w-full md:w-auto px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3CB371]"
         >
           <option value="ALL">All Statuses</option>
-          <option value="ACTIVE">Active</option>
-          <option value="REVOKED">Revoked</option>
+          <option value="COMPLETED">Completed</option>
+          <option value="PENDING">Pending</option>
+          <option value="FAILED">Failed</option>
           <option value="REFUNDED">Refunded</option>
         </select>
       </div>
@@ -69,54 +71,51 @@ export default function LicenseTableClient({ initialLicenses }: Props) {
         <table className="w-full text-left border-collapse">
           <thead>
             <tr className="bg-gray-50 border-b border-gray-200 text-sm uppercase text-gray-500 font-semibold">
-              <th className="p-4 whitespace-nowrap">Generated</th>
+              <th className="p-4 whitespace-nowrap">Date</th>
               <th className="p-4 whitespace-nowrap">Customer</th>
-              <th className="p-4 whitespace-nowrap">License Key</th>
+              <th className="p-4 whitespace-nowrap">Plan</th>
+              <th className="p-4 whitespace-nowrap">Amount</th>
               <th className="p-4 whitespace-nowrap">Status</th>
-              <th className="p-4 whitespace-nowrap">Activations</th>
-              <th className="p-4 whitespace-nowrap">Actions</th>
+              <th className="p-4 whitespace-nowrap">PayPal ID</th>
             </tr>
           </thead>
           <tbody className="text-sm">
-            {currentLicenses.length === 0 ? (
+            {currentOrders.length === 0 ? (
               <tr>
                 <td colSpan={6} className="p-8 text-center text-gray-500">
-                  No licenses found.
+                  No orders found.
                 </td>
               </tr>
             ) : (
-              currentLicenses.map((license) => (
-                <tr key={license.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+              currentOrders.map((order) => (
+                <tr key={order.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
                   <td className="p-4 text-gray-600 whitespace-nowrap">
-                    {new Date(license.createdAt).toLocaleDateString()}
-                  </td>
-                  <td className="p-4 font-bold text-[#232946]">
-                    {license.customerEmail}
+                    {new Date(order.createdAt).toLocaleDateString()}
                   </td>
                   <td className="p-4">
-                    <span className="font-mono text-xs text-gray-800 bg-gray-100 px-2 py-1 rounded border border-gray-200">
-                      {license.key}
+                    <div className="font-bold text-[#232946]">{order.customerEmail}</div>
+                    {order.customerName && <div className="text-gray-500 text-xs">{order.customerName}</div>}
+                  </td>
+                  <td className="p-4">
+                    <span className="bg-blue-100 text-blue-800 px-2.5 py-1 rounded-md font-semibold text-xs uppercase tracking-wider">
+                      {order.planId}
                     </span>
+                  </td>
+                  <td className="p-4 font-bold text-gray-700 whitespace-nowrap">
+                    ${order.amount.toFixed(2)} {order.currency}
                   </td>
                   <td className="p-4">
                     <span className={`px-2.5 py-1 rounded-md font-bold text-xs uppercase tracking-wider ${
-                      license.status === 'ACTIVE' ? 'bg-green-100 text-green-800' :
-                      license.status === 'REVOKED' ? 'bg-red-100 text-red-800' :
-                      license.status === 'REFUNDED' ? 'bg-purple-100 text-purple-800' :
-                      'bg-gray-100 text-gray-800'
+                      order.paymentStatus === 'COMPLETED' ? 'bg-green-100 text-green-800' :
+                      order.paymentStatus === 'FAILED' ? 'bg-red-100 text-red-800' :
+                      order.paymentStatus === 'REFUNDED' ? 'bg-purple-100 text-purple-800' :
+                      'bg-yellow-100 text-yellow-800'
                     }`}>
-                      {license.status}
+                      {order.paymentStatus}
                     </span>
                   </td>
-                  <td className="p-4 font-bold text-gray-600">
-                    {license.activationCount} / {license.maxDevices}
-                  </td>
-                  <td className="p-4">
-                    <LicenseActions 
-                      licenseId={license.id!} 
-                      status={license.status} 
-                      customerEmail={license.customerEmail} 
-                    />
+                  <td className="p-4 font-mono text-xs text-gray-500 whitespace-nowrap">
+                    {order.paypalOrderId || 'N/A'}
                   </td>
                 </tr>
               ))
@@ -129,7 +128,7 @@ export default function LicenseTableClient({ initialLicenses }: Props) {
       {totalPages > 1 && (
         <div className="p-4 border-t border-gray-200 flex items-center justify-between bg-gray-50">
           <div className="text-sm text-gray-600">
-            Showing <span className="font-semibold text-gray-900">{startIndex + 1}</span> to <span className="font-semibold text-gray-900">{Math.min(startIndex + itemsPerPage, filteredLicenses.length)}</span> of <span className="font-semibold text-gray-900">{filteredLicenses.length}</span> results
+            Showing <span className="font-semibold text-gray-900">{startIndex + 1}</span> to <span className="font-semibold text-gray-900">{Math.min(startIndex + itemsPerPage, filteredOrders.length)}</span> of <span className="font-semibold text-gray-900">{filteredOrders.length}</span> results
           </div>
           <div className="flex gap-2">
             <button
