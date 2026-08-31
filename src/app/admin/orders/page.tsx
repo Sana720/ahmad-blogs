@@ -3,6 +3,7 @@ import admin from "@/utils/firebaseAdmin";
 import { Order } from "@/types/license";
 import AdminLayout from "@/components/admin/AdminLayout";
 import OrderTableClient from "./OrderTableClient";
+import RequireAuth from "@/components/admin/RequireAuth";
 
 export const revalidate = 0; // Don't cache admin pages
 
@@ -18,12 +19,14 @@ export default async function AdminOrdersPage() {
   });
 
   return (
-    <AdminLayout>
-      <div className="p-6 md:p-10 w-full max-w-7xl mx-auto">
-        <h1 className="text-3xl font-extrabold text-[#232946] mb-8">Manage Orders</h1>
-        
-        <OrderTableClient initialOrders={orders} />
-      </div>
-    </AdminLayout>
+    <RequireAuth>
+      <AdminLayout>
+        <div className="p-6 md:p-10 w-full max-w-7xl mx-auto">
+          <h1 className="text-3xl font-extrabold text-[#232946] mb-8">Manage Orders</h1>
+          
+          <OrderTableClient initialOrders={orders} />
+        </div>
+      </AdminLayout>
+    </RequireAuth>
   );
 }
