@@ -7,6 +7,7 @@ import { getFirestoreProducts, getFirestoreProductById, getPlansForProduct } fro
 import ProductGallery from "./ProductGallery";
 import ExpandableDescription from "./ExpandableDescription";
 import PurchaseCTA from "./PurchaseCTA";
+import GettingStartedModal from "./GettingStartedModal";
 import ProductReviews from "../../../components/ProductReviews";
 import { FaStar, FaStarHalfAlt, FaRegStar } from "react-icons/fa";
 
@@ -109,7 +110,9 @@ export default async function ProductDetailPage({ params }: Props) {
   // JSON-LD schemas for rich snippet/SEO optimization
   const productSchema = {
     "@context": "https://schema.org",
-    "@type": "Product",
+    "@type": "SoftwareApplication",
+    "applicationCategory": "DeveloperApplication",
+    "operatingSystem": "Windows, macOS, Linux, ChromeOS",
     "name": product.title,
     "image": product.images && product.images.length > 0 ? product.images : [product.image],
     "description": product.seoDescription || product.description || product.tagline,
@@ -299,6 +302,18 @@ export default async function ProductDetailPage({ params }: Props) {
               </span>
             </div>
 
+            <div className="mb-6 bg-green-50/80 border border-green-200/60 rounded-xl p-3.5 flex items-start sm:items-center gap-3">
+              <div className="bg-green-100 text-green-600 p-2 rounded-full shrink-0">
+                <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2.5">
+                  <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <div>
+                <h4 className="text-sm font-extrabold text-[#232946]">7-Day No-Questions-Asked Refund</h4>
+                <p className="text-xs text-gray-500 font-medium mt-0.5">Not satisfied? Get a full refund within 7 days of purchase.</p>
+              </div>
+            </div>
+
             {/* CTAs */}
             <PurchaseCTA product={product} priceStr={priceStr} plans={plans} />
           </div>
@@ -311,7 +326,7 @@ export default async function ProductDetailPage({ params }: Props) {
             <h2 className="text-2xl font-extrabold text-[#232946] mb-4">About the Product</h2>
             <div className="prose text-[#555] text-base leading-relaxed mb-8 prose-headings:text-[#232946] prose-headings:font-bold prose-headings:mt-6 prose-headings:mb-4">
               <ExpandableDescription>
-                <div dangerouslySetInnerHTML={{ __html: product.longDescription }} />
+                <div dangerouslySetInnerHTML={{ __html: product.longDescription.replace(/<img(?![^>]*\balt=)/gi, `<img alt="${product.title} Details"`) }} />
               </ExpandableDescription>
             </div>
 
@@ -377,7 +392,53 @@ export default async function ProductDetailPage({ params }: Props) {
                 <dt className="text-gray-400 font-medium">Support</dt>
                 <dd className="font-bold text-[#232946] mt-1">Lifetime Updates & Help Desk</dd>
               </div>
+
+              <div className="pt-4 border-t border-gray-200/60">
+                <dt className="text-gray-400 font-medium">Documentation</dt>
+                <dd className="mt-1">
+                  <GettingStartedModal productTitle={product.title} />
+                </dd>
+              </div>
             </dl>
+
+            <div className="mt-8 pt-6 border-t border-gray-200">
+              <h3 className="text-lg font-extrabold text-[#232946] mb-4">Why Buy From Us?</h3>
+              <ul className="space-y-4">
+                <li className="flex items-start gap-3">
+                  <div className="bg-green-100 text-green-600 p-2 rounded-full shrink-0">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm text-[#232946]">7-Day Refund Policy</h4>
+                    <p className="text-xs text-gray-500 mt-0.5">Not satisfied? Get a full refund within 7 days, no questions asked.</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="bg-blue-100 text-blue-600 p-2 rounded-full shrink-0">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm text-[#232946]">Secure Payment</h4>
+                    <p className="text-xs text-gray-500 mt-0.5">Your payment information is processed securely via PayPal or UPI.</p>
+                  </div>
+                </li>
+                <li className="flex items-start gap-3">
+                  <div className="bg-purple-100 text-purple-600 p-2 rounded-full shrink-0">
+                    <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="2">
+                      <path strokeLinecap="round" strokeLinejoin="round" d="M13 10V3L4 14h7v7l9-11h-7z" />
+                    </svg>
+                  </div>
+                  <div>
+                    <h4 className="font-bold text-sm text-[#232946]">Instant Access</h4>
+                    <p className="text-xs text-gray-500 mt-0.5">Get immediate access to your digital product right after purchase.</p>
+                  </div>
+                </li>
+              </ul>
+            </div>
           </div>
         </div>
 

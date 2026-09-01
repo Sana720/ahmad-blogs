@@ -49,6 +49,7 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
               href={product.downloadUrl}
               target="_blank"
               rel="noopener noreferrer"
+              title={`Download ${product.title}`}
               className="flex-1 flex items-center justify-center text-center px-2 py-2.5 sm:py-3 bg-white hover:bg-gray-50 text-[#3CB371] border-[1.5px] border-[#3CB371] text-[13px] sm:text-sm font-extrabold rounded-full transition-all shadow-sm cursor-pointer whitespace-nowrap"
             >
               {product.pricingType === "Freemium" ? "Install Free Extension" : "Download Now"}
@@ -94,7 +95,7 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
             </div>
             <p className="text-gray-400 text-[13px] font-medium text-center">Skip the forms and pay faster with PayPal!</p>
             <div className="mt-3 p-3 bg-orange-50 border border-orange-200 rounded-lg text-[12px] text-orange-800 text-center w-full max-w-sm mx-auto">
-              <span className="font-bold">🇮🇳 Indian Users:</span> PayPal does not support domestic payments. Please <a href="https://wa.me/917209362004" target="_blank" className="font-bold underline text-orange-900">WhatsApp me</a> to buy via UPI.
+              <span className="font-bold">🇮🇳 Indian Users:</span> PayPal does not support domestic payments. Please <a href="https://wa.me/917209362004" target="_blank" title="Contact via WhatsApp" className="font-bold underline text-orange-900">WhatsApp me</a> to buy via UPI.
             </div>
           </div>
         )}
@@ -235,7 +236,7 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
                 <span>⚡</span> Instant Delivery
               </div>
               <div className="flex items-center gap-1.5">
-                <span>🛡️</span> Guarantee
+                <span>🛡️</span> 7-Day No Questions Asked Refund
               </div>
             </div>
           </div>

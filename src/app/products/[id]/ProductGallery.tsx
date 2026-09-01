@@ -44,6 +44,7 @@ export default function ProductGallery({ images, youtubeUrls = [], title }: Prod
           <Image
             src={activeMedia.url || "https://images.unsplash.com/photo-1551288049-bebda4e38f71?auto=format&fit=crop&w=800&q=80"}
             alt={title}
+            title={title}
             fill
             className="object-cover"
             sizes="(max-width: 1024px) 100vw, 600px"
@@ -70,6 +71,7 @@ export default function ProductGallery({ images, youtubeUrls = [], title }: Prod
           <Image
             src={activeMedia.url}
             alt={title}
+            title={title}
             fill
             className="object-cover transition-all duration-300"
             sizes="(max-width: 1024px) 100vw, 600px"
@@ -96,6 +98,7 @@ export default function ProductGallery({ images, youtubeUrls = [], title }: Prod
                   <Image
                     src={`https://img.youtube.com/vi/${media.id}/mqdefault.jpg`}
                     alt={`${title} Video Thumbnail`}
+                    title={`${title} Video Thumbnail`}
                     fill
                     className="object-cover opacity-70"
                     sizes="80px"
@@ -112,6 +115,7 @@ export default function ProductGallery({ images, youtubeUrls = [], title }: Prod
                 <Image
                   src={media.url}
                   alt={`${title} Thumbnail ${idx + 1}`}
+                  title={`${title} Thumbnail ${idx + 1}`}
                   fill
                   className="object-cover"
                   sizes="80px"

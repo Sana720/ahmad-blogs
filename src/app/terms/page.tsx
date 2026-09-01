@@ -77,6 +77,9 @@ export default function TermsPage() {
           <h2>Changes to Terms</h2>
           <p>We may update these Terms from time to time. Changes will be posted on this page with an updated effective date.</p>
 
+          <h2>Refund Policy</h2>
+          <p>We offer a 7-day, no-questions-asked refund policy for all digital products purchased on our site. If you are not satisfied with your purchase within 7 days of the transaction, please contact us for a full refund.</p>
+
           <h2>Contact</h2>
           <p>Questions about these Terms should be directed via the Contact page or email: legal@ahmadblogs.com.</p>
         </section>
