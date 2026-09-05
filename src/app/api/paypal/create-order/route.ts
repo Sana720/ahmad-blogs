@@ -88,7 +88,7 @@ export async function POST(req: Request) {
       customerName: customerName || '',
       productId: plan.productId || 'default-product', // handle existing ones that might not have it yet
       planId,
-      amount: finalPrice, // The actual paid amount
+      amount: parseFloat(amountStr), // The actual paid amount sent to PayPal
       currency: plan.currency,
       paymentStatus: 'PENDING',
       createdAt: new Date().toISOString(),

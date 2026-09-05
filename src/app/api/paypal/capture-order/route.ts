@@ -57,7 +57,8 @@ export async function POST(req: Request) {
     const order = orderDoc.data() as Order;
 
     // 3. Verify security: Amount and Currency must match what we expect
-    if (order.amount !== captureAmount || order.currency !== captureCurrency) {
+    // We use a small epsilon for amount comparison to handle floating point errors when discounts were applied
+    if (Math.abs(order.amount - captureAmount) > 0.01 || order.currency !== captureCurrency) {
       console.error(`Amount mismatch for order ${order.id}. Expected ${order.amount} ${order.currency}, got ${captureAmount} ${captureCurrency}`);
       // Mark as failed/suspect
       await orderDoc.ref.update({

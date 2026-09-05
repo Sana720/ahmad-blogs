@@ -1,21 +1,86 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { License } from "@/types/license";
 import LicenseActions from "@/components/admin/LicenseActions";
+import { getFirestoreProducts, getPlansForProduct } from "@/utils/productsFirestore";
+import { Product } from "@/utils/productsData";
+import { Plan } from "@/types/license";
 
 interface Props {
   initialLicenses: License[];
 }
 
 export default function LicenseTableClient({ initialLicenses }: Props) {
+  const [licenses, setLicenses] = useState<License[]>(initialLicenses);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [products, setProducts] = useState<Product[]>([]);
+  const [plans, setPlans] = useState<Plan[]>([]);
+  
+  // Modal Form State
+  const [customerEmail, setCustomerEmail] = useState("");
+  const [customerName, setCustomerName] = useState("");
+  const [selectedProductId, setSelectedProductId] = useState("");
+  const [selectedPlanId, setSelectedPlanId] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("UPI");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  useEffect(() => {
+    if (isModalOpen && products.length === 0) {
+      getFirestoreProducts().then(setProducts);
+    }
+  }, [isModalOpen]);
+
+  useEffect(() => {
+    if (selectedProductId) {
+      getPlansForProduct(selectedProductId).then(setPlans);
+    } else {
+      setPlans([]);
+    }
+  }, [selectedProductId]);
+
+  const handleGenerateLicense = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!customerEmail || !selectedProductId || !selectedPlanId) return;
+
+    setIsSubmitting(true);
+    try {
+      const res = await fetch("/api/admin/licenses/generate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          customerEmail,
+          customerName,
+          productId: selectedProductId,
+          planId: selectedPlanId,
+          paymentMethod,
+        }),
+      });
+      const data = await res.json();
+      if (data.success) {
+        setLicenses([data.license, ...licenses]);
+        setIsModalOpen(false);
+        setCustomerEmail("");
+        setCustomerName("");
+        setSelectedProductId("");
+        setSelectedPlanId("");
+      } else {
+        alert(data.error || "Failed to generate license");
+      }
+    } catch (err) {
+      alert("Error generating license");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
   // Filter logic
-  const filteredLicenses = initialLicenses.filter((license) => {
+  const filteredLicenses = licenses.filter((license) => {
     const matchesSearch = 
       license.customerEmail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       license.key.toLowerCase().includes(searchTerm.toLowerCase());
@@ -37,32 +102,41 @@ export default function LicenseTableClient({ initialLicenses }: Props) {
   };
 
   // Reset page to 1 when filters change
-  React.useEffect(() => {
+  useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, statusFilter]);
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
-      {/* FILTER BAR */}
+      {/* FILTER BAR & ACTION */}
       <div className="p-4 border-b border-gray-200 flex flex-col md:flex-row gap-4 items-center justify-between">
-        <input
-          type="text"
-          placeholder="Search by email or license key..."
-          value={searchTerm}
-          onChange={(e) => setSearchTerm(e.target.value)}
-          className="w-full md:max-w-md px-4 py-2 text-gray-900 placeholder-gray-400 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3CB371] focus:border-transparent"
-        />
+        <div className="flex flex-col md:flex-row gap-4 w-full md:w-auto flex-1">
+          <input
+            type="text"
+            placeholder="Search by email or license key..."
+            value={searchTerm}
+            onChange={(e) => setSearchTerm(e.target.value)}
+            className="w-full md:max-w-md px-4 py-2 text-gray-900 placeholder-gray-400 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3CB371] focus:border-transparent"
+          />
+          
+          <select
+            value={statusFilter}
+            onChange={(e) => setStatusFilter(e.target.value)}
+            className="w-full md:w-auto px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3CB371]"
+          >
+            <option value="ALL">All Statuses</option>
+            <option value="ACTIVE">Active</option>
+            <option value="REVOKED">Revoked</option>
+            <option value="REFUNDED">Refunded</option>
+          </select>
+        </div>
         
-        <select
-          value={statusFilter}
-          onChange={(e) => setStatusFilter(e.target.value)}
-          className="w-full md:w-auto px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3CB371]"
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="w-full md:w-auto px-4 py-2 bg-[#3CB371] text-white font-medium rounded-lg hover:bg-[#2E8B57] transition-colors whitespace-nowrap"
         >
-          <option value="ALL">All Statuses</option>
-          <option value="ACTIVE">Active</option>
-          <option value="REVOKED">Revoked</option>
-          <option value="REFUNDED">Refunded</option>
-        </select>
+          + Manual License
+        </button>
       </div>
 
       <div className="overflow-x-auto">
@@ -149,6 +223,103 @@ export default function LicenseTableClient({ initialLicenses }: Props) {
             >
               Next
             </button>
+          </div>
+        </div>
+      )}
+
+      {/* MODAL */}
+      {isModalOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-md overflow-hidden">
+            <div className="p-6 border-b border-gray-200">
+              <h2 className="text-xl font-bold text-gray-900">Manually Generate License</h2>
+              <p className="text-sm text-gray-500 mt-1">Send a license for a custom payment (UPI, Wire, etc)</p>
+            </div>
+            <form onSubmit={handleGenerateLicense} className="p-6 space-y-4">
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Customer Email</label>
+                <input
+                  type="email"
+                  required
+                  value={customerEmail}
+                  onChange={(e) => setCustomerEmail(e.target.value)}
+                  className="w-full px-3 py-2 text-gray-900 placeholder-gray-400 border border-gray-300 rounded-md focus:ring-[#3CB371] focus:border-[#3CB371]"
+                  placeholder="customer@example.com"
+                />
+              </div>
+              
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Customer Name (Optional)</label>
+                <input
+                  type="text"
+                  value={customerName}
+                  onChange={(e) => setCustomerName(e.target.value)}
+                  className="w-full px-3 py-2 text-gray-900 placeholder-gray-400 border border-gray-300 rounded-md focus:ring-[#3CB371] focus:border-[#3CB371]"
+                  placeholder="John Doe"
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Product</label>
+                <select
+                  required
+                  value={selectedProductId}
+                  onChange={(e) => setSelectedProductId(e.target.value)}
+                  className="w-full px-3 py-2 text-gray-900 border border-gray-300 rounded-md focus:ring-[#3CB371] focus:border-[#3CB371]"
+                >
+                  <option value="">Select a product...</option>
+                  {products.map(p => (
+                    <option key={p.id} value={p.id}>{p.title}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Plan</label>
+                <select
+                  required
+                  value={selectedPlanId}
+                  onChange={(e) => setSelectedPlanId(e.target.value)}
+                  disabled={!selectedProductId || plans.length === 0}
+                  className="w-full px-3 py-2 text-gray-900 border border-gray-300 rounded-md focus:ring-[#3CB371] focus:border-[#3CB371] disabled:bg-gray-100 disabled:text-gray-500"
+                >
+                  <option value="">Select a plan...</option>
+                  {plans.map(p => (
+                    <option key={p.id} value={p.id!}>{p.name} - {p.price} {p.currency}</option>
+                  ))}
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-sm font-medium text-gray-700 mb-1">Payment Method Note</label>
+                <input
+                  type="text"
+                  required
+                  value={paymentMethod}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                  className="w-full px-3 py-2 text-gray-900 placeholder-gray-400 border border-gray-300 rounded-md focus:ring-[#3CB371] focus:border-[#3CB371]"
+                  placeholder="e.g. UPI, Bank Transfer"
+                />
+              </div>
+
+              <div className="pt-4 flex gap-3 justify-end border-t border-gray-100">
+                <button
+                  type="button"
+                  onClick={() => setIsModalOpen(false)}
+                  className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50"
+                  disabled={isSubmitting}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className="px-4 py-2 text-sm font-medium text-white bg-[#3CB371] border border-transparent rounded-md hover:bg-[#2E8B57] disabled:opacity-70 disabled:cursor-not-allowed flex items-center"
+                >
+                  {isSubmitting ? "Generating..." : "Generate & Send"}
+                </button>
+              </div>
+            </form>
           </div>
         </div>
       )}
