@@ -1,0 +1,15 @@
+name: Daily License Notifications Cron
+
+on:
+  schedule:
+    # Runs daily at 09:00 UTC
+    - cron: '0 9 * * *'
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  trigger-cron:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger License Notifications API
+        run: |
+          curl -X GET "https://www.ahmadblogs.com/api/cron/license-notifications?secret=${{ secrets.CRON_SECRET }}"

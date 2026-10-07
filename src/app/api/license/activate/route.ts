@@ -5,7 +5,7 @@ import { License, Activation } from '@/types/license';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { licenseKey, productId, deviceId, browserId } = body;
+    const { licenseKey, productId, deviceId, browserId, customerEmail } = body;
 
     if (!licenseKey || !productId || !deviceId) {
       return NextResponse.json({ error: 'Missing required fields (licenseKey, productId, deviceId)' }, { status: 400 });
@@ -27,19 +27,24 @@ export async function POST(req: Request) {
     const licenseDoc = licenseSnapshot.docs[0];
     const license = licenseDoc.data() as License;
 
-    // 2. Check basic license status
+    // 2. Check customer email match if email is provided
+    if (customerEmail && license.customerEmail && license.customerEmail.toLowerCase() !== customerEmail.trim().toLowerCase()) {
+      return NextResponse.json({ error: 'Email does not match license record' }, { status: 403 });
+    }
+
+    // 3. Check basic license status
     if (license.status !== 'ACTIVE') {
       return NextResponse.json({ error: `License is ${license.status.toLowerCase()}` }, { status: 403 });
     }
 
-    // 3. Check expiration
+    // 4. Check expiration
     if (license.expiresAt && new Date(license.expiresAt) < new Date()) {
       // Auto-expire it
       await licenseDoc.ref.update({ status: 'EXPIRED', updatedAt: new Date().toISOString() });
       return NextResponse.json({ error: 'License has expired' }, { status: 403 });
     }
 
-    // 4. Check if this device is already activated
+    // 5. Check if this device is already activated
     const activationSnapshot = await db.collection('activations')
       .where('licenseId', '==', licenseDoc.id)
       .where('deviceId', '==', deviceId)
@@ -70,10 +75,7 @@ export async function POST(req: Request) {
       });
     }
 
-    // 5. If new device, check limits
-    if (license.activationCount >= license.maxDevices) {
-      return NextResponse.json({ error: 'Maximum device limit reached for this license' }, { status: 403 });
-    }
+    // Note: Active subscription permits multi-device login with email/key verification
 
     // 6. Create new activation using a batch to ensure atomicity
     const batch = db.batch();

@@ -56,6 +56,10 @@ export interface License {
   createdAt: string;
   updatedAt: string;
   revokedAt?: string | null;
+  feedbackEmailSent?: boolean;
+  renewal7DayEmailSent?: boolean;
+  renewal3DayEmailSent?: boolean;
+  renewal1DayEmailSent?: boolean;
 }
 
 export type ActivationStatus = 'ACTIVE' | 'REVOKED';

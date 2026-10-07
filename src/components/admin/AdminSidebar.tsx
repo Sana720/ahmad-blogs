@@ -6,21 +6,50 @@ import { getAuth, signOut } from 'firebase/auth';
 import { app } from '../../utils/firebase';
 import { useState } from 'react';
 
-const links = [
-  { href: '/admin', label: 'Dashboard' },
-  { href: '/admin/orders', label: 'Orders' },
-  { href: '/admin/licenses', label: 'Licenses' },
-  { href: '/admin/posts', label: 'Posts' },
-  { href: '/admin/categories', label: 'Categories' },
-  { href: '/admin/newsletter', label: 'Newsletter' },
-  { href: '/admin/authors', label: 'Authors' },
-  { href: '/admin/contacts', label: 'Contacts' },
-  { href: '/admin/comments', label: 'Comments' },
-  { href: '/admin/portfolio', label: 'Portfolio' },
-  { href: '/admin/products', label: 'Products' },
-  { href: '/admin/reviews', label: 'Reviews' },
-  { href: '/admin/guest-posts', label: 'Guest Posts' },
-  { href: '/admin/settings', label: 'Settings' },
+const linkGroups = [
+  {
+    title: 'Main',
+    links: [
+      { href: '/admin', label: 'Dashboard' },
+      { href: '/admin/orders', label: 'Orders' },
+      { href: '/admin/products', label: 'Products' },
+      { href: '/admin/licenses', label: 'Licenses' },
+      { href: '/admin/coupons', label: 'Coupons' },
+      { href: '/admin/portfolio', label: 'Portfolio' },
+    ]
+  },
+  {
+    title: 'Content',
+    links: [
+      { href: '/admin/posts', label: 'Posts' },
+      { href: '/admin/categories', label: 'Categories' },
+      { href: '/admin/authors', label: 'Authors' },
+      { href: '/admin/comments', label: 'Comments' },
+      { href: '/admin/reviews', label: 'Reviews' },
+      { href: '/admin/guest-posts', label: 'Guest Posts' },
+    ]
+  },
+  {
+    title: 'Outreach & Marketing',
+    links: [
+      { href: '/admin/outreach', label: 'Dashboard' },
+      { href: '/admin/outreach/quick-send', label: 'Quick Send' },
+      { href: '/admin/outreach/leads', label: 'Leads' },
+      { href: '/admin/outreach/lists', label: 'Lists' },
+      { href: '/admin/outreach/campaigns', label: 'Campaigns' },
+      { href: '/admin/outreach/templates', label: 'Templates' },
+      { href: '/admin/outreach/suppression', label: 'Suppression' },
+      { href: '/admin/outreach/logs', label: 'Email Logs' },
+      { href: '/admin/newsletter', label: 'Newsletter' },
+    ]
+  },
+  {
+    title: 'System',
+    links: [
+      { href: '/admin/contacts', label: 'Contacts' },
+      { href: '/admin/settings', label: 'Settings' },
+    ]
+  }
 ];
 
 
@@ -52,24 +81,29 @@ export default function AdminSidebar() {
       </div>
 
       {/* Sidebar */}
-      <aside className={`bg-[#232946] text-white w-64 min-h-screen p-6 flex-col gap-2 sticky top-0 z-20 
-        ${isOpen ? 'fixed flex inset-y-0 left-0 overflow-y-auto' : 'hidden md:flex'}`}>
+      <aside className={`bg-[#232946] text-white w-64 h-screen p-6 flex-col gap-2 sticky top-0 z-20 overflow-y-auto
+        ${isOpen ? 'fixed flex inset-y-0 left-0' : 'hidden md:flex'}`}>
         
         <div className="hidden md:block text-2xl font-extrabold mb-8 tracking-tight text-center">Admin Panel</div>
         
-        <div className="flex flex-col gap-2 mt-4 md:mt-0">
-          {links.map(link => (
-            <Link
-              key={link.href}
-              href={link.href}
-              onClick={() => setIsOpen(false)}
-              className={`rounded px-4 py-2 font-medium transition-colors duration-150 ${pathname === link.href
-                  ? 'bg-[#3CB371] text-white'
-                  : 'hover:bg-[#3CB371]/80 text-[#eaf0f6] hover:text-white'
-                }`}
-            >
-              {link.label}
-            </Link>
+        <div className="flex flex-col gap-4 mt-4 md:mt-0 pb-10">
+          {linkGroups.map((group, idx) => (
+            <div key={idx} className="flex flex-col gap-1">
+              <h3 className="text-xs font-bold text-gray-400 uppercase tracking-wider mb-1 px-4">{group.title}</h3>
+              {group.links.map(link => (
+                <Link
+                  key={link.href}
+                  href={link.href}
+                  onClick={() => setIsOpen(false)}
+                  className={`rounded px-4 py-1.5 text-sm font-medium transition-colors duration-150 ${pathname === link.href
+                      ? 'bg-[#3CB371] text-white'
+                      : 'hover:bg-[#3CB371]/80 text-[#eaf0f6] hover:text-white'
+                    }`}
+                >
+                  {link.label}
+                </Link>
+              ))}
+            </div>
           ))}
         </div>
         

@@ -15,15 +15,35 @@ interface Props {
 export default async function CheckoutPage({ params }: Props) {
   const { planId } = await params;
 
-  // Fetch plan from Firestore
+  // Fetch plan from Firestore by doc ID or by slug
   const db = admin.firestore();
-  const planDoc = await db.collection("plans").doc(planId).get();
+  let planDoc = await db.collection("plans").doc(planId).get();
+  let plan: Plan | null = null;
+  let resolvedPlanId = planId;
 
-  if (!planDoc.exists) {
-    notFound();
+  if (planDoc.exists) {
+    plan = { id: planDoc.id, ...planDoc.data() } as Plan;
+  } else {
+    // Search by slug
+    const slugQuery = await db.collection("plans").where("slug", "==", planId).limit(1).get();
+    if (!slugQuery.empty) {
+      planDoc = slugQuery.docs[0];
+      plan = { id: planDoc.id, ...planDoc.data() } as Plan;
+      resolvedPlanId = planDoc.id;
+    } else {
+      // Fallback: search any active plan
+      const activeQuery = await db.collection("plans").where("active", "==", true).limit(1).get();
+      if (!activeQuery.empty) {
+        planDoc = activeQuery.docs[0];
+        plan = { id: planDoc.id, ...planDoc.data() } as Plan;
+        resolvedPlanId = planDoc.id;
+      }
+    }
   }
 
-  const plan = planDoc.data() as Plan;
+  if (!plan) {
+    notFound();
+  }
 
   if (!plan.active) {
     return (
@@ -83,7 +103,7 @@ export default async function CheckoutPage({ params }: Props) {
               <h2 className="text-xl font-bold text-gray-900 mb-6">Payment Details</h2>
               {/* We use a Client Component for the form to handle state */}
               <CheckoutForm 
-                planId={planId} 
+                planId={resolvedPlanId} 
                 planName={plan.name} 
                 planPrice={plan.price}
                 currency={plan.currency}

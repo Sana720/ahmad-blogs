@@ -1,6 +1,7 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useSearchParams } from "next/navigation";
 import PayPalCheckoutButton from "@/components/PayPalCheckoutButton";
 import ExitIntentPopup from "@/components/ExitIntentPopup";
 
@@ -12,10 +13,20 @@ interface CheckoutFormProps {
 }
 
 export default function CheckoutForm({ planId, planName, planPrice, currency }: CheckoutFormProps) {
+  const searchParams = useSearchParams();
+  const initialCoupon = searchParams?.get('coupon') || "";
+
   const [email, setEmail] = useState("");
   const [name, setName] = useState("");
-  const [discountCode, setDiscountCode] = useState("");
+  const [discountCode, setDiscountCode] = useState(initialCoupon);
   const [isReadyForPayment, setIsReadyForPayment] = useState(false);
+
+  useEffect(() => {
+    const couponFromUrl = searchParams?.get('coupon');
+    if (couponFromUrl && !discountCode) {
+      setDiscountCode(couponFromUrl);
+    }
+  }, [searchParams]);
 
   const handleContinue = (e: React.FormEvent) => {
     e.preventDefault();
@@ -23,15 +34,10 @@ export default function CheckoutForm({ planId, planName, planPrice, currency }: 
       alert("Please enter a valid email address.");
       return;
     }
-    if (discountCode) {
-      const code = discountCode.trim().toUpperCase();
-      if (code !== 'COMEBACK10' && code !== 'EXISTINGUSER' && code !== 'EXISTING10') {
-        alert("Invalid discount code.");
-        return;
-      }
-    }
     setIsReadyForPayment(true);
   };
+
+  const hasDiscount = Boolean(discountCode && discountCode.trim().length > 0);
 
   if (isReadyForPayment) {
     return (
@@ -40,18 +46,18 @@ export default function CheckoutForm({ planId, planName, planPrice, currency }: 
         <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
           <p className="text-sm text-gray-500 mb-1">Sending license to:</p>
           <p className="font-bold text-gray-900">{email}</p>
-          {discountCode && (
-            <p className="text-sm text-gray-600 mt-2 font-medium">Discount applied: <span className="uppercase text-[#3CB371] font-bold">{discountCode}</span></p>
+          {hasDiscount && (
+            <p className="text-sm text-gray-600 mt-2 font-medium">Discount applied: <span className="uppercase text-[#3CB371] font-bold">{discountCode.trim()}</span> (10% OFF)</p>
           )}
           
           <div className="mt-3 pt-3 border-t border-gray-200">
             <div className="flex justify-between items-center text-sm mb-1">
               <span className="text-gray-500">Original Price:</span>
-              <span className={discountCode && (discountCode.trim().toUpperCase() === 'COMEBACK10' || discountCode.trim().toUpperCase() === 'EXISTINGUSER' || discountCode.trim().toUpperCase() === 'EXISTING10') ? "line-through text-gray-400" : "font-bold text-gray-900"}>
+              <span className={hasDiscount ? "line-through text-gray-400" : "font-bold text-gray-900"}>
                 {currency === "USD" ? "$" : ""}{planPrice}
               </span>
             </div>
-            {discountCode && (discountCode.trim().toUpperCase() === 'COMEBACK10' || discountCode.trim().toUpperCase() === 'EXISTINGUSER' || discountCode.trim().toUpperCase() === 'EXISTING10') && (
+            {hasDiscount && (
               <div className="flex justify-between items-center text-base font-bold">
                 <span className="text-[#232946]">Total Due:</span>
                 <span className="text-[#3CB371]">{currency === "USD" ? "$" : ""}{(planPrice * 0.9).toFixed(2)}</span>

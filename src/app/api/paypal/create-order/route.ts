@@ -32,38 +32,22 @@ export async function POST(req: Request) {
     let appliedCode = '';
     const originalAmount = plan.price;
 
-    if (bodyCode === 'COMEBACK10') {
-      // Validate that this user has an abandoned cart > 24 hours
-      const ordersSnapshot = await db.collection('orders')
-        .where('customerEmail', '==', customerEmail)
-        .where('paymentStatus', '==', 'PENDING')
+    if (bodyCode) {
+      // Dynamic coupon lookup from admin panel
+      const couponQuery = await db.collection('coupons')
+        .where('code', '==', bodyCode)
+        .where('isActive', '==', true)
+        .limit(1)
         .get();
-
-      let isEligible = false;
-      const twentyFourHoursAgo = new Date(Date.now() - 24 * 60 * 60 * 1000);
-
-      for (const doc of ordersSnapshot.docs) {
-        const orderData = doc.data();
-        if (orderData.createdAt) {
-          const createdAtDate = new Date(orderData.createdAt);
-          if (createdAtDate < twentyFourHoursAgo) {
-            isEligible = true;
-            break;
-          }
-        }
+        
+      if (!couponQuery.empty) {
+        const couponData = couponQuery.docs[0].data();
+        const discountPercentage = couponData.discountPercentage || 0;
+        finalPrice = finalPrice * (1 - (discountPercentage / 100));
+        appliedCode = bodyCode;
+      } else {
+        return NextResponse.json({ error: 'Invalid or inactive coupon code.' }, { status: 400 });
       }
-
-      if (!isEligible) {
-        return NextResponse.json({ error: 'This coupon code is not valid for your account.' }, { status: 400 });
-      }
-
-      // Apply 10% discount
-      finalPrice = finalPrice * 0.9;
-      appliedCode = 'COMEBACK10';
-    } else if (bodyCode === 'EXISTINGUSER' || bodyCode === 'EXISTING10') {
-      // Apply 10% discount
-      finalPrice = finalPrice * 0.9;
-      appliedCode = bodyCode;
     }
 
     // 2. Create the order in PayPal
