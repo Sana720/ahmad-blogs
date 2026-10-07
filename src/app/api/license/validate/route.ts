@@ -5,7 +5,7 @@ import { License, Activation } from '@/types/license';
 export async function POST(req: Request) {
   try {
     const body = await req.json();
-    const { licenseKey, productId, deviceId } = body;
+    const { licenseKey, productId, deviceId, customerEmail } = body;
 
     if (!licenseKey || !productId || !deviceId) {
       return NextResponse.json({ valid: false, error: 'Missing required fields' }, { status: 400 });
@@ -26,6 +26,11 @@ export async function POST(req: Request) {
 
     const licenseDoc = licenseSnapshot.docs[0];
     const license = licenseDoc.data() as License;
+
+    // Check email match if customerEmail is provided
+    if (customerEmail && license.customerEmail && license.customerEmail.trim().toLowerCase() !== customerEmail.trim().toLowerCase()) {
+      return NextResponse.json({ valid: false, error: 'Email does not match license record' });
+    }
 
     // 2. Check basic license status
     if (license.status !== 'ACTIVE') {

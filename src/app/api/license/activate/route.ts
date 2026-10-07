@@ -27,9 +27,13 @@ export async function POST(req: Request) {
     const licenseDoc = licenseSnapshot.docs[0];
     const license = licenseDoc.data() as License;
 
-    // 2. Check customer email match if email is provided
-    if (customerEmail && license.customerEmail && license.customerEmail.toLowerCase() !== customerEmail.trim().toLowerCase()) {
-      return NextResponse.json({ error: 'Email does not match license record' }, { status: 403 });
+    // 2. Enforce customer email verification (must match the license purchaser's email)
+    if (!customerEmail || !customerEmail.trim()) {
+      return NextResponse.json({ error: 'Customer email is required for license verification' }, { status: 400 });
+    }
+
+    if (license.customerEmail && license.customerEmail.trim().toLowerCase() !== customerEmail.trim().toLowerCase()) {
+      return NextResponse.json({ error: 'This license key is registered to a different email address' }, { status: 403 });
     }
 
     // 3. Check basic license status
