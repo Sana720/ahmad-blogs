@@ -46,6 +46,12 @@ export default function CheckoutForm({ planId, planName, planPrice, currency }: 
         <div className="bg-gray-50 p-4 rounded-xl border border-gray-200">
           <p className="text-sm text-gray-500 mb-1">Sending license to:</p>
           <p className="font-bold text-gray-900">{email}</p>
+          <p className="text-xs text-amber-800 mt-1 flex items-center gap-1.5 font-medium">
+            <svg className="w-3.5 h-3.5 text-amber-600 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
+            License will verify on this Chrome profile email only.
+          </p>
           {hasDiscount && (
             <p className="text-sm text-gray-600 mt-2 font-medium">Discount applied: <span className="uppercase text-[#3CB371] font-bold">{discountCode.trim()}</span> (10% OFF)</p>
           )}
@@ -122,6 +128,14 @@ export default function CheckoutForm({ planId, planName, planPrice, currency }: 
           className="w-full px-4 py-3 text-gray-900 rounded-xl border border-gray-300 focus:ring-2 focus:ring-[#3CB371] focus:border-[#3CB371] outline-none transition-all"
           placeholder="john@example.com"
         />
+        <div className="mt-2.5 p-3 bg-amber-50 border border-amber-200/80 rounded-xl text-xs text-amber-900 flex items-start gap-2.5 leading-relaxed">
+          <svg className="w-4 h-4 text-amber-600 flex-shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+          </svg>
+          <div>
+            <span className="font-bold text-amber-950">Important:</span> Make sure to enter the email of the Chrome profile where you will use this extension. The license key will verify and activate on that email profile only.
+          </div>
+        </div>
         <p className="text-xs text-gray-500 mt-2">
           We will send your {planName} license key to this email.
         </p>

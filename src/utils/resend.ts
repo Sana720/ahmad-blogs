@@ -52,9 +52,13 @@ export async function sendLicenseEmail(
             </div>
           </div>
 
-          <p style="color: #4b5563; font-size: 15px; line-height: 1.6; margin-bottom: 30px;">
-            <strong>How to activate:</strong> Simply copy the license key above and paste it into the product's settings to unlock your premium features.
+          <p style="color: #4b5563; font-size: 15px; line-height: 1.6; margin-bottom: 20px;">
+            <strong>How to activate:</strong> Simply copy the license key above and paste it into the extension's settings to unlock your premium features.
           </p>
+
+          <div style="background-color: #fef3c7; border: 1px solid #fde68a; border-radius: 8px; padding: 14px 16px; margin: 20px 0 30px 0; font-size: 14px; color: #92400e; line-height: 1.5;">
+            <strong>⚠️ Note:</strong> Make sure to activate this license in the Chrome profile signed into <strong>${toEmail}</strong>. The extension verifies and binds the license to this email profile only.
+          </div>
 
           <hr style="border: none; border-top: 1px solid #e5e7eb; margin: 30px 0;" />
 
