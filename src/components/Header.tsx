@@ -2,6 +2,7 @@
 import React, { useEffect, useState, useContext } from "react";
 import LoaderContext from "../utils/LoaderContext";
 import Link from 'next/link';
+import { trackEvent } from "../utils/analytics";
 
 
 type HeaderProps = {
@@ -61,7 +62,7 @@ function Header({ categoryMenu }: HeaderProps) {
             </div>
           </div>
           <Link href="/about" className="hover:text-[#3CB371] whitespace-nowrap" title="About Me">About Me</Link>
-          <Link href="/contact" className="hover:text-[#3CB371] whitespace-nowrap" title="Contact Me">Contact Me</Link>
+          <Link href="/contact" onClick={() => trackEvent("contact_click", { source: "header_nav" })} className="hover:text-[#3CB371] whitespace-nowrap" title="Contact Me">Contact Me</Link>
           <Link href="/portfolio" className="hover:text-[#3CB371] whitespace-nowrap" title="Portfolio">Portfolio</Link>
           <Link href="/guest-post" className="hover:text-[#3CB371] whitespace-nowrap" title="Guest Post">Guest Post</Link>
         </nav>
@@ -93,7 +94,7 @@ function Header({ categoryMenu }: HeaderProps) {
           </div>
           <Link href="/portfolio" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)} title="Portfolio">Portfolio</Link>
           <Link href="/about" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)} title="About">About</Link>
-          <Link href="/contact" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)} title="Contact">Contact</Link>
+          <Link href="/contact" className="hover:text-[#3CB371]" onClick={() => { setMobileOpen(false); trackEvent("contact_click", { source: "mobile_nav" }); }} title="Contact">Contact</Link>
           <Link href="/guest-post" className="hover:text-[#3CB371]" onClick={() => setMobileOpen(false)} title="Guest Post">Guest Post</Link>
         </nav>
       )}

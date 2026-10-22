@@ -83,6 +83,20 @@ export default function RootLayout({
         <link rel="preconnect" href="https://res.cloudinary.com" />
         <link rel="preconnect" href="https://www.googletagmanager.com" />
 
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+        />
+      </head>
+      <body
+        className={`${mulish.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
+        style={{ fontFamily: 'var(--font-mulish), Mulish, sans-serif' }}
+      >
+        {children}
+        <Analytics />
+        <SpeedInsights />
+        <WhatsAppButton />
+
         {/* Google Analytics */}
         {GA_MEASUREMENT_ID && (
           <>
@@ -102,19 +116,6 @@ export default function RootLayout({
             </Script>
           </>
         )}
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-        />
-      </head>
-      <body
-        className={`${mulish.variable} ${geistSans.variable} ${geistMono.variable} antialiased`}
-        style={{ fontFamily: 'var(--font-mulish), Mulish, sans-serif' }}
-      >
-        {children}
-        <Analytics />
-        <SpeedInsights />
-        <WhatsAppButton />
       </body>
     </html>
   );

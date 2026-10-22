@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useState } from "react";
+import { trackEvent } from "../../../utils/analytics";
 
 interface GettingStartedModalProps {
   productTitle: string;
@@ -69,7 +70,7 @@ export default function GettingStartedModal({ productTitle }: GettingStartedModa
               <h3 className="text-lg font-bold text-[#232946] mb-3">3. Need Help?</h3>
               <p>
                 If you encounter any issues during setup or have questions, our support team is ready to help. 
-                Please reach out to us via the <a href="/contact" className="text-[#3CB371] font-bold hover:underline">Contact page</a> or email us directly at support@ahmadblogs.com.
+                Please reach out to us via the <a href="/contact" onClick={() => trackEvent("contact_click", { channel: "getting_started_modal", product_title: productTitle })} className="text-[#3CB371] font-bold hover:underline">Contact page</a> or email us directly at support@ahmadblogs.com.
               </p>
             </div>
             

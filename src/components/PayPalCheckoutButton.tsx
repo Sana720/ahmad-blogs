@@ -3,6 +3,7 @@
 import React, { useState } from "react";
 import { PayPalScriptProvider, PayPalButtons, usePayPalScriptReducer } from "@paypal/react-paypal-js";
 import { useRouter } from "next/navigation";
+import { trackEvent } from "@/utils/analytics";
 
 interface PayPalCheckoutButtonProps {
   planId: string;
@@ -41,6 +42,13 @@ function PayPalButtonsWrapper({
           style={{ layout: "vertical", shape: "rect" }}
           createOrder={async () => {
             setError(null);
+            trackEvent("begin_checkout", {
+              plan_id: planId,
+              customer_email: customerEmail,
+              customer_name: customerName,
+              discount_code: discountCode,
+              payment_method: "paypal",
+            });
             try {
               const response = await fetch("/api/paypal/create-order", {
                 method: "POST",
@@ -91,6 +99,10 @@ function PayPalButtonsWrapper({
               }
 
               // Payment successful! Navigate to success page
+              trackEvent("purchase", {
+                transaction_id: data.orderID,
+                plan_id: planId,
+              });
               router.push(`/payment/success?orderId=${data.orderID}`);
             } catch (err: any) {
               setError(err.message || "Failed to finalize the payment.");

@@ -6,6 +6,7 @@ import Header from "../../components/Header";
 import Footer from "../../components/Footer";
 import { Product } from "../../utils/productsData";
 import { getFirestoreProducts } from "../../utils/productsFirestore";
+import { trackEvent } from "../../utils/analytics";
 
 export default function ProductsClient() {
   const [productsList, setProductsList] = useState<Product[]>([]);
@@ -136,6 +137,12 @@ export default function ProductsClient() {
 
                   <Link
                     href={`/products/${product.id}`}
+                    onClick={() => trackEvent("pricing_click", {
+                      product_id: product.id,
+                      product_title: product.title,
+                      price: product.price,
+                      source: "products_catalog",
+                    })}
                     className="inline-flex items-center gap-1 px-4 py-2 bg-[#3CB371] hover:bg-[#2e945b] text-white text-sm font-bold rounded-xl transition-all shadow-sm shadow-[#3cb371]/10"
                   >
                     View Details

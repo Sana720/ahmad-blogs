@@ -5,6 +5,7 @@ import Footer from '../../components/Footer';
 import { useState } from 'react';
 import { db } from '../../utils/firebase';
 import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import { trackEvent } from '../../utils/analytics';
 
 export default function ContactClient() {
     const [form, setForm] = useState({ name: '', email: '', message: '' });
@@ -18,6 +19,7 @@ export default function ContactClient() {
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        trackEvent("contact_click", { channel: "contact_form" });
         setLoading(true);
         setError('');
         setSuccess(false);
