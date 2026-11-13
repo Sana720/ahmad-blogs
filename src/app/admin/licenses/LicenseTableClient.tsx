@@ -9,12 +9,48 @@ import { Plan } from "@/types/license";
 
 interface Props {
   initialLicenses: License[];
+  plansMap?: Record<string, { name: string; slug: string; lifetime?: boolean }>;
 }
 
-export default function LicenseTableClient({ initialLicenses }: Props) {
+function getPlanBadge(license: License, plansMap: Record<string, any> = {}) {
+  const planInfo = plansMap[license.planId];
+  const planName = planInfo?.name || license.planId || "Standard";
+  const slug = (planInfo?.slug || license.planId || "").toLowerCase();
+  const isLifetime = Boolean(planInfo?.lifetime || !license.expiresAt || slug.includes("life"));
+  const isYearly = slug.includes("year") || slug.includes("annual");
+  const isMonthly = slug.includes("month");
+
+  let type: "Monthly" | "Yearly" | "Lifetime" | "Custom" = "Custom";
+  let badgeColor = "bg-blue-100 text-blue-800 border-blue-200";
+
+  if (isLifetime) {
+    type = "Lifetime";
+    badgeColor = "bg-purple-100 text-purple-800 border-purple-200";
+  } else if (isYearly) {
+    type = "Yearly";
+    badgeColor = "bg-emerald-100 text-emerald-800 border-emerald-200";
+  } else if (isMonthly) {
+    type = "Monthly";
+    badgeColor = "bg-sky-100 text-sky-800 border-sky-200";
+  }
+
+  const isExpired = Boolean(license.expiresAt && new Date(license.expiresAt).getTime() < Date.now());
+
+  return {
+    displayName: planName,
+    type,
+    badgeColor,
+    isLifetime,
+    isExpired,
+    expiresAt: license.expiresAt ? new Date(license.expiresAt).toLocaleDateString() : null,
+  };
+}
+
+export default function LicenseTableClient({ initialLicenses, plansMap = {} }: Props) {
   const [licenses, setLicenses] = useState<License[]>(initialLicenses);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
+  const [planFilter, setPlanFilter] = useState("ALL");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 10;
 
@@ -87,7 +123,10 @@ export default function LicenseTableClient({ initialLicenses }: Props) {
       
     const matchesStatus = statusFilter === "ALL" || license.status === statusFilter;
 
-    return matchesSearch && matchesStatus;
+    const planBadge = getPlanBadge(license, plansMap);
+    const matchesPlan = planFilter === "ALL" || planBadge.type.toUpperCase() === planFilter;
+
+    return matchesSearch && matchesStatus && matchesPlan;
   });
 
   // Pagination logic
@@ -104,7 +143,7 @@ export default function LicenseTableClient({ initialLicenses }: Props) {
   // Reset page to 1 when filters change
   useEffect(() => {
     setCurrentPage(1);
-  }, [searchTerm, statusFilter]);
+  }, [searchTerm, statusFilter, planFilter]);
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -129,11 +168,22 @@ export default function LicenseTableClient({ initialLicenses }: Props) {
             <option value="REVOKED">Revoked</option>
             <option value="REFUNDED">Refunded</option>
           </select>
+
+          <select
+            value={planFilter}
+            onChange={(e) => setPlanFilter(e.target.value)}
+            className="w-full md:w-auto px-4 py-2 text-gray-900 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#3CB371]"
+          >
+            <option value="ALL">All Plans</option>
+            <option value="MONTHLY">Monthly</option>
+            <option value="YEARLY">Yearly</option>
+            <option value="LIFETIME">Lifetime</option>
+          </select>
         </div>
         
         <button
           onClick={() => setIsModalOpen(true)}
-          className="w-full md:w-auto px-4 py-2 bg-[#3CB371] text-white font-medium rounded-lg hover:bg-[#2E8B57] transition-colors whitespace-nowrap"
+          className="w-full md:w-auto px-4 py-2 bg-[#3CB371] text-white font-medium rounded-lg hover:bg-[#2E8B57] transition-colors whitespace-nowrap cursor-pointer"
         >
           + Manual License
         </button>
@@ -145,6 +195,7 @@ export default function LicenseTableClient({ initialLicenses }: Props) {
             <tr className="bg-gray-50 border-b border-gray-200 text-sm uppercase text-gray-500 font-semibold">
               <th className="p-4 whitespace-nowrap">Generated</th>
               <th className="p-4 whitespace-nowrap">Customer</th>
+              <th className="p-4 whitespace-nowrap">Plan</th>
               <th className="p-4 whitespace-nowrap">License Key</th>
               <th className="p-4 whitespace-nowrap">Status</th>
               <th className="p-4 whitespace-nowrap">Activations</th>
@@ -154,46 +205,70 @@ export default function LicenseTableClient({ initialLicenses }: Props) {
           <tbody className="text-sm">
             {currentLicenses.length === 0 ? (
               <tr>
-                <td colSpan={6} className="p-8 text-center text-gray-500">
+                <td colSpan={7} className="p-8 text-center text-gray-500">
                   No licenses found.
                 </td>
               </tr>
             ) : (
-              currentLicenses.map((license) => (
-                <tr key={license.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
-                  <td className="p-4 text-gray-600 whitespace-nowrap">
-                    {new Date(license.createdAt).toLocaleDateString()}
-                  </td>
-                  <td className="p-4 font-bold text-[#232946]">
-                    {license.customerEmail}
-                  </td>
-                  <td className="p-4">
-                    <span className="font-mono text-xs text-gray-800 bg-gray-100 px-2 py-1 rounded border border-gray-200">
-                      {license.key}
-                    </span>
-                  </td>
-                  <td className="p-4">
-                    <span className={`px-2.5 py-1 rounded-md font-bold text-xs uppercase tracking-wider ${
-                      license.status === 'ACTIVE' ? 'bg-green-100 text-green-800' :
-                      license.status === 'REVOKED' ? 'bg-red-100 text-red-800' :
-                      license.status === 'REFUNDED' ? 'bg-purple-100 text-purple-800' :
-                      'bg-gray-100 text-gray-800'
-                    }`}>
-                      {license.status}
-                    </span>
-                  </td>
-                  <td className="p-4 font-bold text-gray-600">
-                    {license.activationCount} / {license.maxDevices}
-                  </td>
-                  <td className="p-4">
-                    <LicenseActions 
-                      licenseId={license.id!} 
-                      status={license.status} 
-                      customerEmail={license.customerEmail} 
-                    />
-                  </td>
-                </tr>
-              ))
+              currentLicenses.map((license) => {
+                const planBadge = getPlanBadge(license, plansMap);
+                return (
+                  <tr key={license.id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors">
+                    <td className="p-4 text-gray-600 whitespace-nowrap">
+                      {new Date(license.createdAt).toLocaleDateString()}
+                    </td>
+                    <td className="p-4 font-bold text-[#232946]">
+                      {license.customerEmail}
+                    </td>
+                    <td className="p-4 whitespace-nowrap">
+                      <div className="flex flex-col gap-1 items-start">
+                        <div className="flex items-center gap-1.5">
+                          <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${planBadge.badgeColor}`}>
+                            {planBadge.type}
+                          </span>
+                          <span className="text-xs text-gray-600 font-semibold truncate max-w-[150px]" title={planBadge.displayName}>
+                            {planBadge.displayName}
+                          </span>
+                        </div>
+                        {planBadge.isLifetime ? (
+                          <span className="text-[11px] text-purple-700 font-medium flex items-center gap-1">
+                            <span>♾️</span> Never expires
+                          </span>
+                        ) : planBadge.expiresAt ? (
+                          <span className={`text-[11px] font-medium flex items-center gap-1 ${planBadge.isExpired ? "text-red-600 font-bold" : "text-gray-500"}`}>
+                            {planBadge.isExpired ? "⚠️ Expired:" : "Expires:"} {planBadge.expiresAt}
+                          </span>
+                        ) : null}
+                      </div>
+                    </td>
+                    <td className="p-4">
+                      <span className="font-mono text-xs text-gray-800 bg-gray-100 px-2 py-1 rounded border border-gray-200">
+                        {license.key}
+                      </span>
+                    </td>
+                    <td className="p-4">
+                      <span className={`px-2.5 py-1 rounded-md font-bold text-xs uppercase tracking-wider ${
+                        license.status === 'ACTIVE' ? 'bg-green-100 text-green-800' :
+                        license.status === 'REVOKED' ? 'bg-red-100 text-red-800' :
+                        license.status === 'REFUNDED' ? 'bg-purple-100 text-purple-800' :
+                        'bg-gray-100 text-gray-800'
+                      }`}>
+                        {license.status}
+                      </span>
+                    </td>
+                    <td className="p-4 font-bold text-gray-600">
+                      {license.activationCount} / {license.maxDevices}
+                    </td>
+                    <td className="p-4">
+                      <LicenseActions 
+                        licenseId={license.id!} 
+                        status={license.status} 
+                        customerEmail={license.customerEmail} 
+                      />
+                    </td>
+                  </tr>
+                );
+              })
             )}
           </tbody>
         </table>
