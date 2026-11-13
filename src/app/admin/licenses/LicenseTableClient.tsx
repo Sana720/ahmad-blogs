@@ -70,7 +70,7 @@ export default function LicenseTableClient({ initialLicenses, plansMap = {} }: P
     if (isModalOpen && products.length === 0) {
       getFirestoreProducts().then(setProducts);
     }
-  }, [isModalOpen]);
+  }, [isModalOpen, products.length]);
 
   useEffect(() => {
     if (selectedProductId) {

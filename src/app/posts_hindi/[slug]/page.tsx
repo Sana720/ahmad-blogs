@@ -3,6 +3,7 @@ import MarkdownRenderer from "@/app/posts/[slug]/MarkdownRenderer";
 import { notFound } from "next/navigation";
 import { publisher } from "@/utils/publisherSchema";
 import Head from "next/head";
+import PostViewTracker from "@/components/PostViewTracker";
 
 export const revalidate = 1; // Revalidate dynamic pages every second (near real-time)
 
@@ -61,6 +62,7 @@ export default async function HindiPostDetail(props: HindiPostDetailProps) {
   } : null;
   return (
     <>
+      <PostViewTracker postId={(post as any).id} slug={post.slug} collectionName="posts_hindi" />
       <Head>
         <link rel="canonical" href={canonicalUrl} />
         <meta name="robots" content="index, follow" />

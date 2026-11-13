@@ -69,6 +69,7 @@ import PostClientContent from "./PostClientContent";
 import Header from "../../../components/Header";
 import CategoryMenu from "../../../components/CategoryMenu";
 import Footer from "../../../components/Footer";
+import PostViewTracker from "@/components/PostViewTracker";
 import { notFound } from 'next/navigation';
 import { db } from "../../../utils/firebase";
 import { collection, getDocs, doc, updateDoc, increment } from "firebase/firestore";
@@ -145,7 +146,6 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
   const { post, postDoc } = data;
 
   post.authorAvatar = post.author ? await getAuthorAvatarByName(post.author) : undefined;
-  updateDoc(doc(db, "posts", postDoc.id), { views: increment(1) }).catch(() => { });
   const categories = (Array.isArray(post.category) ? post.category : [post.category]).filter((cat): cat is string => typeof cat === 'string');
   const similarPosts = await getSimilarPosts(post.slug, categories);
 
@@ -195,6 +195,7 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
   } : null;
   return (
     <>
+      <PostViewTracker postId={postDoc.id} slug={post.slug} />
       <div className="bg-white min-h-screen flex flex-col">
         <Header categoryMenu={<CategoryMenu />} />
         <main className="max-w-4xl mx-auto py-8 px-2 bg-white flex-1">
