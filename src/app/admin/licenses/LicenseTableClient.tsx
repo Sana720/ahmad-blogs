@@ -222,14 +222,11 @@ export default function LicenseTableClient({ initialLicenses, plansMap = {} }: P
                     </td>
                     <td className="p-4 whitespace-nowrap">
                       <div className="flex flex-col gap-1 items-start">
-                        <div className="flex items-center gap-1.5">
-                          <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${planBadge.badgeColor}`}>
-                            {planBadge.type}
-                          </span>
-                          <span className="text-xs text-gray-600 font-semibold truncate max-w-[150px]" title={planBadge.displayName}>
-                            {planBadge.displayName}
-                          </span>
-                        </div>
+                        <span className={`px-2.5 py-0.5 rounded-full text-xs font-bold border ${planBadge.badgeColor}`}>
+                          {planBadge.displayName && planBadge.displayName.toLowerCase() !== planBadge.type.toLowerCase()
+                            ? planBadge.displayName
+                            : planBadge.type}
+                        </span>
                         {planBadge.isLifetime ? (
                           <span className="text-[11px] text-purple-700 font-medium flex items-center gap-1">
                             <span>♾️</span> Never expires
