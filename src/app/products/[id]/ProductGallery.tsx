@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import Image from "next/image";
+import { trackEvent } from "../../../utils/analytics";
 
 interface ProductGalleryProps {
   images: string[];
@@ -20,6 +21,17 @@ export default function ProductGallery({ images, youtubeUrls = [], title }: Prod
   ];
 
   const [activeIndex, setActiveIndex] = React.useState(0);
+
+  const handleMediaSelect = (idx: number) => {
+    if (mediaItems[idx]?.type === "youtube") {
+      trackEvent("demo_click", {
+        type: "video_demo",
+        product_title: title,
+        url: mediaItems[idx]?.url,
+      });
+    }
+    setActiveIndex(idx);
+  };
 
   React.useEffect(() => {
     setActiveIndex(0);
@@ -88,7 +100,7 @@ export default function ProductGallery({ images, youtubeUrls = [], title }: Prod
           return (
             <button
               key={idx}
-              onClick={() => setActiveIndex(idx)}
+              onClick={() => handleMediaSelect(idx)}
               className={`relative w-20 aspect-[16/10] rounded-lg overflow-hidden border-2 transition-all cursor-pointer bg-gray-100 flex items-center justify-center ${
                 isActive ? "border-[#3CB371] scale-105 shadow-sm" : "border-gray-200 hover:border-gray-400"
               }`}

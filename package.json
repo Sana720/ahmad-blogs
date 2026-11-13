@@ -43,5 +43,9 @@
     "eslint-config-next": "15.5.7",
     "tailwindcss": "^4",
     "typescript": "^5.9.2"
+  },
+  "optionalDependencies": {
+    "@tailwindcss/oxide-darwin-arm64": "^4.3.3",
+    "lightningcss-darwin-arm64": "^1.33.0"
   }
 }
