@@ -9,6 +9,8 @@ export async function GET() {
     const couponRef = db.collection('coupons');
 
     const defaultCoupons = [
+      { code: 'PRO20', discountPercentage: 20, description: '20% OFF promotional coupon' },
+      { code: 'SAVE20', discountPercentage: 20, description: '20% OFF special discount coupon' },
       { code: 'RENEW10', discountPercentage: 10, description: '10% OFF renewal coupon' },
       { code: 'COMEBACK10', discountPercentage: 10, description: '10% OFF abandoned cart comeback coupon' },
       { code: 'EXISTINGUSER', discountPercentage: 10, description: '10% OFF existing user coupon' },

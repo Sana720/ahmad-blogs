@@ -36,17 +36,44 @@ export async function POST(req: Request) {
       // Dynamic coupon lookup from admin panel
       const couponQuery = await db.collection('coupons')
         .where('code', '==', bodyCode)
-        .where('isActive', '==', true)
         .limit(1)
         .get();
         
       if (!couponQuery.empty) {
-        const couponData = couponQuery.docs[0].data();
-        const discountPercentage = couponData.discountPercentage || 0;
-        finalPrice = finalPrice * (1 - (discountPercentage / 100));
-        appliedCode = bodyCode;
+        const couponDoc = couponQuery.docs[0];
+        const couponData = couponDoc.data();
+
+        if (couponData.isActive === false) {
+          return NextResponse.json({ error: 'This coupon is no longer active.' }, { status: 400 });
+        }
+
+        // Check expiration
+        if (couponData.expiresAt) {
+          const expiresDate = typeof couponData.expiresAt?.toDate === 'function'
+            ? couponData.expiresAt.toDate()
+            : new Date(couponData.expiresAt);
+
+          if (!isNaN(expiresDate.getTime()) && expiresDate < new Date()) {
+            return NextResponse.json({ error: 'This coupon has expired.' }, { status: 400 });
+          }
+        }
+
+        // Check usage limit
+        if (
+          typeof couponData.usageLimit === 'number' &&
+          typeof couponData.timesUsed === 'number' &&
+          couponData.timesUsed >= couponData.usageLimit
+        ) {
+          return NextResponse.json({ error: 'Coupon usage limit has been reached.' }, { status: 400 });
+        }
+
+        const discountPercentage = Number(couponData.discountPercentage) || 0;
+        if (discountPercentage > 0) {
+          finalPrice = finalPrice * (1 - (discountPercentage / 100));
+          appliedCode = bodyCode;
+        }
       } else {
-        return NextResponse.json({ error: 'Invalid or inactive coupon code.' }, { status: 400 });
+        return NextResponse.json({ error: 'Invalid coupon code.' }, { status: 400 });
       }
     }
 

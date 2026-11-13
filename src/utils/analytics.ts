@@ -1,6 +1,7 @@
-// Google Analytics integration utility
+// Analytics integration utility
 
 export const GA_MEASUREMENT_ID = process.env.NEXT_PUBLIC_GA_ID || '';
+export const CLARITY_PROJECT_ID = process.env.NEXT_PUBLIC_CLARITY_PROJECT_ID || 'zcyxhdltho';
 
 export function pageview(url: string) {
   if (typeof window !== 'undefined' && GA_MEASUREMENT_ID) {
