@@ -60,6 +60,7 @@ export default function AdminDashboard() {
 
   // GA4 states
   const [gaSummary, setGaSummary] = useState<any>(null);
+  const [gaSource, setGaSource] = useState<'30days' | 'realtime'>('30days');
   const [gaLoading, setGaLoading] = useState(true);
   const [gaError, setGaError] = useState<{ message: string; help?: string } | null>(null);
 
@@ -71,6 +72,7 @@ export default function AdminDashboard() {
       const json = await res.json();
       if (json.ok && json.data) {
         setGaSummary(json.data);
+        setGaSource(json.source || '30days');
       } else {
         setGaError({
           message: json.error || 'Failed to fetch Google Analytics data',
@@ -148,7 +150,20 @@ export default function AdminDashboard() {
                 {/* Google Analytics Summary */}
                 <div className="bg-[#f7f8fa] rounded-xl p-5 mt-6 border border-[#eaf0f6]">
                   <div className="flex items-center justify-between mb-3">
-                    <h3 className="text-lg font-bold text-[#232946]">Google Analytics (Last 30 Days)</h3>
+                    <div className="flex items-center gap-2">
+                      <h3 className="text-lg font-bold text-[#232946]">
+                        {gaSource === 'realtime' ? 'Google Analytics (Realtime)' : 'Google Analytics (Last 30 Days)'}
+                      </h3>
+                      {gaSource === 'realtime' && (
+                        <span
+                          className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded-full text-[11px] font-semibold bg-emerald-100 text-emerald-800 border border-emerald-200"
+                          title="Realtime data active. 30-day historical rollup takes 24-48 hours after adding GA4."
+                        >
+                          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                          Live Stream
+                        </span>
+                      )}
+                    </div>
                     <button
                       onClick={fetchGaSummary}
                       disabled={gaLoading}
@@ -160,6 +175,12 @@ export default function AdminDashboard() {
                       {gaLoading ? 'Refreshing...' : 'Refresh'}
                     </button>
                   </div>
+
+                  {gaSource === 'realtime' && gaSummary && (
+                    <p className="text-xs text-gray-500 mb-3">
+                      Showing live reader traffic. Historical 30-day reports will automatically appear once Google finishes its initial 24–48h processing.
+                    </p>
+                  )}
 
                   {gaLoading && !gaSummary && (
                     <div className="flex items-center gap-2 text-sm text-gray-500 py-6 justify-center">
@@ -185,7 +206,7 @@ export default function AdminDashboard() {
 
                   {gaSummary && (
                     <>
-                      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3">
+                      <div className={`grid gap-3 ${gaSource === 'realtime' ? 'grid-cols-2 sm:grid-cols-4' : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-5'}`}>
                         <div className="bg-white p-3 rounded-lg border border-[#eaf0f6]">
                           <div className="text-xs text-gray-500 font-medium">Active Users</div>
                           <div className="text-[#3CB371] text-xl font-bold mt-1">
@@ -193,33 +214,56 @@ export default function AdminDashboard() {
                           </div>
                         </div>
                         <div className="bg-white p-3 rounded-lg border border-[#eaf0f6]">
-                          <div className="text-xs text-gray-500 font-medium">Sessions</div>
-                          <div className="text-[#3CB371] text-xl font-bold mt-1">
-                            {gaSummary.totals?.[0]?.metricValues?.[1]?.value ?? '0'}
-                          </div>
-                        </div>
-                        <div className="bg-white p-3 rounded-lg border border-[#eaf0f6]">
-                          <div className="text-xs text-gray-500 font-medium">Bounce Rate</div>
-                          <div className="text-[#3CB371] text-xl font-bold mt-1">
-                            {gaSummary.totals?.[0]?.metricValues?.[2]?.value
-                              ? `${(parseFloat(gaSummary.totals[0].metricValues[2].value) * 100).toFixed(1)}%`
-                              : '0%'}
-                          </div>
-                        </div>
-                        <div className="bg-white p-3 rounded-lg border border-[#eaf0f6]">
-                          <div className="text-xs text-gray-500 font-medium">Avg Duration</div>
-                          <div className="text-[#3CB371] text-xl font-bold mt-1">
-                            {gaSummary.totals?.[0]?.metricValues?.[3]?.value
-                              ? `${Math.round(parseFloat(gaSummary.totals[0].metricValues[3].value))}s`
-                              : '0s'}
-                          </div>
-                        </div>
-                        <div className="bg-white p-3 rounded-lg border border-[#eaf0f6]">
                           <div className="text-xs text-gray-500 font-medium">Page Views</div>
                           <div className="text-[#3CB371] text-xl font-bold mt-1">
-                            {gaSummary.totals?.[0]?.metricValues?.[4]?.value ?? '0'}
+                            {gaSource === 'realtime'
+                              ? (gaSummary.totals?.[0]?.metricValues?.[1]?.value ?? '0')
+                              : (gaSummary.totals?.[0]?.metricValues?.[4]?.value ?? '0')}
                           </div>
                         </div>
+
+                        {gaSource === '30days' ? (
+                          <>
+                            <div className="bg-white p-3 rounded-lg border border-[#eaf0f6]">
+                              <div className="text-xs text-gray-500 font-medium">Sessions</div>
+                              <div className="text-[#3CB371] text-xl font-bold mt-1">
+                                {gaSummary.totals?.[0]?.metricValues?.[1]?.value ?? '0'}
+                              </div>
+                            </div>
+                            <div className="bg-white p-3 rounded-lg border border-[#eaf0f6]">
+                              <div className="text-xs text-gray-500 font-medium">Bounce Rate</div>
+                              <div className="text-[#3CB371] text-xl font-bold mt-1">
+                                {gaSummary.totals?.[0]?.metricValues?.[2]?.value
+                                  ? `${(parseFloat(gaSummary.totals[0].metricValues[2].value) * 100).toFixed(1)}%`
+                                  : '0%'}
+                              </div>
+                            </div>
+                            <div className="bg-white p-3 rounded-lg border border-[#eaf0f6]">
+                              <div className="text-xs text-gray-500 font-medium">Avg Duration</div>
+                              <div className="text-[#3CB371] text-xl font-bold mt-1">
+                                {gaSummary.totals?.[0]?.metricValues?.[3]?.value
+                                  ? `${Math.round(parseFloat(gaSummary.totals[0].metricValues[3].value))}s`
+                                  : '0s'}
+                              </div>
+                            </div>
+                          </>
+                        ) : (
+                          <>
+                            <div className="bg-white p-3 rounded-lg border border-[#eaf0f6]">
+                              <div className="text-xs text-gray-500 font-medium">Status</div>
+                              <div className="text-emerald-600 text-sm font-bold mt-1 flex items-center gap-1">
+                                <span className="w-2 h-2 rounded-full bg-emerald-500"></span>
+                                Connected
+                              </div>
+                            </div>
+                            <div className="bg-white p-3 rounded-lg border border-[#eaf0f6]">
+                              <div className="text-xs text-gray-500 font-medium">Rollup Status</div>
+                              <div className="text-gray-600 text-xs font-semibold mt-1.5">
+                                Aggregating (24h)
+                              </div>
+                            </div>
+                          </>
+                        )}
                       </div>
 
                       {/* Dimensions Breakdown */}
