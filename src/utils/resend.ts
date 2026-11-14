@@ -335,3 +335,103 @@ export async function sendRenewalReminderEmail(
   }
 }
 
+/**
+ * Sends an email notification to admin (saahmed311@gmail.com) when someone submits a contact form
+ */
+export async function sendContactNotificationEmail({
+  name,
+  email,
+  message,
+}: {
+  name: string;
+  email: string;
+  message: string;
+}) {
+  if (!resend) {
+    console.warn('RESEND_API_KEY is not set. Contact notification simulated.');
+    console.warn(`Simulated Contact Notification to saahmed311@gmail.com: From ${name} (${email}): ${message}`);
+    return { success: true, simulated: true };
+  }
+
+  const fromEmail = process.env.NEXT_PUBLIC_FROM_EMAIL || 'ahmad@ahmadblogs.com';
+  const recipient = 'saahmed311@gmail.com';
+  const cleanMessage = (message || '').trim();
+  const escapedMessage = cleanMessage.replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  const formattedDate = new Date().toLocaleString('en-US', {
+    timeZone: 'Asia/Kolkata',
+    dateStyle: 'medium',
+    timeStyle: 'short',
+  });
+
+  try {
+    const data = await resend.emails.send({
+      from: `Ahmad Blogs Contact <${fromEmail}>`,
+      to: [recipient],
+      replyTo: email,
+      subject: `📬 New Contact Message from ${name}`,
+      text: `New contact submission received on ahmadblogs.com:\n\nName: ${name}\nEmail: ${email}\nDate: ${formattedDate} IST\n\nMessage:\n${cleanMessage}\n\n---\nReply directly to this email to respond to ${name} (${email}).`,
+      html: `
+        <div style="font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 28px; background-color: #ffffff; border: 1px solid #e5e7eb; border-radius: 14px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);">
+          
+          <div style="border-bottom: 2px solid #3CB371; padding-bottom: 16px; margin-bottom: 20px;">
+            <div style="display: flex; align-items: center; gap: 8px;">
+              <h2 style="color: #232946; font-size: 20px; font-weight: 800; margin: 0;">
+                📬 New Contact Message Received
+              </h2>
+            </div>
+            <p style="color: #6b7280; font-size: 13px; margin: 6px 0 0 0;">
+              Someone submitted the contact form on <a href="https://www.ahmadblogs.com/contact" style="color: #3CB371; text-decoration: none; font-weight: 600;">ahmadblogs.com/contact</a>
+            </p>
+          </div>
+
+          <div style="background-color: #f9fafb; border: 1px solid #e5e7eb; border-radius: 10px; padding: 16px; margin-bottom: 22px;">
+            <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+              <tr>
+                <td style="padding: 6px 0; color: #6b7280; font-weight: 600; width: 90px;">Sender Name:</td>
+                <td style="padding: 6px 0; color: #111827; font-weight: 700;">${name}</td>
+              </tr>
+              <tr>
+                <td style="padding: 6px 0; color: #6b7280; font-weight: 600;">Email:</td>
+                <td style="padding: 6px 0;">
+                  <a href="mailto:${email}" style="color: #3CB371; font-weight: 700; text-decoration: none;">${email}</a>
+                </td>
+              </tr>
+              <tr>
+                <td style="padding: 6px 0; color: #6b7280; font-weight: 600;">Received:</td>
+                <td style="padding: 6px 0; color: #4b5563;">${formattedDate} IST</td>
+              </tr>
+            </table>
+          </div>
+
+          <div style="margin-bottom: 24px;">
+            <div style="color: #374151; font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px;">
+              Message Content:
+            </div>
+            <div style="background-color: #f0fdf4; border: 1px solid #bbf7d0; border-left: 4px solid #3CB371; border-radius: 8px; padding: 16px 18px; color: #1f2937; font-size: 15px; line-height: 1.6; white-space: pre-wrap;">${escapedMessage}</div>
+          </div>
+
+          <div style="text-align: center; margin-top: 26px; padding-top: 22px; border-top: 1px solid #e5e7eb;">
+            <a href="mailto:${email}?subject=${encodeURIComponent(`Re: Your inquiry on Ahmad Blogs`)}" style="background-color: #232946; color: #ffffff; padding: 12px 24px; border-radius: 10px; font-weight: 700; text-decoration: none; display: inline-block; font-size: 14px;">
+              Reply to ${name} (${email})
+            </a>
+            <p style="color: #9ca3af; font-size: 12px; margin-top: 12px; margin-bottom: 0;">
+              Tip: You can also simply hit "Reply" to this email in your email app.
+            </p>
+          </div>
+
+          <hr style="border: none; border-top: 1px solid #f3f4f6; margin: 24px 0 16px 0;" />
+          <p style="text-align: center; color: #9ca3af; font-size: 11px; margin: 0;">
+            Ahmad Blogs Contact Dispatcher • Delivered to saahmed311@gmail.com
+          </p>
+        </div>
+      `,
+    });
+
+    return { success: true, data };
+  } catch (error) {
+    console.error('Error sending contact notification email:', error);
+    return { success: false, error };
+  }
+}
+
+

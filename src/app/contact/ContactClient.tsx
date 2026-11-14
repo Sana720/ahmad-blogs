@@ -23,42 +23,127 @@ export default function ContactClient() {
         setLoading(true);
         setError('');
         setSuccess(false);
+
         try {
-            await addDoc(collection(db, 'contacts'), {
-                ...form,
-                createdAt: serverTimestamp(),
+            const res = await fetch('/api/contact', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(form),
             });
+
+            const data = await res.json();
+            if (!res.ok) {
+                throw new Error(data.error || 'Failed to send message.');
+            }
+
             setSuccess(true);
             setForm({ name: '', email: '', message: '' });
         } catch (err: any) {
-            setError('Failed to send message. Please try again.');
+            console.error('Contact submission error:', err);
+            // Fallback: attempt direct Firestore save if API request encounters network issue
+            try {
+                await addDoc(collection(db, 'contacts'), {
+                    ...form,
+                    createdAt: serverTimestamp(),
+                });
+                setSuccess(true);
+                setForm({ name: '', email: '', message: '' });
+            } catch (fallbackErr) {
+                setError(err.message || 'Failed to send message. Please try again.');
+            }
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     return (
         <div className="min-h-screen flex flex-col bg-white">
             <Header categoryMenu={<CategoryMenu />} />
             <main className="flex-1 max-w-3xl mx-auto py-16 px-4 text-[#232946] bg-white">
-                <h1 className="text-4xl font-extrabold mb-6 text-[#232946]">Contact Us</h1>
-                <p className="text-lg text-[#444] mb-4">Have a question, suggestion, or just want to say hello? We'd love to hear from you!</p>
-                <form className="space-y-6 mt-8 max-w-xl" onSubmit={handleSubmit}>
+                <h1 className="text-4xl font-extrabold mb-4 text-[#232946] tracking-tight">Contact Us</h1>
+                <p className="text-lg text-gray-600 mb-8 leading-relaxed">
+                    Have a question, suggestion, or need support? Fill out the form below and we will get back to you directly via email.
+                </p>
+
+                {success && (
+                    <div className="mb-6 p-4 bg-emerald-50 border border-emerald-200 rounded-xl flex items-start gap-3 text-emerald-900 animate-in fade-in duration-200">
+                        <svg className="w-5 h-5 text-emerald-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M5 13l4 4L19 7" />
+                        </svg>
+                        <div>
+                            <p className="font-bold">Thank you! Your message has been sent successfully.</p>
+                            <p className="text-sm text-emerald-700 mt-0.5">We have received your note and will reply to your email shortly.</p>
+                        </div>
+                    </div>
+                )}
+
+                {error && (
+                    <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-xl flex items-center gap-3 text-red-800 animate-in fade-in duration-200">
+                        <svg className="w-5 h-5 text-red-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        <span>{error}</span>
+                    </div>
+                )}
+
+                <form className="space-y-5 max-w-xl bg-gray-50/50 p-6 sm:p-8 rounded-2xl border border-gray-100 shadow-xs" onSubmit={handleSubmit}>
                     <div>
-                        <label className="block text-[#232946] font-semibold mb-1">Name</label>
-                        <input name="name" type="text" className="w-full border border-gray-300 rounded px-4 py-2" required value={form.name} onChange={handleChange} />
+                        <label className="block text-[#232946] text-sm font-bold mb-1.5">
+                            Your Name <span className="text-red-500">*</span>
+                        </label>
+                        <input 
+                            name="name" 
+                            type="text" 
+                            className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 focus:outline-none focus:border-[#3CB371] focus:ring-3 focus:ring-[#3CB371]/15 transition-all" 
+                            required 
+                            placeholder="John Doe"
+                            value={form.name} 
+                            onChange={handleChange} 
+                        />
                     </div>
                     <div>
-                        <label className="block text-[#232946] font-semibold mb-1">Email</label>
-                        <input name="email" type="email" className="w-full border border-gray-300 rounded px-4 py-2" required value={form.email} onChange={handleChange} />
+                        <label className="block text-[#232946] text-sm font-bold mb-1.5">
+                            Email Address <span className="text-red-500">*</span>
+                        </label>
+                        <input 
+                            name="email" 
+                            type="email" 
+                            className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-gray-900 focus:outline-none focus:border-[#3CB371] focus:ring-3 focus:ring-[#3CB371]/15 transition-all" 
+                            required 
+                            placeholder="john@example.com"
+                            value={form.email} 
+                            onChange={handleChange} 
+                        />
                     </div>
                     <div>
-                        <label className="block text-[#232946] font-semibold mb-1">Message</label>
-                        <textarea name="message" className="w-full border border-gray-300 rounded px-4 py-2" rows={5} required value={form.message} onChange={handleChange}></textarea>
+                        <label className="block text-[#232946] text-sm font-bold mb-1.5">
+                            Message <span className="text-red-500">*</span>
+                        </label>
+                        <textarea 
+                            name="message" 
+                            className="w-full bg-white border border-gray-200 rounded-xl px-4 py-3 text-gray-900 focus:outline-none focus:border-[#3CB371] focus:ring-3 focus:ring-[#3CB371]/15 transition-all" 
+                            rows={5} 
+                            required 
+                            placeholder="How can we help you?"
+                            value={form.message} 
+                            onChange={handleChange}
+                        ></textarea>
                     </div>
-                    <button type="submit" className="bg-[#3CB371] text-white px-6 py-2 rounded font-bold hover:bg-[#232946] transition-colors" disabled={loading}>{loading ? 'Sending...' : 'Send Message'}</button>
+                    <button 
+                        type="submit" 
+                        className="w-full sm:w-auto bg-[#3CB371] hover:bg-[#2e945b] active:scale-[0.98] text-white px-8 py-3 rounded-xl font-bold transition-all shadow-xs flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50" 
+                        disabled={loading}
+                    >
+                        {loading ? (
+                            <>
+                                <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin" />
+                                <span>Sending...</span>
+                            </>
+                        ) : (
+                            <span>Send Message</span>
+                        )}
+                    </button>
                 </form>
-                {success && <div className="mt-4 text-green-600 font-semibold">Message sent successfully!</div>}
-                {error && <div className="mt-4 text-red-600 font-semibold">{error}</div>}
             </main>
             <Footer />
         </div>
