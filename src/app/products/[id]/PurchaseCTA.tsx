@@ -159,8 +159,8 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
 
       {/* Plan Selection Modal */}
       {showModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl w-full max-w-lg max-h-[95vh] flex flex-col shadow-2xl relative animate-in fade-in zoom-in duration-200">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-sm">
+          <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] flex flex-col shadow-2xl relative animate-in fade-in zoom-in duration-200 overflow-hidden">
             
             {/* Close Button */}
             <button 
@@ -168,22 +168,22 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
                 setShowModal(false);
                 setTimeout(() => setSelectedPlan(null), 200); // Reset after closing animation
               }}
-              className="absolute top-4 right-4 text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-full p-2 transition-colors z-20"
+              className="absolute top-3.5 right-3.5 text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-full p-1.5 transition-colors z-20"
             >
-              <svg className="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
 
-            <div className="p-6 md:p-8 overflow-y-auto flex-1">
+            <div className="p-4 sm:p-6 overflow-y-auto flex-1">
               {!selectedPlan ? (
                 <>
-                  <h2 className="text-2xl font-extrabold text-[#232946] mb-2 pr-8">Select a Plan</h2>
-                  <p className="text-gray-500 mb-6 text-sm">
+                  <h2 className="text-xl sm:text-2xl font-extrabold text-[#232946] mb-1 pr-8">Select a Plan</h2>
+                  <p className="text-gray-500 mb-4 text-xs sm:text-sm">
                     Choose the best subscription or lifetime plan for {product.title}.
                   </p>
 
-                  <div className="space-y-4">
+                  <div className="space-y-3">
                     {activePlans.map((plan) => {
                       const isLifetime = plan.slug.toLowerCase() === 'lifetime' || plan.lifetime;
                       const isYearly = plan.slug.toLowerCase() === 'yearly' || plan.durationDays === 365 || plan.durationDays === 360;
@@ -191,10 +191,10 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
                       return (
                         <div 
                           key={plan.id || plan.slug} 
-                          className="relative flex flex-col sm:flex-row items-center justify-between p-5 sm:p-6 border-2 rounded-xl transition-all gap-4 overflow-hidden border-gray-200 hover:border-[#3CB371] hover:bg-green-50/30"
+                          className="relative flex flex-col sm:flex-row items-center justify-between p-4 sm:p-5 border-2 rounded-xl transition-all gap-3 overflow-hidden border-gray-200 hover:border-[#3CB371] hover:bg-green-50/30"
                         >
                           <div className="flex-1 text-left w-full sm:w-auto z-10">
-                            <h3 className="font-bold text-[#232946] text-lg sm:text-xl pr-10 sm:pr-0 flex items-center gap-2">
+                            <h3 className="font-bold text-[#232946] text-base sm:text-lg pr-10 sm:pr-0 flex items-center gap-2">
                               {plan.name}
                               {isLifetime && (
                                 <span className="bg-orange-100 text-orange-700 text-[10px] font-black uppercase tracking-widest py-0.5 px-2 rounded-md whitespace-nowrap">
@@ -207,24 +207,24 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
                                 </span>
                               )}
                             </h3>
-                            <p className="text-sm text-gray-500 mt-0.5">
+                            <p className="text-xs text-gray-500 mt-0.5">
                               {plan.lifetime 
                                 ? "One-time payment, lifetime access" 
                                 : `Billed every ${plan.durationDays} days`}
                             </p>
                           </div>
                           
-                          <div className="flex flex-row items-center gap-3 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end mt-2 sm:mt-0 z-10 shrink-0">
-                            <div className="flex flex-col items-start sm:items-end gap-1">
+                          <div className="flex flex-row items-center gap-3 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end mt-1 sm:mt-0 z-10 shrink-0">
+                            <div className="flex flex-col items-start sm:items-end gap-0.5">
                               {plan.regularPrice && plan.regularPrice > plan.price && (
-                                <div className="text-xs text-gray-400 font-medium flex items-center gap-1.5 leading-none">
+                                <div className="text-[11px] text-gray-400 font-medium flex items-center gap-1 leading-none">
                                   <span className="line-through">{plan.currency === "USD" ? "$" : ""}{plan.regularPrice}</span>
                                   <span className="text-[10px] bg-green-100 text-green-700 px-1 py-0.5 rounded font-bold">
                                     -{Math.round(((plan.regularPrice - plan.price) / plan.regularPrice) * 100)}%
                                   </span>
                                 </div>
                               )}
-                              <div className="text-xl sm:text-2xl font-black text-[#232946] leading-none">
+                              <div className="text-lg sm:text-xl font-black text-[#232946] leading-none">
                                 {plan.currency === "USD" ? "$" : ""}{plan.price}
                               </div>
                             </div>
@@ -242,7 +242,7 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
                                 });
                                 setSelectedPlan(plan);
                               }}
-                              className={`px-5 py-2.5 font-bold rounded-lg transition-colors whitespace-nowrap shadow-sm shrink-0 ${
+                              className={`px-4 py-2 font-bold text-sm rounded-lg transition-colors whitespace-nowrap shadow-sm shrink-0 ${
                                 isLifetime ? 'bg-[#3CB371] hover:bg-[#2e945b] text-white' : 'bg-gray-800 hover:bg-gray-900 text-white'
                               }`}
                             >
@@ -259,16 +259,16 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
                   {activePlans.length > 1 && (
                     <button 
                       onClick={() => setSelectedPlan(null)}
-                      className="text-sm font-bold text-gray-500 hover:text-gray-900 mb-6 flex items-center gap-1.5 transition-colors"
+                      className="text-xs font-bold text-gray-500 hover:text-gray-900 mb-2.5 flex items-center gap-1 transition-colors"
                     >
-                      <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
+                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
                       Back to plans
                     </button>
                   )}
                   
-                  <div className="mb-8">
-                    <h2 className="text-2xl font-extrabold text-[#232946] mb-1 pr-8">Complete Purchase</h2>
-                    <p className="text-gray-500 text-sm">
+                  <div className="mb-3.5">
+                    <h2 className="text-xl sm:text-2xl font-extrabold text-[#232946] leading-tight pr-8">Complete Purchase</h2>
+                    <p className="text-gray-500 text-xs sm:text-sm mt-0.5">
                       You are purchasing the <span className="font-bold text-[#3CB371]">{selectedPlan.name}</span> plan for <span className="font-bold text-gray-800">{selectedPlan.currency === "USD" ? "$" : ""}{selectedPlan.price}</span>.
                     </p>
                   </div>
@@ -284,7 +284,7 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
             </div>
 
             {/* Trust Badges Footer */}
-            <div className="bg-gray-50 border-t border-gray-100 p-4 rounded-b-2xl flex flex-wrap justify-center items-center gap-x-6 gap-y-2 text-xs font-semibold text-gray-500">
+            <div className="bg-gray-50/80 border-t border-gray-100 py-2.5 px-4 rounded-b-2xl flex flex-wrap justify-center items-center gap-x-5 gap-y-1 text-[11px] font-semibold text-gray-500">
               <div className="flex items-center gap-1.5">
                 <span>🔒</span> Secure PayPal Checkout
               </div>
@@ -292,7 +292,7 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
                 <span>⚡</span> Instant Delivery
               </div>
               <div className="flex items-center gap-1.5">
-                <span>🛡️</span> 7-Day No Questions Asked Refund
+                <span>🛡️</span> 7-Day Refund Policy
               </div>
             </div>
           </div>
