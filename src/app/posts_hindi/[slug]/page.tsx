@@ -1,5 +1,6 @@
 import { getHindiPostBySlug } from "@/utils/getHindiPostBySlug";
 import MarkdownRenderer from "@/app/posts/[slug]/MarkdownRenderer";
+import styles from "@/app/posts/[slug]/postContent.module.css";
 import { notFound } from "next/navigation";
 import { publisher } from "@/utils/publisherSchema";
 import Head from "next/head";
@@ -93,7 +94,9 @@ export default async function HindiPostDetail(props: HindiPostDetailProps) {
           </div>
         )}
 
-        <MarkdownRenderer content={post.content} />
+        <div className={styles.postContent}>
+          <MarkdownRenderer content={post.content} />
+        </div>
 
         {/* Citations & References (GEO) */}
         <div style={{ marginTop: '48px', paddingTop: '24px', borderTop: '1px solid #eee', fontSize: '12px', color: '#888' }}>

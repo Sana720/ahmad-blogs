@@ -247,9 +247,9 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
               />
             </div>
           </div>
-          <div className={`max-w-3xl mx-auto text-base sm:text-[1rem] text-[#232946] space-y-6 prose prose-headings:text-[#232946] prose-img:rounded-xl prose-img:mx-auto ${styles.postContent}`}>
+          <article className={`max-w-3xl mx-auto ${styles.postContent}`}>
             {post.excerpt && (
-              <div className="bg-gray-50 border-l-4 border-[#3CB371] p-5 rounded-r-xl my-6">
+              <div className="bg-emerald-50/60 border-l-4 border-[#3CB371] p-5 rounded-r-xl my-6">
                 <strong className="text-xs font-extrabold uppercase tracking-wider text-[#3CB371] block mb-1">
                   Quick Summary (Direct Answer)
                 </strong>
@@ -261,7 +261,7 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
             {post.content && (
               <MarkdownRenderer content={Array.isArray(post.content) ? post.content.join('\n\n') : post.content} />
             )}
-          </div>
+          </article>
           {/* Citations / Sources for GEO */}
           <div className="max-w-3xl mx-auto mt-12 pt-6 border-t border-gray-100 text-xs text-gray-400">
             <p className="font-semibold mb-1">Citations & References:</p>
