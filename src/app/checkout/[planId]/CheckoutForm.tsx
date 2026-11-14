@@ -187,28 +187,28 @@ export default function CheckoutForm({ planId, planName, planPrice, currency }: 
   return (
     <>
       <ExitIntentPopup />
-      <form onSubmit={handleContinue} className="space-y-3">
+      <form onSubmit={handleContinue} className="space-y-3.5">
         <div>
-          <div className="flex justify-between items-center mb-1">
-            <label htmlFor="name" className="text-xs font-bold text-gray-700">Full Name</label>
-            <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Optional</span>
+          <div className="flex justify-between items-center mb-1.5">
+            <label htmlFor="name" className="text-xs sm:text-sm font-bold text-gray-700">Full Name</label>
+            <span className="text-[10px] sm:text-xs text-gray-400 font-medium uppercase tracking-wider">Optional</span>
           </div>
           <input
             type="text"
             id="name"
             value={name}
             onChange={(e) => setName(e.target.value)}
-            className="w-full px-3.5 py-2.5 text-sm text-gray-900 bg-gray-50/50 hover:bg-white focus:bg-white rounded-xl border border-gray-200 focus:border-[#3CB371] focus:ring-3 focus:ring-[#3CB371]/15 outline-none transition-all placeholder:text-gray-400 shadow-2xs"
+            className="w-full px-4 py-2.5 sm:py-3 text-sm sm:text-base text-gray-900 bg-gray-50/50 hover:bg-white focus:bg-white rounded-xl border border-gray-200 focus:border-[#3CB371] focus:ring-3 focus:ring-[#3CB371]/15 outline-none transition-all placeholder:text-gray-400 shadow-2xs"
             placeholder="John Doe"
           />
         </div>
 
         <div>
-          <div className="flex justify-between items-center mb-1">
-            <label htmlFor="email" className="text-xs font-bold text-gray-700">
+          <div className="flex justify-between items-center mb-1.5">
+            <label htmlFor="email" className="text-xs sm:text-sm font-bold text-gray-700">
               Email Address <span className="text-red-500">*</span>
             </label>
-            <span className="text-[10px] text-emerald-600 font-semibold">License sent here</span>
+            <span className="text-[11px] sm:text-xs text-emerald-600 font-semibold">License sent here</span>
           </div>
           <input
             type="email"
@@ -216,11 +216,11 @@ export default function CheckoutForm({ planId, planName, planPrice, currency }: 
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="w-full px-3.5 py-2.5 text-sm text-gray-900 bg-gray-50/50 hover:bg-white focus:bg-white rounded-xl border border-gray-200 focus:border-[#3CB371] focus:ring-3 focus:ring-[#3CB371]/15 outline-none transition-all placeholder:text-gray-400 shadow-2xs"
+            className="w-full px-4 py-2.5 sm:py-3 text-sm sm:text-base text-gray-900 bg-gray-50/50 hover:bg-white focus:bg-white rounded-xl border border-gray-200 focus:border-[#3CB371] focus:ring-3 focus:ring-[#3CB371]/15 outline-none transition-all placeholder:text-gray-400 shadow-2xs"
             placeholder="your-email@gmail.com"
           />
-          <div className="mt-1.5 p-2 px-2.5 bg-amber-50/70 border border-amber-200/60 rounded-xl text-[11px] text-amber-900 flex items-start gap-1.5 leading-snug">
-            <svg className="w-3.5 h-3.5 text-amber-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <div className="mt-2 p-2.5 px-3 bg-amber-50/70 border border-amber-200/60 rounded-xl text-xs sm:text-[13px] text-amber-900 flex items-start gap-2 leading-relaxed">
+            <svg className="w-4 h-4 text-amber-600 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             <div>
@@ -230,9 +230,9 @@ export default function CheckoutForm({ planId, planName, planPrice, currency }: 
         </div>
 
         <div>
-          <div className="flex justify-between items-center mb-1">
-            <label htmlFor="discountCode" className="text-xs font-bold text-gray-700">Promo Code</label>
-            <span className="text-[10px] text-gray-400 font-medium uppercase tracking-wider">Optional</span>
+          <div className="flex justify-between items-center mb-1.5">
+            <label htmlFor="discountCode" className="text-xs sm:text-sm font-bold text-gray-700">Promo Code</label>
+            <span className="text-[10px] sm:text-xs text-gray-400 font-medium uppercase tracking-wider">Optional</span>
           </div>
           <div className="flex gap-2">
             <input
@@ -250,7 +250,7 @@ export default function CheckoutForm({ planId, planName, planPrice, currency }: 
                 }
               }}
               disabled={isValidatingCoupon || Boolean(appliedCoupon)}
-              className="flex-1 px-3.5 py-2 text-sm text-gray-900 bg-gray-50/50 hover:bg-white focus:bg-white rounded-xl border border-gray-200 focus:border-[#3CB371] focus:ring-3 focus:ring-[#3CB371]/15 outline-none transition-all uppercase font-mono tracking-wider placeholder:font-sans placeholder:tracking-normal disabled:bg-gray-100 placeholder:text-gray-400 shadow-2xs"
+              className="flex-1 px-4 py-2.5 text-sm sm:text-base text-gray-900 bg-gray-50/50 hover:bg-white focus:bg-white rounded-xl border border-gray-200 focus:border-[#3CB371] focus:ring-3 focus:ring-[#3CB371]/15 outline-none transition-all uppercase font-mono tracking-wider placeholder:font-sans placeholder:tracking-normal disabled:bg-gray-100 placeholder:text-gray-400 shadow-2xs"
               placeholder="e.g. PRO20"
             />
             {!appliedCoupon ? (
@@ -258,7 +258,7 @@ export default function CheckoutForm({ planId, planName, planPrice, currency }: 
                 type="button"
                 onClick={() => validateAndApplyCoupon(couponInput)}
                 disabled={isValidatingCoupon || !couponInput.trim()}
-                className="px-4 py-2 bg-[#3CB371] hover:bg-[#349e63] active:scale-[0.98] disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed text-white text-xs font-bold rounded-xl transition-all shadow-xs shrink-0 flex items-center justify-center gap-1.5 min-w-[76px] cursor-pointer"
+                className="px-5 py-2.5 bg-[#3CB371] hover:bg-[#349e63] active:scale-[0.98] disabled:bg-gray-100 disabled:text-gray-400 disabled:cursor-not-allowed text-white text-xs sm:text-sm font-bold rounded-xl transition-all shadow-xs shrink-0 flex items-center justify-center gap-1.5 min-w-[80px] cursor-pointer"
               >
                 {isValidatingCoupon ? (
                   <div className="w-3.5 h-3.5 border-2 border-white border-t-transparent rounded-full animate-spin" />
@@ -270,7 +270,7 @@ export default function CheckoutForm({ planId, planName, planPrice, currency }: 
               <button
                 type="button"
                 onClick={handleRemoveCoupon}
-                className="px-3 py-2 bg-gray-100 hover:bg-red-50 hover:text-red-600 text-gray-600 font-bold text-xs rounded-xl transition-colors shrink-0 cursor-pointer"
+                className="px-3.5 py-2.5 bg-gray-100 hover:bg-red-50 hover:text-red-600 text-gray-600 font-bold text-xs sm:text-sm rounded-xl transition-colors shrink-0 cursor-pointer"
               >
                 Remove
               </button>
@@ -289,7 +289,7 @@ export default function CheckoutForm({ planId, planName, planPrice, currency }: 
 
           {/* Success Message */}
           {appliedCoupon && (
-            <div className="mt-1.5 p-2 bg-emerald-50 border border-emerald-200/80 rounded-xl flex items-center justify-between text-xs text-emerald-800 animate-in fade-in duration-200">
+            <div className="mt-1.5 p-2.5 bg-emerald-50 border border-emerald-200/80 rounded-xl flex items-center justify-between text-xs sm:text-sm text-emerald-800 animate-in fade-in duration-200">
               <span className="flex items-center gap-1.5 font-bold">
                 <span className="text-emerald-600">✓</span>
                 <span className="uppercase">{appliedCoupon.code}</span> applied: {appliedCoupon.discountPercentage}% OFF
@@ -307,7 +307,7 @@ export default function CheckoutForm({ planId, planName, planPrice, currency }: 
 
         {/* Live Price Summary if Coupon Applied */}
         {appliedCoupon && (
-          <div className="p-2.5 bg-emerald-50/50 border border-emerald-100 rounded-xl text-xs space-y-1 shadow-2xs">
+          <div className="p-3 bg-emerald-50/50 border border-emerald-100 rounded-xl text-xs sm:text-sm space-y-1.5 shadow-2xs">
             <div className="flex justify-between text-gray-500">
               <span>Original Price:</span>
               <span className="line-through">{currency === "USD" ? "$" : ""}{planPrice.toFixed(2)}</span>
@@ -316,7 +316,7 @@ export default function CheckoutForm({ planId, planName, planPrice, currency }: 
               <span>Coupon Discount ({appliedCoupon.discountPercentage}%):</span>
               <span>-{currency === "USD" ? "$" : ""}{appliedCoupon.discountAmount.toFixed(2)}</span>
             </div>
-            <div className="flex justify-between text-[#232946] font-bold pt-1 border-t border-emerald-200/60 text-sm">
+            <div className="flex justify-between text-[#232946] font-bold pt-1.5 border-t border-emerald-200/60 text-sm sm:text-base">
               <span>New Total:</span>
               <span className="text-[#3CB371]">{currency === "USD" ? "$" : ""}{finalDue}</span>
             </div>
@@ -325,7 +325,7 @@ export default function CheckoutForm({ planId, planName, planPrice, currency }: 
 
         <button
           type="submit"
-          className="w-full py-3 px-4 bg-[#232946] hover:bg-[#1b2038] active:scale-[0.99] text-white font-extrabold text-sm rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer mt-2"
+          className="w-full py-3.5 sm:py-4 px-4 bg-[#232946] hover:bg-[#1b2038] active:scale-[0.99] text-white font-extrabold text-sm sm:text-base rounded-xl transition-all shadow-md hover:shadow-lg flex items-center justify-center gap-2 cursor-pointer mt-2"
         >
           <svg className="w-4 h-4 text-[#3CB371]" fill="none" viewBox="0 0 24 24" stroke="currentColor">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />

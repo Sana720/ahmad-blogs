@@ -160,7 +160,7 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
       {/* Plan Selection Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-sm">
-          <div className={`bg-white rounded-3xl w-full ${selectedPlan ? 'max-w-[460px]' : 'max-w-[620px]'} max-h-[92vh] flex flex-col shadow-2xl relative transition-all duration-300 overflow-hidden border border-gray-100`}>
+          <div className={`bg-white rounded-3xl w-full ${selectedPlan ? 'max-w-[560px]' : 'max-w-[620px]'} max-h-[92vh] flex flex-col shadow-2xl relative transition-all duration-300 overflow-hidden border border-gray-100`}>
             
             {/* Close Button */}
             <button 
@@ -176,7 +176,7 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
               </svg>
             </button>
 
-            <div className={`${selectedPlan ? 'p-5 sm:p-6' : 'p-6 sm:p-8'} overflow-y-auto flex-1`}>
+            <div className="p-6 sm:p-8 overflow-y-auto flex-1">
               {!selectedPlan ? (
                 <>
                   <div className="mb-6 pr-8">
@@ -261,13 +261,13 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
               ) : (
                 <div className="animate-in slide-in-from-right-3 duration-250">
                   {/* Top Bar Navigation */}
-                  <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center justify-between mb-4">
                     {activePlans.length > 1 ? (
                       <button 
                         onClick={() => setSelectedPlan(null)}
-                        className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-gray-900 transition-colors py-1 px-2 rounded-lg hover:bg-gray-100 -ml-2 cursor-pointer"
+                        className="inline-flex items-center gap-1.5 text-xs sm:text-sm font-bold text-gray-500 hover:text-gray-900 transition-colors py-1 px-2.5 rounded-lg hover:bg-gray-100 -ml-2 cursor-pointer"
                       >
-                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
                         </svg>
                         Back to plans
@@ -278,21 +278,21 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
                   </div>
 
                   {/* Selected Plan Summary Banner */}
-                  <div className="flex items-center justify-between p-3 bg-gradient-to-r from-emerald-50/70 via-slate-50 to-white border border-emerald-100 rounded-xl mb-3.5 shadow-2xs">
+                  <div className="flex items-center justify-between p-3.5 sm:p-4 bg-gradient-to-r from-emerald-50/70 via-slate-50 to-white border border-emerald-100 rounded-2xl mb-4 shadow-2xs">
                     <div>
-                      <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-800">Selected License</div>
-                      <div className="text-sm font-extrabold text-gray-900 flex items-center gap-1.5 mt-0.5">
+                      <div className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-emerald-800">Selected License</div>
+                      <div className="text-sm sm:text-base font-extrabold text-gray-900 flex items-center gap-2 mt-0.5">
                         {selectedPlan.name}
                         {selectedPlan.lifetime && (
-                          <span className="bg-emerald-100 text-emerald-700 text-[9px] font-black px-1.5 py-0.2 rounded uppercase tracking-wider">
+                          <span className="bg-emerald-100 text-emerald-700 text-[10px] font-black px-2 py-0.5 rounded-md uppercase tracking-wider">
                             Lifetime
                           </span>
                         )}
                       </div>
                     </div>
                     <div className="text-right">
-                      <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Total Due</div>
-                      <div className="text-lg font-black text-[#3CB371] leading-none mt-0.5">
+                      <div className="text-[10px] sm:text-[11px] font-semibold text-gray-400 uppercase tracking-wider">Total Due</div>
+                      <div className="text-xl sm:text-2xl font-black text-[#3CB371] leading-none mt-0.5">
                         {selectedPlan.currency === "USD" ? "$" : ""}{selectedPlan.price}
                       </div>
                     </div>
