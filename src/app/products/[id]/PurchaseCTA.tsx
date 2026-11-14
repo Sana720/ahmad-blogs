@@ -160,7 +160,7 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
       {/* Plan Selection Modal */}
       {showModal && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-3 sm:p-4 bg-black/50 backdrop-blur-sm">
-          <div className="bg-white rounded-2xl w-full max-w-lg max-h-[90vh] flex flex-col shadow-2xl relative animate-in fade-in zoom-in duration-200 overflow-hidden">
+          <div className="bg-white rounded-2xl w-full max-w-[440px] max-h-[90vh] flex flex-col shadow-2xl relative animate-in fade-in zoom-in duration-200 overflow-hidden border border-gray-100">
             
             {/* Close Button */}
             <button 
@@ -168,22 +168,25 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
                 setShowModal(false);
                 setTimeout(() => setSelectedPlan(null), 200); // Reset after closing animation
               }}
-              className="absolute top-3.5 right-3.5 text-gray-400 hover:text-gray-600 bg-gray-100 hover:bg-gray-200 rounded-full p-1.5 transition-colors z-20"
+              className="absolute top-3.5 right-3.5 text-gray-400 hover:text-gray-700 bg-gray-100/80 hover:bg-gray-200 rounded-full p-1.5 transition-colors z-20"
+              aria-label="Close modal"
             >
               <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
               </svg>
             </button>
 
-            <div className="p-4 sm:p-6 overflow-y-auto flex-1">
+            <div className="p-4 sm:p-5 overflow-y-auto flex-1">
               {!selectedPlan ? (
                 <>
-                  <h2 className="text-xl sm:text-2xl font-extrabold text-[#232946] mb-1 pr-8">Select a Plan</h2>
-                  <p className="text-gray-500 mb-4 text-xs sm:text-sm">
-                    Choose the best subscription or lifetime plan for {product.title}.
-                  </p>
+                  <div className="mb-4 pr-8">
+                    <h2 className="text-xl font-extrabold text-[#232946] tracking-tight">Select a Plan</h2>
+                    <p className="text-gray-500 text-xs mt-0.5">
+                      Choose the best license for {product.title}.
+                    </p>
+                  </div>
 
-                  <div className="space-y-3">
+                  <div className="space-y-2.5">
                     {activePlans.map((plan) => {
                       const isLifetime = plan.slug.toLowerCase() === 'lifetime' || plan.lifetime;
                       const isYearly = plan.slug.toLowerCase() === 'yearly' || plan.durationDays === 365 || plan.durationDays === 360;
@@ -191,40 +194,37 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
                       return (
                         <div 
                           key={plan.id || plan.slug} 
-                          className="relative flex flex-col sm:flex-row items-center justify-between p-4 sm:p-5 border-2 rounded-xl transition-all gap-3 overflow-hidden border-gray-200 hover:border-[#3CB371] hover:bg-green-50/30"
+                          className="relative flex items-center justify-between p-3.5 border-2 rounded-xl transition-all gap-3 overflow-hidden border-gray-200 hover:border-[#3CB371] hover:bg-green-50/20"
                         >
-                          <div className="flex-1 text-left w-full sm:w-auto z-10">
-                            <h3 className="font-bold text-[#232946] text-base sm:text-lg pr-10 sm:pr-0 flex items-center gap-2">
+                          <div className="flex-1 text-left min-w-0 z-10">
+                            <h3 className="font-bold text-[#232946] text-base flex items-center gap-1.5 truncate">
                               {plan.name}
                               {isLifetime && (
-                                <span className="bg-orange-100 text-orange-700 text-[10px] font-black uppercase tracking-widest py-0.5 px-2 rounded-md whitespace-nowrap">
-                                  🔥 Top Selling
+                                <span className="bg-orange-100 text-orange-700 text-[9px] font-black uppercase tracking-wider py-0.5 px-1.5 rounded whitespace-nowrap">
+                                  🔥 Popular
                                 </span>
                               )}
                               {isYearly && (
-                                <span className="bg-blue-100 text-blue-700 text-[10px] font-black uppercase tracking-widest py-0.5 px-2 rounded-md whitespace-nowrap">
+                                <span className="bg-blue-100 text-blue-700 text-[9px] font-black uppercase tracking-wider py-0.5 px-1.5 rounded whitespace-nowrap">
                                   💎 Best Value
                                 </span>
                               )}
                             </h3>
-                            <p className="text-xs text-gray-500 mt-0.5">
+                            <p className="text-[11px] text-gray-500 mt-0.5 truncate">
                               {plan.lifetime 
                                 ? "One-time payment, lifetime access" 
                                 : `Billed every ${plan.durationDays} days`}
                             </p>
                           </div>
                           
-                          <div className="flex flex-row items-center gap-3 sm:gap-4 w-full sm:w-auto justify-between sm:justify-end mt-1 sm:mt-0 z-10 shrink-0">
-                            <div className="flex flex-col items-start sm:items-end gap-0.5">
+                          <div className="flex items-center gap-3 shrink-0 z-10">
+                            <div className="text-right">
                               {plan.regularPrice && plan.regularPrice > plan.price && (
-                                <div className="text-[11px] text-gray-400 font-medium flex items-center gap-1 leading-none">
+                                <div className="text-[10px] text-gray-400 font-medium flex items-center gap-1 justify-end leading-none">
                                   <span className="line-through">{plan.currency === "USD" ? "$" : ""}{plan.regularPrice}</span>
-                                  <span className="text-[10px] bg-green-100 text-green-700 px-1 py-0.5 rounded font-bold">
-                                    -{Math.round(((plan.regularPrice - plan.price) / plan.regularPrice) * 100)}%
-                                  </span>
                                 </div>
                               )}
-                              <div className="text-lg sm:text-xl font-black text-[#232946] leading-none">
+                              <div className="text-lg font-black text-[#232946] leading-none mt-0.5">
                                 {plan.currency === "USD" ? "$" : ""}{plan.price}
                               </div>
                             </div>
@@ -242,7 +242,7 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
                                 });
                                 setSelectedPlan(plan);
                               }}
-                              className={`px-4 py-2 font-bold text-sm rounded-lg transition-colors whitespace-nowrap shadow-sm shrink-0 ${
+                              className={`px-3.5 py-1.5 font-bold text-xs rounded-lg transition-colors whitespace-nowrap shadow-xs ${
                                 isLifetime ? 'bg-[#3CB371] hover:bg-[#2e945b] text-white' : 'bg-gray-800 hover:bg-gray-900 text-white'
                               }`}
                             >
@@ -255,22 +255,43 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
                   </div>
                 </>
               ) : (
-                <div className="animate-in slide-in-from-right-4 duration-300">
-                  {activePlans.length > 1 && (
-                    <button 
-                      onClick={() => setSelectedPlan(null)}
-                      className="text-xs font-bold text-gray-500 hover:text-gray-900 mb-2.5 flex items-center gap-1 transition-colors"
-                    >
-                      <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" /></svg>
-                      Back to plans
-                    </button>
-                  )}
-                  
-                  <div className="mb-3.5">
-                    <h2 className="text-xl sm:text-2xl font-extrabold text-[#232946] leading-tight pr-8">Complete Purchase</h2>
-                    <p className="text-gray-500 text-xs sm:text-sm mt-0.5">
-                      You are purchasing the <span className="font-bold text-[#3CB371]">{selectedPlan.name}</span> plan for <span className="font-bold text-gray-800">{selectedPlan.currency === "USD" ? "$" : ""}{selectedPlan.price}</span>.
-                    </p>
+                <div className="animate-in slide-in-from-right-3 duration-250">
+                  {/* Top Bar Navigation */}
+                  <div className="flex items-center justify-between mb-3">
+                    {activePlans.length > 1 ? (
+                      <button 
+                        onClick={() => setSelectedPlan(null)}
+                        className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-500 hover:text-gray-900 transition-colors py-1 px-2 rounded-lg hover:bg-gray-100 -ml-2"
+                      >
+                        <svg className="w-3.5 h-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2.5" d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                        </svg>
+                        Back to plans
+                      </button>
+                    ) : (
+                      <span className="text-xs font-semibold text-gray-400">Checkout</span>
+                    )}
+                  </div>
+
+                  {/* Selected Plan Summary Banner */}
+                  <div className="flex items-center justify-between p-3 bg-gradient-to-r from-emerald-50/70 via-slate-50 to-white border border-emerald-100 rounded-xl mb-3.5 shadow-2xs">
+                    <div>
+                      <div className="text-[10px] font-bold uppercase tracking-wider text-emerald-800">Selected License</div>
+                      <div className="text-sm font-extrabold text-gray-900 flex items-center gap-1.5 mt-0.5">
+                        {selectedPlan.name}
+                        {selectedPlan.lifetime && (
+                          <span className="bg-emerald-100 text-emerald-700 text-[9px] font-black px-1.5 py-0.2 rounded uppercase tracking-wider">
+                            Lifetime
+                          </span>
+                        )}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="text-[10px] font-semibold text-gray-400 uppercase tracking-wider">Total Due</div>
+                      <div className="text-lg font-black text-[#3CB371] leading-none mt-0.5">
+                        {selectedPlan.currency === "USD" ? "$" : ""}{selectedPlan.price}
+                      </div>
+                    </div>
                   </div>
                   
                   <CheckoutForm 
@@ -284,16 +305,18 @@ export default function PurchaseCTA({ product, priceStr, plans }: PurchaseCTAPro
             </div>
 
             {/* Trust Badges Footer */}
-            <div className="bg-gray-50/80 border-t border-gray-100 py-2.5 px-4 rounded-b-2xl flex flex-wrap justify-center items-center gap-x-5 gap-y-1 text-[11px] font-semibold text-gray-500">
-              <div className="flex items-center gap-1.5">
-                <span>🔒</span> Secure PayPal Checkout
-              </div>
-              <div className="flex items-center gap-1.5">
+            <div className="bg-gray-50/90 border-t border-gray-100 py-2 px-4 rounded-b-2xl flex items-center justify-around text-[10px] sm:text-[11px] font-semibold text-gray-500">
+              <span className="flex items-center gap-1">
+                <span>🔒</span> PayPal Secure
+              </span>
+              <span className="text-gray-300">•</span>
+              <span className="flex items-center gap-1">
                 <span>⚡</span> Instant Delivery
-              </div>
-              <div className="flex items-center gap-1.5">
-                <span>🛡️</span> 7-Day Refund Policy
-              </div>
+              </span>
+              <span className="text-gray-300">•</span>
+              <span className="flex items-center gap-1">
+                <span>🛡️</span> 7-Day Refund
+              </span>
             </div>
           </div>
         </div>
