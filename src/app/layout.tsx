@@ -82,6 +82,14 @@ export default function RootLayout({
         {/* Preconnects for Cloudinary and analytics to reduce connection time */}
         <link rel="preconnect" href="https://res.cloudinary.com" />
         <link rel="preconnect" href="https://www.googletagmanager.com" />
+        <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
+
+        {/* Google AdSense */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1137109060304100"
+          crossOrigin="anonymous"
+        />
 
         <script
           type="application/ld+json"
