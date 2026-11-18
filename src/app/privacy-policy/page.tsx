@@ -74,6 +74,14 @@ export default function PrivacyPolicyPage() {
           <h2>Cookies</h2>
           <p>Cookies are used to remember user preferences, provide basic site functionality, and collect anonymous usage metrics. You can disable cookies in your browser, but some features of the Site may not function properly.</p>
 
+          <h2>Google AdSense & Third-Party Advertising</h2>
+          <p>We may display advertisements served by Google AdSense and other third-party ad networks on the Site. Please be aware of the following:</p>
+          <ul>
+            <li>Third-party vendors, including Google, use cookies to serve ads based on a user's prior visits to our website or other websites on the Internet.</li>
+            <li>Google's use of advertising cookies (such as the DoubleClick cookie) enables it and its partners to serve ads to users based on their visit to our site and/or other sites on the Internet.</li>
+            <li>Users may opt out of personalized advertising by visiting <a href="https://adssettings.google.com/" target="_blank" rel="noopener noreferrer">Google Ads Settings</a>. Alternatively, you can opt out of a third-party vendor's use of cookies for personalized advertising by visiting <a href="https://www.aboutads.info/choices/" target="_blank" rel="noopener noreferrer">www.aboutads.info</a>.</li>
+          </ul>
+
           <h2>Data Retention and Security</h2>
           <p>We retain personal data for as long as necessary to provide our services and fulfill the purposes described in this policy. We implement reasonable security measures to protect your data, but no system is perfectly secure.</p>
 
