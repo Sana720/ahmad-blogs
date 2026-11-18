@@ -85,6 +85,7 @@ export default function RootLayout({
         <link rel="preconnect" href="https://pagead2.googlesyndication.com" />
 
         {/* Google AdSense */}
+        <meta name="google-adsense-account" content="ca-pub-1137109060304100" />
         <script
           async
           src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1137109060304100"
