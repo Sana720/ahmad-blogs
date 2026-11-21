@@ -125,10 +125,15 @@ export async function POST(req: Request) {
 
     await batch.commit();
 
-    // 5b. Send Email via Resend
-    // We do this asynchronously so it doesn't block the UI returning success
-    sendLicenseEmail(order.customerEmail, order.customerName, plan.name, licenseKey, productName)
-      .catch(err => console.error('Failed to send license email:', err));
+    // 5b. Send Email via Resend (Awaited to prevent Vercel serverless freeze)
+    try {
+      const emailRes = await sendLicenseEmail(order.customerEmail, order.customerName, plan.name, licenseKey, productName);
+      if (!emailRes.success) {
+        console.error('sendLicenseEmail returned error:', emailRes.error);
+      }
+    } catch (err) {
+      console.error('Failed to send license email:', err);
+    }
 
     // 6. Return success and the license to the frontend
     return NextResponse.json({

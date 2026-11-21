@@ -91,9 +91,15 @@ export async function POST(req: Request) {
     batch.set(newLicenseRef, newLicense);
     await batch.commit();
 
-    // 6. Send Email via Resend
-    sendLicenseEmail(customerEmail, newOrder.customerName || 'Valued Customer', plan.name, licenseKey, productName)
-      .catch(err => console.error('Failed to send manual license email:', err));
+    // 6. Send Email via Resend (Awaited to prevent Vercel serverless freeze)
+    try {
+      const emailRes = await sendLicenseEmail(customerEmail, newOrder.customerName || 'Valued Customer', plan.name, licenseKey, productName);
+      if (!emailRes.success) {
+        console.error('sendLicenseEmail returned error:', emailRes.error);
+      }
+    } catch (err) {
+      console.error('Failed to send manual license email:', err);
+    }
 
     return NextResponse.json({
       success: true,
