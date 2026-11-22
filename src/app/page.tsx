@@ -181,7 +181,7 @@ export default async function Home({ searchParams }: HomeProps) {
                       >
                         {post.title}
                       </Link>
-                      <p className="text-[#444] text-sm font-normal line-clamp-2">{typeof post.content === "string" ? post.content.slice(0, 120) + (post.content.length > 120 ? "..." : "") : post.excerpt || ""}</p>
+                      <p className="text-[#444] text-sm font-normal line-clamp-2">{typeof post.content === "string" ? post.content.replace(/<[^>]*>/g, '').slice(0, 120) + (post.content.replace(/<[^>]*>/g, '').length > 120 ? "..." : "") : post.excerpt || ""}</p>
                     </div>
                   </div>
                 ))}

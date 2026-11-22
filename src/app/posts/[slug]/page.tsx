@@ -106,6 +106,25 @@ async function getPostBySlug(slug: string): Promise<{ post: Post; postDoc: any }
   if (!postDoc) {
     postDoc = postsSnap.docs.find((doc) => doc.id === slug);
   }
+  // Fallback 2: Check guest_posts collection
+  if (!postDoc) {
+    const guestSnap = await getDocs(collection(db, "guest_posts"));
+    postDoc = guestSnap.docs.find((doc) => doc.id === slug || (doc.data() as any).slug === slug);
+    if (postDoc) {
+      const gData = postDoc.data() as any;
+      const post: Post = {
+        slug: postDoc.id,
+        title: gData.title,
+        author: gData.author,
+        category: gData.category,
+        content: gData.content,
+        image: gData.imageUrl || undefined,
+        created: gData.submittedAt,
+        date: gData.submittedAt,
+      };
+      return { post, postDoc };
+    }
+  }
   if (!postDoc) return null;
   const post = postDoc.data() as Post;
   post.slug = post.slug || postDoc.id;
