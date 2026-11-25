@@ -7,11 +7,25 @@ export default function Footer({ noMargin = false, bgColor = "bg-[#181f2a]" }: F
   return (
     <footer className={`${bgColor} text-gray-100 pt-12 pb-8 ${noMargin ? "mt-0" : "mt-24"}`}>
       <div className="max-w-5xl mx-auto flex flex-col items-center justify-center px-4">
-        <div className="flex flex-col sm:flex-row flex-wrap gap-4 sm:gap-12 text-lg font-medium mb-8 w-full justify-center items:center">
+        <div className="flex flex-col sm:flex-row flex-wrap gap-4 sm:gap-12 text-lg font-medium mb-8 w-full justify-center items-center">
           <a href="/about" className="hover:text-[#3CB371]" title="About">About</a>
           <a href="/contact" className="hover:text-[#3CB371]" title="Contact">Contact</a>
           <a href="/privacy-policy" className="hover:text-[#3CB371]" title="Privacy Policy">Privacy Policy</a>
           <a href="/terms" className="hover:text-[#3CB371]" title="Terms & Conditions">Terms & Conditions</a>
+        </div>
+        <div className="mb-8 text-center text-sm sm:text-base text-gray-300">
+          <div className="inline-flex flex-wrap items-center justify-center gap-1.5 px-4 py-2 rounded-full bg-white/5 border border-white/10 shadow-sm backdrop-blur-sm">
+            <span>Free Tool: Create trackable dynamic QR codes at</span>
+            <a
+              href="https://www.getyourqranalytics.com"
+              target="_blank"
+              rel="noopener"
+              className="text-[#3CB371] hover:underline font-semibold transition-colors"
+              title="GetYourQRAnalytics"
+            >
+              GetYourQRAnalytics
+            </a>
+          </div>
         </div>
         <div className="flex flex-wrap gap-4 sm:gap-6 mb-8 justify-center">
           <a href="https://www.facebook.com/profile.php?id=61580138300975" className="rounded-lg border border-gray-400 w-12 h-12 flex items-center justify-center text-xl text-gray-100 hover:text-[#3CB371] hover:border-[#3CB371] transition-colors" title="Facebook">
