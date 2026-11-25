@@ -10,6 +10,7 @@ type Post = {
   author?: string;
   content?: string;
   image?: string;
+  description?: string;
   excerpt?: string;
   date?: string;
   created?: string;
@@ -57,7 +58,7 @@ export async function generateMetadata({ params }: GenerateMetadataProps): Promi
       }
     };
   }
-  const description = post.excerpt || post.content?.slice(0, 160) || post.title;
+  const description = post.description || post.excerpt || post.content?.slice(0, 160) || post.title;
   const image = post.image || "/default-og.png";
   const canonicalUrl = `https://www.ahmadblogs.com/posts/${post.slug}`;
   const publishedTime = post.date || post.created || '';

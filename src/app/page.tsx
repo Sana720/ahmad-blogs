@@ -114,8 +114,8 @@ export default async function Home({ searchParams }: HomeProps) {
                       {featured.title}
                     </Link>
                     <p className="text-[#444] text-base font-normal">
-                      {featured.excerpt
-                        ? featured.excerpt
+                      {featured.description || featured.excerpt
+                        ? (featured.description || featured.excerpt)
                         : typeof featured.content === "string"
                           ? featured.content.slice(0, 120) + (featured.content.length > 120 ? "..." : "")
                           : ""}
@@ -181,7 +181,9 @@ export default async function Home({ searchParams }: HomeProps) {
                       >
                         {post.title}
                       </Link>
-                      <p className="text-[#444] text-sm font-normal line-clamp-2">{typeof post.content === "string" ? post.content.replace(/<[^>]*>/g, '').slice(0, 120) + (post.content.replace(/<[^>]*>/g, '').length > 120 ? "..." : "") : post.excerpt || ""}</p>
+                      <p className="text-[#444] text-sm font-normal line-clamp-2">
+                        {post.description || post.excerpt || (typeof post.content === "string" ? (post.content.replace(/<[^>]*>/g, '').slice(0, 120) + (post.content.replace(/<[^>]*>/g, '').length > 120 ? "..." : "")) : "")}
+                      </p>
                     </div>
                   </div>
                 ))}

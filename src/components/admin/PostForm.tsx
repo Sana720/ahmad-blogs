@@ -21,6 +21,7 @@ function slugify(str: string) {
 
 export default function PostForm({ onSubmit, initialData }: { onSubmit: (data: any) => void, initialData?: any }) {
   const [title, setTitle] = useState(initialData?.title || "");
+  const [description, setDescription] = useState(initialData?.description || initialData?.excerpt || "");
   const [content, setContent] = useState(initialData?.content || "");
   const MDEditor = dynamic(() => import('@uiw/react-md-editor'), { ssr: false });
   const [imageUrl, setImageUrl] = useState(initialData?.image || "");
@@ -65,6 +66,8 @@ export default function PostForm({ onSubmit, initialData }: { onSubmit: (data: a
     onSubmit({
       ...initialData,
       title,
+      description,
+      excerpt: description,
       content,
       image: imageUrl,
       tags: tags.split(',').map((t: string) => t.trim()).filter(Boolean),
@@ -81,6 +84,21 @@ export default function PostForm({ onSubmit, initialData }: { onSubmit: (data: a
       <div>
         <label className="block font-medium mb-1 text-[#232946]">Title</label>
         <input value={title} onChange={e => setTitle(e.target.value)} className="w-full border rounded px-3 py-2 text-[#232946]" required />
+      </div>
+      <div>
+        <div className="flex justify-between items-center mb-1">
+          <label className="block font-medium text-[#232946]">Description / Excerpt (SEO Meta Description)</label>
+          <span className={`text-xs ${description.length > 160 ? 'text-red-500 font-bold' : 'text-gray-500'}`}>
+            {description.length}/160 characters
+          </span>
+        </div>
+        <textarea
+          value={description}
+          onChange={e => setDescription(e.target.value)}
+          rows={3}
+          className="w-full border rounded px-3 py-2 text-[#232946] focus:outline-none focus:ring-1 focus:ring-[#3CB371]"
+          placeholder="A short, catchy summary for Google search results and post cards (150-160 characters recommended)"
+        />
       </div>
       <div>
         <label className="block font-medium mb-1 text-[#232946]">Content</label>

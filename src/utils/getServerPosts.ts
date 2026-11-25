@@ -13,6 +13,7 @@ type Post = {
   featured?: boolean;
   date?: string;
   category?: string;
+  description?: string;
   excerpt?: string;
   authorAvatar?: string;
 };

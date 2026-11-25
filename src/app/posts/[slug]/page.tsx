@@ -19,7 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const post = postDoc.data() as Post;
   post.slug = post.slug || postDoc.id;
   const canonicalUrl = `https://www.ahmadblogs.com/posts/${post.slug}`;
-  const description = post.excerpt || (typeof post.content === 'string' ? post.content.slice(0, 160) : post.title);
+  const description = post.description || post.excerpt || (typeof post.content === 'string' ? post.content.slice(0, 160) : post.title);
   return {
     title: post.title,
     description,
@@ -90,6 +90,7 @@ type Post = {
   featured?: boolean;
   date?: string;
   category?: string | string[];
+  description?: string;
   excerpt?: string;
   authorAvatar?: string;
   tags?: string[];
@@ -174,7 +175,7 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
     "@context": "https://schema.org",
     "@type": "Article",
     "headline": post.title,
-    "description": post.excerpt || post.content?.slice(0, 160) || post.title,
+    "description": post.description || post.excerpt || post.content?.slice(0, 160) || post.title,
     "image": post.image || "/default-og.png",
     "author": post.author ? {
       "@type": "Person",
