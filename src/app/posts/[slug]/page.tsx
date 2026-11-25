@@ -216,18 +216,18 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
   return (
     <>
       <PostViewTracker postId={postDoc.id} slug={post.slug} />
-      <div className="bg-white min-h-screen flex flex-col">
+      <div className="bg-white min-h-screen flex flex-col w-full max-w-full overflow-x-hidden">
         <Header categoryMenu={<CategoryMenu />} />
-        <main className="max-w-4xl mx-auto py-8 px-2 bg-white flex-1">
+        <main className="w-full max-w-4xl mx-auto py-6 sm:py-8 px-4 sm:px-6 bg-white flex-1 min-w-0">
           <script type="application/ld+json" suppressHydrationWarning>{JSON.stringify(schema)}</script>
           <script type="application/ld+json" suppressHydrationWarning>{JSON.stringify(breadcrumbSchema)}</script>
           {faqSchema && <script type="application/ld+json" suppressHydrationWarning>{JSON.stringify(faqSchema)}</script>}
-          <div className="flex flex-col items-center mt-2 mb-4">
-            <h1 className="text-xl sm:text-2xl md:text-3xl lg:text-4xl font-extrabold leading-snug sm:leading-tight text-[#232946] text-center mb-2">
+          <div className="flex flex-col items-center mt-2 mb-6 w-full text-center">
+            <h1 className="text-2xl sm:text-3xl md:text-4xl font-extrabold leading-snug sm:leading-tight text-[#232946] mb-3 max-w-3xl">
               {post.title}
             </h1>
-            <div className="flex flex-col sm:flex-row sm:items-center sm:gap-3 text-[#232946] text-base font-medium mb-4">
-              <span className="inline-flex items-center gap-2 mb-2 sm:mb-0">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3 text-[#232946] text-sm sm:text-base font-medium">
+              <span className="inline-flex items-center gap-2">
                 <Image
                   src={post.authorAvatar || "/default-avatar.png"}
                   alt={post.author || "Author"}
@@ -237,16 +237,17 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
                   title={post.author || "Author"}
                   priority
                 />
-                <span className="text-sm sm:text-base">{post.author}</span>
+                <span>{post.author}</span>
               </span>
-              <span className="text-sm sm:text-base mb-2 sm:mb-0">{post.date}</span>
-              <div className="flex flex-wrap gap-2">
+              <span className="text-gray-400">•</span>
+              <span>{post.date}</span>
+              <div className="flex flex-wrap gap-1.5 ml-1">
                 {(Array.isArray(post.category) ? post.category : [post.category])
                   .filter((cat: unknown): cat is string => typeof cat === 'string' && !!cat)
                   .map((cat: string, idx: number) => (
                     <span
                       key={idx}
-                      className="bg-[#eaf0f6] text-[#3CB371] text-xs sm:text-sm font-medium px-2 py-1 rounded-full"
+                      className="bg-[#eaf0f6] text-[#3CB371] text-xs font-semibold px-2.5 py-0.5 rounded-full"
                     >
                       {cat}
                     </span>
@@ -254,26 +255,26 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
               </div>
             </div>
           </div>
-          <div className="flex justify-center mb-8">
-            <div className="relative w-full max-w-3xl aspect-[16/9] rounded-md overflow-hidden bg-[#eaf0f6]">
+          <div className="flex justify-center mb-8 w-full">
+            <div className="relative w-full max-w-3xl aspect-[16/9] rounded-xl overflow-hidden bg-[#eaf0f6] shadow-sm">
               <Image
                 src={post.image || "/placeholder.png"}
                 alt={post.title}
                 fill
-                className="object-cover rounded-md w-full h-auto"
-                sizes="100vw"
+                className="object-cover rounded-xl"
+                sizes="(max-width: 768px) 100vw, (max-width: 1200px) 80vw, 800px"
                 title={post.title}
                 priority
               />
             </div>
           </div>
-          <article className={`max-w-3xl mx-auto ${styles.postContent}`}>
+          <article className={`w-full max-w-3xl mx-auto min-w-0 ${styles.postContent}`}>
             {post.excerpt && (
-              <div className="bg-emerald-50/60 border-l-4 border-[#3CB371] p-5 rounded-r-xl my-6">
+              <div className="bg-emerald-50/60 border-l-4 border-[#3CB371] p-4 sm:p-5 rounded-r-xl my-6 max-w-full">
                 <strong className="text-xs font-extrabold uppercase tracking-wider text-[#3CB371] block mb-1">
                   Quick Summary (Direct Answer)
                 </strong>
-                <p className="text-[#232946] text-base font-semibold leading-relaxed m-0">
+                <p className="text-[#232946] text-sm sm:text-base font-semibold leading-relaxed m-0">
                   {post.excerpt}
                 </p>
               </div>
@@ -283,7 +284,7 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
             )}
           </article>
           {/* Citations / Sources for GEO */}
-          <div className="max-w-3xl mx-auto mt-12 pt-6 border-t border-gray-100 text-xs text-gray-400">
+          <div className="w-full max-w-3xl mx-auto mt-12 pt-6 border-t border-gray-100 text-xs text-gray-400">
             <p className="font-semibold mb-1">Citations & References:</p>
             <p>
               Originally published on <a href={canonicalUrl} className="underline hover:text-[#3CB371]">{canonicalUrl}</a>. 
@@ -291,7 +292,7 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
               For professional inquiries or permissions, contact our editorial team.
             </p>
           </div>
-          <div className="max-w-3xl mx-auto flex flex-col md:flex-row justify-between items-center mt-8 mb-6 gap-4">
+          <div className="w-full max-w-3xl mx-auto flex flex-col md:flex-row justify-between items-center mt-8 mb-6 gap-4">
             <div className="flex gap-2 flex-wrap">
               {post.tags?.map((tag: string) => (
                 <span key={tag} className="bg-[#f7f8fa] text-[#232946] px-4 py-2 rounded-lg text-base font-medium">#{tag}</span>
@@ -299,10 +300,10 @@ export default async function PostPage(props: { params: Promise<{ slug: string }
             </div>
           </div>
           {/* Comments section moved after tags, before similar posts */}
-          <div className="max-w-3xl mx-auto mb-12">
+          <div className="w-full max-w-3xl mx-auto mb-12">
             <PostClientContent post={post} />
           </div>
-          <div className="max-w-6xl mx-auto mt-16">
+          <div className="w-full max-w-4xl mx-auto mt-16">
             <h2 className="text-3xl font-extrabold text-center mb-10 text-[#232946]">Similar Posts</h2>
             <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
               {similarPosts.map((sp: Post, idx: number) => (

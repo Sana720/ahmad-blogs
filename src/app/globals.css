@@ -24,5 +24,8 @@ body, html {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-mulish), Mulish, sans-serif;
+  overflow-x: hidden;
+  max-width: 100vw;
+  width: 100%;
 }
 

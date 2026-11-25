@@ -37,7 +37,7 @@ export default function MarkdownRenderer({ content }: { content: string }) {
           <strong className="font-bold text-[#111827]" {...props} />
         ),
         blockquote: ({ node, ...props }) => (
-          <blockquote className="my-6 border-l-4 border-[#3CB371] bg-emerald-50/50 p-4 sm:p-5 rounded-r-xl italic text-gray-800 text-base sm:text-lg" {...props} />
+          <blockquote className="my-6 border-l-4 border-[#3CB371] bg-emerald-50/50 p-4 sm:p-5 rounded-r-xl italic text-gray-800 text-base sm:text-lg overflow-hidden break-words max-w-full" {...props} />
         ),
         hr: ({ node, ...props }) => (
           <hr className="my-8 border-t-2 border-gray-100" {...props} />
@@ -58,22 +58,22 @@ export default function MarkdownRenderer({ content }: { content: string }) {
         code: ({ node, inline, className, children, ...props }: any) => {
           if (inline) {
             return (
-              <code className="bg-gray-100 text-[#232946] px-1.5 py-0.5 rounded text-sm font-mono font-semibold border border-gray-200" {...props}>
+              <code className="bg-gray-100 text-[#232946] px-1.5 py-0.5 rounded text-sm font-mono font-semibold border border-gray-200 break-all [overflow-wrap:anywhere]" {...props}>
                 {children}
               </code>
             );
           }
           return (
-            <div className="my-6 rounded-xl overflow-hidden border border-[#313244] bg-[#1e1e2e] shadow-sm">
-              <pre className="p-4 sm:p-5 overflow-x-auto text-sm font-mono text-[#cdd6f4] leading-relaxed">
+            <div className="my-6 rounded-xl overflow-hidden border border-[#313244] bg-[#1e1e2e] shadow-sm max-w-full w-full">
+              <pre className="p-4 sm:p-5 overflow-x-auto text-sm font-mono text-[#cdd6f4] leading-relaxed max-w-full">
                 <code {...props}>{children}</code>
               </pre>
             </div>
           );
         },
         table: ({ node, ...props }) => (
-          <div className="overflow-x-auto my-6 border border-gray-200 rounded-xl shadow-2xs">
-            <table className="w-full text-left text-sm sm:text-base text-gray-700 border-collapse" {...props} />
+          <div className="w-full max-w-full overflow-x-auto my-6 border border-gray-200 rounded-xl shadow-xs">
+            <table className="w-full min-w-[500px] text-left text-sm sm:text-base text-gray-700 border-collapse" {...props} />
           </div>
         ),
         th: ({ node, ...props }) => (

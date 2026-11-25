@@ -4,6 +4,9 @@
   font-size: 1.0625rem; /* 17px */
   line-height: 1.85;
   word-break: break-word;
+  overflow-wrap: anywhere;
+  max-width: 100%;
+  width: 100%;
 }
 
 .postContent h1 {
@@ -155,6 +158,8 @@
   border-radius: 6px;
   font-weight: 600;
   border: 1px solid #e5e7eb;
+  word-break: break-all;
+  overflow-wrap: anywhere;
 }
 
 /* Code Blocks */

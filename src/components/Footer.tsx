@@ -5,8 +5,8 @@ interface FooterProps {
 
 export default function Footer({ noMargin = false, bgColor = "bg-[#181f2a]" }: FooterProps) {
   return (
-    <footer className={`${bgColor} text-gray-100 pt-12 pb-8 ${noMargin ? "mt-0" : "mt-24"}`}>
-      <div className="max-w-5xl mx-auto flex flex-col items-center justify-center px-4">
+    <footer className={`${bgColor} text-gray-100 pt-12 pb-8 ${noMargin ? "mt-0" : "mt-24"} w-full max-w-full overflow-x-hidden`}>
+      <div className="max-w-5xl mx-auto flex flex-col items-center justify-center px-4 w-full">
         <div className="flex flex-col sm:flex-row flex-wrap gap-4 sm:gap-12 text-lg font-medium mb-8 w-full justify-center items-center">
           <a href="/about" className="hover:text-[#3CB371]" title="About">About</a>
           <a href="/contact" className="hover:text-[#3CB371]" title="Contact">Contact</a>
