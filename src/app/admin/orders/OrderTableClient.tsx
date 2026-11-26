@@ -8,13 +8,15 @@ interface Props {
 }
 
 export default function OrderTableClient({ initialOrders }: Props) {
+  const [orders, setOrders] = useState<Order[]>(initialOrders);
   const [searchTerm, setSearchTerm] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [currentPage, setCurrentPage] = useState(1);
+  const [processingId, setProcessingId] = useState<string | null>(null);
   const itemsPerPage = 10;
 
   // Filter logic
-  const filteredOrders = initialOrders.filter((order) => {
+  const filteredOrders = orders.filter((order) => {
     const matchesSearch = 
       order.customerEmail?.toLowerCase().includes(searchTerm.toLowerCase()) ||
       order.customerName?.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -40,6 +42,39 @@ export default function OrderTableClient({ initialOrders }: Props) {
   React.useEffect(() => {
     setCurrentPage(1);
   }, [searchTerm, statusFilter]);
+
+  const handleCaptureOrder = async (order: Order) => {
+    if (!order.paypalOrderId) return;
+    if (!confirm(`Attempt to verify and capture order ${order.paypalOrderId} for ${order.customerEmail}?`)) return;
+
+    setProcessingId(order.id || order.paypalOrderId || "loading");
+    try {
+      const res = await fetch("/api/paypal/capture-order", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ orderId: order.paypalOrderId }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        alert(`Success! Order captured. License key generated: ${data.licenseKey}`);
+        setOrders((prev) =>
+          prev.map((o) =>
+            o.id === order.id ? { ...o, paymentStatus: "COMPLETED", paypalStatus: "COMPLETED" } : o
+          )
+        );
+      } else {
+        alert(
+          data.error === "Failed to capture PayPal order"
+            ? "PayPal reports this order was not approved by the customer (abandoned checkout in PayPal)."
+            : `Error: ${data.error || "Unable to capture order"}`
+        );
+      }
+    } catch (err: any) {
+      alert(`Network error: ${err.message}`);
+    } finally {
+      setProcessingId(null);
+    }
+  };
 
   return (
     <div className="bg-white rounded-xl shadow-sm border border-gray-200 overflow-hidden">
@@ -77,12 +112,13 @@ export default function OrderTableClient({ initialOrders }: Props) {
               <th className="p-4 whitespace-nowrap">Amount</th>
               <th className="p-4 whitespace-nowrap">Status</th>
               <th className="p-4 whitespace-nowrap">PayPal ID</th>
+              <th className="p-4 whitespace-nowrap text-right">Action</th>
             </tr>
           </thead>
           <tbody className="text-sm">
             {currentOrders.length === 0 ? (
               <tr>
-                <td colSpan={6} className="p-8 text-center text-gray-500">
+                <td colSpan={7} className="p-8 text-center text-gray-500">
                   No orders found.
                 </td>
               </tr>
@@ -116,6 +152,20 @@ export default function OrderTableClient({ initialOrders }: Props) {
                   </td>
                   <td className="p-4 font-mono text-xs text-gray-500 whitespace-nowrap">
                     {order.paypalOrderId || 'N/A'}
+                  </td>
+                  <td className="p-4 text-right whitespace-nowrap">
+                    {order.paymentStatus === 'PENDING' && order.paypalOrderId ? (
+                      <button
+                        onClick={() => handleCaptureOrder(order)}
+                        disabled={processingId === order.id}
+                        className="px-3 py-1 bg-[#3CB371] hover:bg-[#349e63] disabled:opacity-50 text-white font-bold text-xs rounded-lg transition-colors cursor-pointer shadow-xs"
+                        title="Check with PayPal and capture payment if approved"
+                      >
+                        {processingId === order.id ? "Checking..." : "Sync / Capture"}
+                      </button>
+                    ) : (
+                      <span className="text-gray-400 text-xs">—</span>
+                    )}
                   </td>
                 </tr>
               ))
